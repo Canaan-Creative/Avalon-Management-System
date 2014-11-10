@@ -1,0 +1,67 @@
+table.tmap{ margin:10px auto 10px auto;  }
+td.tmap{ width:75px;height:75px;}
+p.tmap{ font-size:small !important;font-weight:bold !important;text-align:center !important;margin:0px !important;}
+p.tmapred{ color:red !important;font-size:small !important;font-weight:bold !important;text-align:center !important;margin:0px !important;}
+p.tmapwhite{ color:white !important;font-size:small !important;font-weight:bold !important;text-align:center !important;margin:0px !important;}
+td.yaxis{ width:10px !important;height:75px !important; }
+td.xaxis{ width:75px !important;height:10px !important; }
+td.oaxis{ width:10px !important;height:10px !important; }
+p.axis{ font-size:small !important;text-align:center !important;margin:0px !important; }
+/**
+ * index
+ */
+.navbar-brand {
+	background-image: url('../img/logo.png');
+	width: 120px;
+	height: 41px;
+	margin-top: 2px;
+	margin-right: 15px;
+}
+.navbar-inverse .navbar-nav li a{
+	color: white;
+}
+/**
+ * Login
+ */
+.row {
+	background-color: rgb(241, 241, 241);
+	margin: 0;
+}
+.login_div {
+	background-color: white;
+	width: 320px;
+	height: 30%;
+	padding: 20px;
+	margin: 0 auto 500px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.13);
+	padding-bottom: 10px;
+}
+.login_div input {
+	background: rgb(251, 251, 251);
+	font-size: 22px;
+	line-height: 1px;
+}
+.login_div .submit {
+	background: rgb(30, 140, 190);
+	box-shadow: inset 0 1px 0 rgba(120, 200, 230, 0.6);
+	color: white;
+	width: 100px;
+	border-color: rgb(0, 116, 162);
+	border-radius: 3px;
+	line-height: 28px;
+	font-size: 13px;
+	margin-top: 20px;
+	margin-left: 180px;
+}
+.login_error {
+	margin-top: 10px;
+	font-size: 12px;
+	border-left: 4px solid rgb(221, 61, 54);
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+	margin-left: 0;
+	padding-left: 12px;
+}
+.logo_div {
+	width: 320px;
+	margin: 200px auto 20px;
+}
