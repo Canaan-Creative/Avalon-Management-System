@@ -1,6 +1,6 @@
 AMS - Avalon Management System
 ==============================
-A toolset to manage BTC Farm featuring Avalon Miners,
+A toolset to manage BTC Farm featuring the 4th generation of Avalon Miners,
 including web-based monitor and email report generator.
 
 Directory structure

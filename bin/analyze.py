@@ -4,8 +4,23 @@ import MySQLdb
 import threading
 import Queue
 from datetime import datetime
+import re
 
 
+_pattern = re.compile(r'Ver\[(?P<Ver>[-0-9A-Fa-f]+)\]\s'
+                      'DNA\[(?P<DNA>[0-9A-Fa-f]+)\]\s'
+                      'Elapsed\[(?P<Elapsed>[-0-9]+)\]\s'
+                      'LW\[(?P<LW>[0-9]+)\]\s'
+                      'HW\[(?P<HW>[0-9]+)\]\s'
+                      'DH\[(?P<DH>[.0-9]+)%\]\s'
+                      'GHS5m\[(?P<GHS5m>[-.0-9]+)\]\s'
+                      'DH5m\[(?P<DH5m>[-.0-9]+)%\]\s'
+                      'Temp\[(?P<Temp>[0-9]+)\]\s'
+                      'Fan\[(?P<Fan>[0-9]+)\]\s'
+                      'Vol\[(?P<Vol>[.0-9]+)\]\s'
+                      'Freq\[(?P<Freq>[.0-9]+)\]\s'
+                      'PG\[(?P<PG>[0-9]+)\]\s'
+                      'Led\[(?P<Led>0|1)\]')
 def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
              volt0, devNumDict, modNumDict, lock):
 
@@ -22,11 +37,11 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                    "INSERT INTO Device_" + timenow + " VALUES(" +
                    ("%s," * 5)[:-1] + ")",
                    "INSERT INTO Module_" + timenow + " VALUES(" +
-                   ("%s," * 12)[:-1] + ")",
+                   ("%s," * 16)[:-1] + ")",
                    "INSERT INTO Pool_" + timenow + " VALUES(" +
                    ("%s," * 6)[:-1] + ")",
                    "INSERT INTO Error_" + timenow + " VALUES(" +
-                   ("%s," * 15)[:-1] + ")"]
+                   ("%s," * 16)[:-1] + ")"]
         ip = data['IP']
         port = data['Port']
         minerid = '{0}:{1}'.format(ip, port)
@@ -87,7 +102,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                           0, 0, block0 + newblock0, 0, 0, rate1hr, .0, 0)
             errorParam.append(
                 (ip, port, 0, 0, True, False, False, False,
-                 False, False, False, False, False, False, False)
+                 False, False, False, False, False, False, False, 1023)
             )
         elif data['Summary'] is None:
             try:
@@ -101,7 +116,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                           0, 0, block0 + newblock0, 0, 0, rate1hr, .0, 0)
             errorParam.append(
                 (ip, port, 0, 0, False, sumdevice0, False, False,
-                 False, False, False, False, False, False, False)
+                 False, False, False, False, False, False, False, 1023)
             )
         else:
             sumdevice = len(data['Devs'])
@@ -113,7 +128,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
             if sumdevice < sumdevice0:
                 errorParam.append(
                     (ip, port, 0, 0, False, sumdevice0 - sumdevice, False,
-                     False, False, False, False, False, False, False, False)
+                     False, False, False, False, False, False, False, False, 1023)
                 )
 
             try:
@@ -155,76 +170,68 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                                                                 deviceid)]
                 except:
                     sumdevmodule0 = 0
-                j = 0
-                sumlw = 0
-                for key in devStatData:
-                    if key[0:10] == 'Local work':
-                        lw = int(devStatData[key])
-                        sumlw += lw
-                        j += 1
-                avglw = float(sumlw) / j
-                for key in devStatData:
-                    if key[-10:] == 'MM Version':
-                        sumdevmodule += 1
-                        moduleid = int(key[2:-11])
-                        temp1 = int(devStatData['Temperature{0}'.
-                                                format(moduleid * 2 - 1)])
-                        temp2 = int(devStatData['Temperature{0}'.
-                                                format(moduleid * 2)])
-                        fan1 = int(devStatData['Fan{0}'.
-                                               format(moduleid * 2 - 1)])
-                        fan2 = int(devStatData['Fan{0}'.format(moduleid * 2)])
-                        lw = int(devStatData['Local works{0}'.format(moduleid)])
-                        dh = float(devStatData['Device hardware error{0}%'
-                                               .format(moduleid)])
-                        volt = int(devStatData['Voltage{0}'.format(moduleid)])
-                        freq = int(devStatData['Frequency{0}'.format(moduleid)])
 
-                        if temp1 != 255 and temp1 > maxtemp:
-                            maxtemp = temp1
-                        if temp2 != 255 and temp2 > maxtemp:
-                            maxtemp = temp2
+                j = 0
+                avghs = 0
+                for key in devStatData:
+                    if key[:5] == 'MM ID':
+                        avghs += float(re.match(_pattern, devStatData[key]).groupdict()['GHS5m'])
+                        j += 1
+                try:
+                    avghs /= j
+                except:
+                    avghs = 0
+                for key in devStatData:
+                    if key[:5] == 'MM ID':
+                        moduleid = int(key[5:])
+                        module = devStatData[key]
+                        module_info = re.match(_pattern, module).groupdict()
+                        sumdevmodule += 1
+                        dna = module_info['DNA']
+                        melapsed = module_info['Elapsed']
+                        lw = int(module_info['LW'])
+                        hw = int(module_info['HW'])
+                        dh = float(module_info['DH'])
+                        ghs5m = float(module_info['GHS5m'])
+                        dh5m = float(module_info['DH5m'])
+                        temp = int(module_info['Temp'])
+                        fan = int(module_info['Fan'])
+                        volt = int(float(module_info['Vol']) * 10000)
+                        freq = float(module_info['Freq'])
+                        pg = int(module_info['PG'])
 
                         flag = [False for k in range(8)]
 
-                        if temp1 == 255 or temp2 == 255:
+                        if temp >= 200:
                             flag[0] = True
-                        if temp1 > 80 or temp2 > 80:
-                            flag[1] = True
-                        if temp1 < 40 or temp2 < 40:
-                            flag[2] = True
-                        if dh > 5.0:
-                            flag[3] = True
-                        if volt != volt0:
-                            flag[4] = True
-                        if time0 is not None:
-                            c.execute("SELECT localwork FROM Module_{0} WHERE "
-                                      "ip=%s AND port=%s AND deviceid=%s AND "
-                                      "moduleid=%s".format(time0),
-                                      (ip, port, deviceid, moduleid))
-                            result = c.fetchall()
-                            if result:
-                                lw0 = result[0][0]
-                            else:
-                                lw0 = -1
                         else:
-                            lw0 = -1
-                        if lw == lw0:
-                            flag[5] = True
-                        if lw < avglw * 0.8:
+                            if temp > maxtemp:
+                                maxtemp = temp
+                            if temp > 62:
+                                flag[1] = True
+                        if temp < 25:
+                            flag[2] = True
+                        if dh > 3.0 or dh5m > 3.0:
+                            flag[3] = True
+                        # if volt != volt0:
+                        #    flag[4] = True
+                        if ghs5m < 0.001:
                             flag[6] = True
-                        if fan1 + fan2 == 0:
+                        elif ghs5m < avghs * 0.8:
+                            flag[5] = True
+                        if fan == 0:
                             flag[7] = True
 
-                        param = (ip, port, deviceid, moduleid, temp1, temp2,
-                                 fan1, fan2, lw, dh, volt, freq)
+                        param = (ip, port, deviceid, moduleid, dna, melapsed, lw, 
+                                 hw, dh, ghs5m, dh5m, temp, fan, volt, freq, pg)
                         moduleParam.append(param)
                         error = False
                         for f in flag:
                             error = error or f
-                        if error:
+
+                        if error or pg != 1023:
                             param = (ip, port, deviceid, moduleid, False,
-                                     False, False) + tuple(flag)
+                                     False, False) + tuple(flag) + (pg,)
                             errorParam.append(param)
 
                 deviceParam.append((ip, port, deviceid,
@@ -234,7 +241,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                     errorParam.append(
                         (ip, port, deviceid, 0, False, False,
                          sumdevmodule0 - sumdevmodule, False,
-                         False, False, False, False, False, False, False)
+                         False, False, False, False, False, False, False, 1023)
                     )
                 i += 1
 
@@ -311,14 +318,18 @@ def analyze(dataQueue, timenow, cfg):
               "port SMALLINT UNSIGNED, "
               "deviceid TINYINT UNSIGNED, "
               "moduleid TINYINT UNSIGNED, "
-              "temperature1 TINYINT UNSIGNED, "
-              "temperature2 TINYINT UNSIGNED, "
-              "fan1 SMALLINT UNSIGNED, "
-              "fan2 SMALLINT UNSIGNED, "
-              "localwork INT UNSIGNED, "
-              "hwerror FLOAT, "
-              "voltage SMALLINT UNSIGNED, "
-              "frequency SMALLINT UNSIGNED)".format(timenow))
+              "dna VARCHAR(16), "
+              "elapsed INT, "
+              "lw BIGINT, "
+              "hw BIGINT, "
+              "dh FLOAT, "
+              "ghs5m FLOAT, "
+              "dh5m FLOAT, "
+              "temp TINYINT UNSIGNED, "
+              "fan SMALLINT UNSIGNED, "
+              "vol SMALLINT UNSIGNED, "
+              "freq FLOAT, "
+              "pg SMALLINT UNSIGNED)".format(timenow))
     db.commit()
     c.execute("CREATE TABLE Pool_{0} "
               "(ip VARCHAR(15), "
@@ -336,14 +347,15 @@ def analyze(dataQueue, timenow, cfg):
               "connectionfailed BOOL, "
               "missingdevice BOOL, "
               "missingmodule BOOL, "
-              "temperature255 BOOL, "
-              "temperature80 Bool, "
-              "temperature40 Bool, "
-              "hwerrorhigh Bool, "
+              "temperature200 BOOL, "
+              "temperaturehigh Bool, "
+              "temperaturelow Bool, "
+              "dhhigh BOOL, "
               "wrongvoltage BOOL, "
-              "localworkstop BOOL, "
-              "localworklow BOOL, "
-              "fanstop BOOL)".format(timenow))
+              "ghslow BOOL, "
+              "ghsstop BOOL, "
+              "fanstop BOOL, "
+              "wrongpg SMALLINT UNSIGNED)".format(timenow))
     db.commit()
     lock = threading.Lock()
     for i in range(threadNum):
