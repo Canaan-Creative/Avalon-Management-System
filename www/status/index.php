@@ -331,10 +331,8 @@ while ($row = mysql_fetch_array($result)) {
 			$series_ag[0]['data'][] = array('x' => $localtime, 'y' => $row['modrate'] * 100, 'total' => $row['totalmod'], 'alive' => $row['alivemod']);
 			$series_ag[1]['data'][] = array('x' => $localtime, 'y' => $row['iprate'] * 100, 'total' => $row['totalip'], 'alive' => $row['aliveip']);
 		}
-    }
-	else
-		if($now - 30 * 24 * 3600 < $unix)
-			$flag = TRUE;
+	} elseif ($now - 30 * 24 * 3600 < $unix)
+		$flag = TRUE;
 }
 # Block Found Record:
 $dates = [];
