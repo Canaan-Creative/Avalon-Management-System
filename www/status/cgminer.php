@@ -50,7 +50,7 @@ function decode($line) {
 	return $data;
 }
 #
-$pattern = '/Ver\[([-0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\sLW\[([0-9]+)\]\sHW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sGHS5m\[([-.0-9]+)\]\sDH5m\[([-.0-9]+)%\]\sTemp\[([0-9]+)\]\sFan\[([0-9]+)\]\sVol\[([.0-9]+)\]\sFreq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)\]/';
+$pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\sLW\[([0-9]+)\]\sHW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sGHS5m\[([-.0-9]+)\]\sDH5m\[([-.0-9]+)%\]\sTemp\[([0-9]+)\]\sFan\[([0-9]+)\]\sVol\[([.0-9]+)\]\sFreq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)\]/';
 $ip   = $_GET['ip'];
 $ports = explode(',',$_GET['port']);
 $hls = explode('-',$_GET['hl']);

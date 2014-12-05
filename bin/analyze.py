@@ -7,7 +7,7 @@ from datetime import datetime
 import re
 
 
-_pattern = re.compile(r'Ver\[(?P<Ver>[-0-9A-Fa-f]+)\]\s'
+_pattern = re.compile(r'Ver\[(?P<Ver>[-+0-9A-Fa-f]+)\]\s'
                       'DNA\[(?P<DNA>[0-9A-Fa-f]+)\]\s'
                       'Elapsed\[(?P<Elapsed>[-0-9]+)\]\s'
                       'LW\[(?P<LW>[0-9]+)\]\s'
@@ -222,7 +222,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                         if fan == 0:
                             flag[7] = True
 
-                        param = (ip, port, deviceid, moduleid, dna, melapsed, lw, 
+                        param = (ip, port, deviceid, moduleid, dna, melapsed, lw,
                                  hw, dh, ghs5m, dh5m, temp, fan, volt, freq, pg)
                         moduleParam.append(param)
                         error = False
