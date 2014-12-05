@@ -55,8 +55,8 @@ def socketthread(miner_queue,data,lock,retry):
 
 			else:
 				tmp0 = apiread(miner_ip,miner_port,'summary',retry)
-				tmp1 = apiread(miner_ip,miner_port,'devs',retry)
-				tmp2 = apiread(miner_ip,miner_port,'stats',retry)
+				tmp1 = apiread(miner_ip,miner_port,'edevs',retry)
+				tmp2 = apiread(miner_ip,miner_port,'estats',retry)
 				tmp3 = apiread(miner_ip,miner_port,'pools',retry)
 				lock.acquire()
 				data[0][miner_pid] = tmp0
