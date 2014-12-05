@@ -17,7 +17,7 @@ function pg_decode($pg) {
 	$str = "";
 	for ($i = 1; $i < 3; $i++) {
 		for ($j = 1; $j < 6; $j++) {
-			$flag = $pg % 2;
+			$flag = $pg & 1;
 			$pg = ($pg >> 1);
 			if (!$flag) {
 				if ($str != "")
