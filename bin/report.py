@@ -24,6 +24,12 @@ def post(mail, template_var):
     msg['From'] = me
     msg['To'] = mail['to_list']
     to_list = mail['to_list'].split(';')
+    if 'cc' in mail:
+        msg['CC'] = mail['cc']
+        to_list += mail['cc'].split(';')
+    if 'bcc' in mail:
+        msg['BCC'] = mail['bcc']
+        to_list += mail['bcc'].split(';')
     msg_alternative = MIMEMultipart('alternative')
     msg.attach(msg_alternative)
 
