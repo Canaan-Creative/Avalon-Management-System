@@ -54,7 +54,7 @@ def heatmapThread(user, passwd, dbname, now_s, miner_queue, result_queue, lock):
             rate = ("{0:." + str(12 - len(str(rate15min))) +
                     "f} PH/s").format(rate15min / 1000000000.0)
         max_temperature = result[0][3]
-        c.execute("SELECT temperature1, temperature2 FROM Module_{0} "
+        c.execute("SELECT temp FROM Module_{0} "
                   "WHERE IP='{1}'".format(now_s, ip))
         result = c.fetchall()
 
@@ -63,9 +63,6 @@ def heatmapThread(user, passwd, dbname, now_s, miner_queue, result_queue, lock):
         for r in result:
             if r[0] > 0 and r[0] < 255:
                 tmp += r[0]
-                n += 1
-            if r[1] > 0 and r[1] < 255:
-                tmp += r[1]
                 n += 1
         try:
             avg_temperature = float(tmp) / n
