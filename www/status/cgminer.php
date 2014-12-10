@@ -146,12 +146,15 @@ Cgminer Status
 
 <?php
 function second2human($seconds) {
-	$h = (int)($seconds / 3600);
+	$d = (int)($seconds / (3600 * 24));
+	$h = (int)(($seconds % (3600 * 24)) / 3600);
 	$m = (int)(($seconds % 3600) / 60);
-	$s = ($seconds % 3600) % 60;
-	if($h != 0)
+	$s = (int)($seconds % 60);
+	if ($d)
+		return $d . "d " . $h . "h " . $m . "m " . $s . "s";
+	elseif ($h)
 		return $h . "h " . $m . "m " . $s . "s";
-	elseif($m != 0)
+	elseif ($m)
 		return $m . "m " . $s . "s";
 	else
 		return $s . "s";
