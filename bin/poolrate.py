@@ -138,9 +138,9 @@ def poolrate(timenow, cfg):
     c.execute("SHOW TABLES LIKE 'Hashrate'")
     if not c.fetchall():
         command = ("CREATE TABLE IF NOT EXISTS Hashrate "
-                   "(time DATETIME, local FLOAT")
+                   "(time DATETIME, local DOUBLE")
         for pool in cfg['poolList']:
-            command += ", `{0}` FLOAT".format(pool['label'])
+            command += ", `{0}` DOUBLE".format(pool['label'])
         command += ")"
 
         c.execute(command)
@@ -161,7 +161,7 @@ def poolrate(timenow, cfg):
         for pool in cfg['poolList']:
             if not pool['label'] in labels:
                 c.execute("ALTER TABLE Hashrate ADD `{0}` "
-                          "FLOAT".format(pool['label']))
+                          "DOUBLE".format(pool['label']))
                 db.commit()
             command1 += ', `{0}`'.format(pool['label'])
             command2 += ', %s'

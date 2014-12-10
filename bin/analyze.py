@@ -298,12 +298,12 @@ def analyze(dataQueue, timenow, cfg):
               "summodule TINYINT UNSIGNED, "
               "summodule0 TINYINT UNSIGNED, "
               "elapsed INT, "
-              "megahash FLOAT, "
+              "megahash DOUBLE, "
               "block SMALLINT UNSIGNED, "
               "newblock SMALLINT UNSIGNED, "
               "newfoundblock SMALLINT UNSIGNED, "
-              "rate1hr FLOAT, "
-              "rate15min FLOAT, "
+              "rate1hr DOUBLE, "
+              "rate15min DOUBLE, "
               "maxtemperature TINYINT UNSIGNED)".format(timenow))
     db.commit()
     c.execute("CREATE TABLE Device_{0} "
@@ -322,13 +322,13 @@ def analyze(dataQueue, timenow, cfg):
               "elapsed INT, "
               "lw BIGINT, "
               "hw BIGINT, "
-              "dh FLOAT, "
-              "ghs5m FLOAT, "
-              "dh5m FLOAT, "
+              "dh DOUBLE, "
+              "ghs5m DOUBLE, "
+              "dh5m DOUBLE, "
               "temp TINYINT UNSIGNED, "
               "fan SMALLINT UNSIGNED, "
               "vol SMALLINT UNSIGNED, "
-              "freq FLOAT, "
+              "freq DOUBLE, "
               "pg SMALLINT UNSIGNED)".format(timenow))
     db.commit()
     c.execute("CREATE TABLE Pool_{0} "
@@ -368,8 +368,8 @@ def analyze(dataQueue, timenow, cfg):
     dataQueue.join()
 
     c.execute("CREATE TABLE IF NOT EXISTS Aliverate (time DATETIME, "
-              "modrate FLOAT, alivemod INT UNSIGNED, totalmod INT UNSIGNED, "
-              "iprate FLOAT, aliveip INT UNSIGNED, totalip INT UNSIGNED)")
+              "modrate DOUBLE, alivemod INT UNSIGNED, totalmod INT UNSIGNED, "
+              "iprate DOUBLE, aliveip INT UNSIGNED, totalip INT UNSIGNED)")
     db.commit()
     c.execute("SELECT COUNT(DISTINCT ip) FROM Miner_{0} "
               "WHERE alive=true".format(timenow))
