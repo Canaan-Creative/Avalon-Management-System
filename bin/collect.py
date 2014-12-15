@@ -32,7 +32,9 @@ def readAPI(ip, port, command, lock, retry):
 
             response = response.replace('\x00', '')
             s.close()
-            response = response.decode('latin-1').encode('utf8')
+            for i in range(len(response)):
+                if ord(response[i]) > 127:
+                    response[i] = ''
             result = json.loads(response)
             if command == 'summary':
                 return result['SUMMARY'][0]
