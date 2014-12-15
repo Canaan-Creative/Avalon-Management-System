@@ -37,16 +37,22 @@ def readAPI(ip, port, command, lock, retry):
 
         s.close()
 
-        response = ''.join(filter(lambda x: x in string.printable, response))
-        temp = list(response)
-        for i in range(1, len(temp) - 1):
-            if temp[i] == '"' and (
-                    temp[i - 1] != ':' and temp[i - 1] != ',' and
-                    temp[i - 1] != '{' and temp[i + 1] != ':' and
-                    temp[i + 1] != ',' and temp[i + 1] != '}'):
-                temp[i] = ''
-        response = ''.join(temp)
-        result = json.loads(response)
+        try:
+            temp = filter(lambda x: x in string.printable, response)
+            for i in range(1, len(temp) - 1):
+                if (temp[i] == '\\' or (temp[i] == '"' and
+                        temp[i - 1] != ':' and temp[i - 1] != ',' and
+                        temp[i - 1] != '{' and temp[i + 1] != ':' and
+                        temp[i - 1] != '[' and temp[i + 1] != ']' and
+                        temp[i + 1] != ',' and temp[i + 1] != '}'))):
+                    temp[i] = ''
+            response = ''.join(temp)
+            result = json.loads(response)
+        except Error, e:
+            with lock:
+                print("\033[35mConnection to " + ip + "|" + command +
+                      ':' + str(e) + "\033[0m")
+            continue
 
         if command == 'summary':
             return result['SUMMARY'][0]
