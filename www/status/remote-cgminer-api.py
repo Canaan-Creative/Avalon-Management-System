@@ -38,7 +38,8 @@ s.close()
 response = ''.join(filter(lambda x: x in string.printable, response))
 temp = list(response)
 for i in range(1, len(temp) - 1):
-    if temp[i] == '"' and (
+    if temp[i] == '\\' or (
+            temp[i] == '"' and
             temp[i - 1] != ':' and temp[i - 1] != ',' and
             temp[i - 1] != '{' and temp[i + 1] != ':' and
             temp[i - 1] != '[' and temp[i + 1] != ']' and
