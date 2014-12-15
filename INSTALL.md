@@ -1,7 +1,9 @@
 Requirement
 -----------
 ```
-sudo apt-get install python python-django python-matplotlib python-mysqldb python-numpy python-paramiko mysql-server
+sudo apt-get install python python-django python-matplotlib \
+python-mysqldb python-numpy python-paramiko python-scipy \
+mysql-server php5 php5-mysql apache2
 ```
 
 MySQL Config
