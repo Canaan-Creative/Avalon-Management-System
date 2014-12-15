@@ -38,7 +38,7 @@ def readAPI(ip, port, command, lock, retry):
         s.close()
 
         try:
-            temp = filter(lambda x: x in string.printable, response)
+            temp = list(filter(lambda x: x in string.printable, response))
             for i in range(1, len(temp) - 1):
                 if temp[i] == '\\' or (
                         temp[i] == '"' and
