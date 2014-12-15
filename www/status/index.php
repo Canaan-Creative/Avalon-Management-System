@@ -234,7 +234,7 @@ while ($row = mysql_fetch_array($result)) {
 			"id" => $row['ip'] . ":" . $row['port'] . " dev#" . $row['deviceid'],
 			"error" => array(array("color" => "red", "msg" => $row['missingmodule'] . " Module(s) Missing. "))
 		);
-	elseif($row['apidisastor'])
+	elseif($row['apidisaster'])
 		$errors[] = array(
 			"href" => "cgminer.php?ip=" . $row['ip'] . "&port=" . $row['port'] . "&hl=" . $row['deviceid'],
 			"id" => $row['ip'] . ":" . $row['port'] . " dev#" . $row['deviceid'],
