@@ -90,8 +90,8 @@ def socketThread(minerQueue, dataQueue, lock, retry):
                     'Monitor': None}
 
         else:
-            devs = readAPI(ip, port, 'devs', lock, retry * 2)
-            stats = readAPI(ip, port, 'stats', lock, retry * 2)
+            devs = readAPI(ip, port, 'edevs', lock, retry * 2)
+            stats = readAPI(ip, port, 'estats', lock, retry * 2)
             pools = readAPI(ip, port, 'pools', lock, retry * 2)
             summary = readAPI(ip, port, 'summary', lock, retry * 2)
             data = {'IP': ip,
