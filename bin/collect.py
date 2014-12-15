@@ -42,7 +42,7 @@ def readAPI(ip, port, command, lock, retry):
         for i in range(1, len(temp) - 1):
             if temp[i] == '"' and (
                     temp[i - 1] != ':' and temp[i - 1] != ',' and
-                    temp[i - 1] != '{' and temp[i + 2] != ':' and
+                    temp[i - 1] != '{' and temp[i + 1] != ':' and
                     temp[i + 1] != ',' and temp[i + 1] != '}'):
                 temp[i] = ''
         response = ''.join(temp)
