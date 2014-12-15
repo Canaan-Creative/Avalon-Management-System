@@ -49,7 +49,7 @@ def readAPI(ip, port, command, lock, retry):
                     temp[i] = ''
             response = ''.join(temp)
             result = json.loads(response)
-        except Error, e:
+        except Exception as e:
             with lock:
                 print("\033[35mConnection to " + ip + "|" + command +
                       ':' + str(e) + "\033[0m")
