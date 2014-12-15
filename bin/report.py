@@ -103,8 +103,12 @@ def sendMail(time_d, cfg):
 
     if 'tmimg' in mail:
         template_var['tmimg'] = True
+    else:
+        template_var['tmimg'] = False
     if 'hsimg' in mail:
         template_var['hsimg'] = True
+    else:
+        template_var['hsimg'] = False
     if 'balance' in mail:
         template_var['balance'] = True
         template_var['balance_list'] = mail['balance']
@@ -113,6 +117,8 @@ def sendMail(time_d, cfg):
         for balance in mail['balance']:
             sum_balance += float(balance['final_balance'])
         template_var['sum_balance'] = sum_balance
+    else:
+        template_var['balance'] = False
 
     user = cfg['Database']['user']
     passwd = cfg['Database']['passwd']
