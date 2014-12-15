@@ -6,7 +6,7 @@ import Queue
 import socket
 import json
 import datetime
-import re
+import string
 
 
 def readAPI(ip, port, command, lock, retry):
@@ -35,14 +35,19 @@ def readAPI(ip, port, command, lock, retry):
                       " lost. Extend time-out and try again.\033[0m")
             continue
 
-        response = response.replace('\x00', '')
         s.close()
+
+        response = ''.join(filter(lambda x: x in string.printable, response))
         temp = list(response)
-        for i in range(len(temp)):
-            if ord(temp[i]) > 127:
+        for i in range(1, len(temp) - 1):
+            if temp[i] == '"' and (
+                    temp[i - 1] != ':' and temp[i - 1] != ',' and
+                    temp[i - 1] != '{' and temp[i + 2] != ':' and
+                    temp[i + 1] != ',' and temp[i + 1] != '}'):
                 temp[i] = ''
         response = ''.join(temp)
         result = json.loads(response)
+
         if command == 'summary':
             return result['SUMMARY'][0]
         elif command == 'edevs':

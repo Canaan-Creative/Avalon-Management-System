@@ -2,6 +2,7 @@
 import socket
 import json
 import sys
+import string
 
 
 def linesplit(socket):
@@ -32,10 +33,15 @@ else:
     s.send(json.dumps({"command": api_command[0]}))
 
 response = linesplit(s)
-response = response.replace('\x00', '')
-for i in range(len(response)):
-    if ord(response[i]) > 127:
-        response[i] = ''
-response = json.loads(response)
-print response
 s.close()
+
+response = ''.join(filter(lambda x: x in string.printable, response))
+temp = list(response)
+for i in range(1, len(temp) - 1):
+    if temp[i] == '"' and (
+            temp[i - 1] != ':' and temp[i - 1] != ',' and
+            temp[i - 1] != '{' and temp[i + 2] != ':' and
+            temp[i + 1] != ',' and temp[i + 1] != '}'):
+        temp[i] = ''
+response = ''.join(temp)
+print json.loads(response)
