@@ -248,7 +248,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                             error = error or f
 
                         if error or pg != 1023:
-                            param = (ip, port, deviceid, moduleid, False,
+                            param = (ip, port, deviceid, moduleid, False, False,
                                      False, False) + tuple(flag) + (pg,)
                             errorParam.append(param)
 
