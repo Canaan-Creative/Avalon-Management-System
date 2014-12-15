@@ -29,27 +29,30 @@ def readAPI(ip, port, command, lock, retry):
                     break
                 else:
                     response += recv
-
-            response = response.replace('\x00', '')
-            s.close()
-            for i in range(len(response)):
-                if ord(response[i]) > 127:
-                    response[i] = ''
-            result = json.loads(response)
-            if command == 'summary':
-                return result['SUMMARY'][0]
-            elif command == 'edevs':
-                return result['DEVS']
-            elif command == 'estats':
-                return result['STATS']
-            elif command == 'pools':
-                return result['POOLS']
-            else:
-                return result
         except:
             with lock:
                 print("\033[31mConnection to " + ip + ":" + str(port) +
                       " lost. Extend time-out and try again.\033[0m")
+            continue
+
+        response = response.replace('\x00', '')
+        s.close()
+        temp = list(response)
+        for i in range(len(temp)):
+            if ord(temp[i]) > 127:
+                temp[i] = ''
+        response = ''.join(temp)
+        result = json.loads(response)
+        if command == 'summary':
+            return result['SUMMARY'][0]
+        elif command == 'edevs':
+            return result['DEVS']
+        elif command == 'estats':
+            return result['STATS']
+        elif command == 'pools':
+            return result['POOLS']
+        else:
+            return result
 
 
 def socketThread(minerQueue, dataQueue, lock, retry):
