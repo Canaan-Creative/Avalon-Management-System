@@ -35,9 +35,9 @@ def readAPI(ip, port, command, lock, retry):
             result = json.loads(response)
             if command == 'summary':
                 return result['SUMMARY'][0]
-            elif command == 'devs':
+            elif command == 'edevs':
                 return result['DEVS']
-            elif command == 'stats':
+            elif command == 'estats':
                 return result['STATS']
             elif command == 'pools':
                 return result['POOLS']
