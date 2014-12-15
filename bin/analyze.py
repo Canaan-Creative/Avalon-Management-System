@@ -334,7 +334,7 @@ def analyze(dataQueue, timenow, cfg):
     c.execute("CREATE TABLE Module_{0} "
               "(ip VARCHAR(15), "
               "port SMALLINT UNSIGNED, "
-              "deviceid TINYINT UNSIGNED, "
+              "deviceid SMALLINT UNSIGNED, "
               "moduleid TINYINT UNSIGNED, "
               "dna VARCHAR(16), "
               "elapsed INT, "
@@ -344,7 +344,7 @@ def analyze(dataQueue, timenow, cfg):
               "ghs5m DOUBLE, "
               "dh5m DOUBLE, "
               "temp TINYINT UNSIGNED, "
-              "fan SMALLINT UNSIGNED, "
+              "fan INT UNSIGNED, "
               "vol SMALLINT UNSIGNED, "
               "freq DOUBLE, "
               "pg SMALLINT UNSIGNED)".format(timenow))
