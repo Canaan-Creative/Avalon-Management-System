@@ -21,6 +21,8 @@ _pattern = re.compile(r'Ver\[(?P<Ver>[-+0-9A-Fa-f]+)\]\s'
                       'Freq\[(?P<Freq>[.0-9]+)\]\s'
                       'PG\[(?P<PG>[0-9]+)\]\s'
                       'Led\[(?P<Led>0|1)\]')
+
+
 def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
              volt0, devNumDict, modNumDict, lock):
 
@@ -41,7 +43,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                    "INSERT INTO Pool_" + timenow + " VALUES(" +
                    ("%s," * 6)[:-1] + ")",
                    "INSERT INTO Error_" + timenow + " VALUES(" +
-                   ("%s," * 16)[:-1] + ")"]
+                   ("%s," * 17)[:-1] + ")"]
         ip = data['IP']
         port = data['Port']
         minerid = '{0}:{1}'.format(ip, port)
@@ -101,7 +103,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
             minerParam = (ip, port, False, 0, sumdevice0, 0, summodule0,
                           0, 0, block0 + newblock0, 0, 0, rate1hr, .0, 0)
             errorParam.append(
-                (ip, port, 0, 0, True, False, False, False,
+                (ip, port, 0, 0, True, False, False, False, False,
                  False, False, False, False, False, False, False, 1023)
             )
         elif data['Summary'] is None:
@@ -115,7 +117,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
             minerParam = (ip, port, True, 0, sumdevice0, 0, summodule0,
                           0, 0, block0 + newblock0, 0, 0, rate1hr, .0, 0)
             errorParam.append(
-                (ip, port, 0, 0, False, sumdevice0, False, False,
+                (ip, port, 0, 0, False, sumdevice0, False, False, False,
                  False, False, False, False, False, False, False, 1023)
             )
         else:
@@ -128,7 +130,8 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
             if sumdevice < sumdevice0:
                 errorParam.append(
                     (ip, port, 0, 0, False, sumdevice0 - sumdevice, False,
-                     False, False, False, False, False, False, False, False, 1023)
+                     False, False, False, False, False, False, False,
+                     False, False, 1023)
                 )
 
             try:
@@ -173,10 +176,24 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
 
                 j = 0
                 avghs = 0
+                disaster = False
                 for key in devStatData:
                     if key[:5] == 'MM ID':
-                        avghs += float(re.match(_pattern, devStatData[key]).groupdict()['GHS5m'])
+                        match = re.match(_pattern, devStatData[key])
+                        if match is None:
+                            disaster = True
+                            break
+                        avghs += float(re.match(_pattern, devStatData[key]).
+                                       groupdict()['GHS5m'])
                         j += 1
+
+                if disaster:
+                    errorParam.append(
+                        (ip, port, deviceid, 0, False, False, False, True,
+                         False, False, False, False, False, False, False,
+                         False, 1023)
+                    )
+                    continue
                 try:
                     avghs /= j
                 except:
@@ -222,8 +239,9 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                         if fan == 0:
                             flag[7] = True
 
-                        param = (ip, port, deviceid, moduleid, dna, melapsed, lw,
-                                 hw, dh, ghs5m, dh5m, temp, fan, volt, freq, pg)
+                        param = (ip, port, deviceid, moduleid, dna, melapsed,
+                                 lw, hw, dh, ghs5m, dh5m, temp, fan, volt, freq,
+                                 pg)
                         moduleParam.append(param)
                         error = False
                         for f in flag:
@@ -240,7 +258,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                 if sumdevmodule < sumdevmodule0:
                     errorParam.append(
                         (ip, port, deviceid, 0, False, False,
-                         sumdevmodule0 - sumdevmodule, False,
+                         sumdevmodule0 - sumdevmodule, False, False,
                          False, False, False, False, False, False, False, 1023)
                     )
                 i += 1
@@ -347,6 +365,7 @@ def analyze(dataQueue, timenow, cfg):
               "connectionfailed BOOL, "
               "missingdevice BOOL, "
               "missingmodule BOOL, "
+              "apidisaster BOOL, "
               "temperature200 BOOL, "
               "temperaturehigh Bool, "
               "temperaturelow Bool, "

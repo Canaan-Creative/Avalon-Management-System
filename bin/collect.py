@@ -32,6 +32,7 @@ def readAPI(ip, port, command, lock, retry):
 
             response = response.replace('\x00', '')
             s.close()
+            response = response.decode('latin-1').encode('utf8')
             result = json.loads(response)
             if command == 'summary':
                 return result['SUMMARY'][0]
@@ -142,7 +143,8 @@ def readCgmonitorLog(fetchTime, cfg):
                             monitor = cgmonitorLog[mid]
                             # There may be duplicated log entries,
                             # Reason: unknown bug of cgminer-monitor
-                            if (restartTime - monitor['timestamp']).total_seconds() < elapsed - 1:
+                            if ((restartTime - monitor['timestamp']).
+                                    total_seconds() < elapsed - 1):
                                 monitor['timestamp'] = restartTime
                                 monitor['elapsed'] = elapsed
                                 monitor['megahash'] = megahash

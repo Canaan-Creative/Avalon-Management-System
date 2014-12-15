@@ -297,28 +297,46 @@ for ($i = 0; $i < count($ports); $i++) {
 				}
 				$key = "MM ID" . $mod;
 				$matches = array();
-				preg_match($pattern, $stat[$key], $matches);
+				if (preg_match($pattern, $stat[$key], $matches)) {
+					echo "<tr>";
+					echo "<td><button onClick=\"switch_led('" . $ip . "'," . $port . "," . substr($stat['ID'], 3) . "," . $mod . ");\">";
+					if ($matches[14])
+						echo "Turn OFF</button></td>";
+					else
+						echo "Turn ON</button></td>";
+					echo $td . second2human($matches[3]) . "</td>";
+					echo $td . substr($stat['ID'],0,3) . "-" . substr($stat['ID'], 3) . "-" . $mod . "</td>";
+					echo $td . $matches[1] . "</td>";
+					echo $td . substr($matches[2], 12) . "</td>";
+					echo $td . number_format($matches[4], 0, ".", ",") . "</td>";
+					echo $td . $matches[6] . "</td>";
+					echo $td . $matches[7] . "</td>";
+					echo $td . $matches[8] . "</td>";
+					echo $td . $matches[9] . "</td>";
+					echo $td . $matches[10] . "</td>";
+					echo $td . $matches[11] . "</td>";
+					echo $td . $matches[12] . "</td>";
+					echo $td . $matches[13] . "</td>";
+					echo "</tr>";
+				} else {
+					echo "<tr>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "</tr>";
 
-				echo "<tr>";
-				echo "<td><button onClick=\"switch_led('" . $ip . "'," . $port . "," . substr($stat['ID'], 3) . "," . $mod . ");\">";
-				if ($matches[14])
-					echo "Turn OFF</button></td>";
-				else
-					echo "Turn ON</button></td>";
-				echo $td . second2human($matches[3]) . "</td>";
-				echo $td . substr($stat['ID'],0,3) . "-" . substr($stat['ID'], 3) . "-" . $mod . "</td>";
-				echo $td . $matches[1] . "</td>";
-				echo $td . substr($matches[2], 12) . "</td>";
-				echo $td . number_format($matches[4], 0, ".", ",") . "</td>";
-				echo $td . $matches[6] . "</td>";
-				echo $td . $matches[7] . "</td>";
-				echo $td . $matches[8] . "</td>";
-				echo $td . $matches[9] . "</td>";
-				echo $td . $matches[10] . "</td>";
-				echo $td . $matches[11] . "</td>";
-				echo $td . $matches[12] . "</td>";
-				echo $td . $matches[13] . "</td>";
-				echo "</tr>";
+				}
 			}
 		}
 	}

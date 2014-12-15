@@ -32,7 +32,7 @@ else:
 
 response = linesplit(s)
 response = response.replace('\x00','')
+response = response.decode('latin-1').encode('utf8')
 response = json.loads(response)
 print response
 s.close()
-
