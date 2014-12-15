@@ -33,5 +33,6 @@ if __name__ == '__main__':
     if args.time is not None:
         cfg['Email']['hsimg'] = hashrate(now, cfg)
         cfg['Email']['tmimg'] = heatmap(now, cfg)
-        cfg['Email']['balance'] = balance(cfg)
+        if 'Balance' in cfg:
+            cfg['Email']['balance'] = balance(cfg)
         sendMail(now, cfg)

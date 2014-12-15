@@ -109,10 +109,10 @@ def sendMail(time_d, cfg):
         template_var['balance'] = True
         template_var['balance_list'] = mail['balance']
 
-    sum_balance = 0
-    for balance in mail['balance']:
-        sum_balance += float(balance['final_balance'])
-    template_var['sum_balance'] = sum_balance
+        sum_balance = 0
+        for balance in mail['balance']:
+            sum_balance += float(balance['final_balance'])
+        template_var['sum_balance'] = sum_balance
 
     user = cfg['Database']['user']
     passwd = cfg['Database']['passwd']
@@ -172,10 +172,11 @@ def sendMail(time_d, cfg):
     else:
         rate_s = ("{0:0f}EHs").format(rate / 1000000000000.0)
 
-    mail['subject'] = "[AMS Report][{}]{}[{:.0f}BTC][{}][IP{}][MOD{}]".format(
+    mail['subject'] = "[AMS Report][{}]{}{}[{}][IP{}][MOD{}]".format(
         template_var['server_code'],
         '[NEW BLOCK]' if template_var['lucky'] else '',
-        template_var['sum_balance'],
+        ('[{:.0f}BTC]'.format(template_var['sum_balance'])
+         if template_var['balance'] else ''),
         rate_s,
         template_var['active_ip_num'],
         template_var['alive_mod_num']
