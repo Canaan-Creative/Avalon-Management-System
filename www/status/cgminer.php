@@ -3,61 +3,12 @@ if (! isset ($_COOKIE['userId'])) {
 	header('Location:/status/login.php');
 	die;
 }
-function decode($line) {
-	if (strlen($line) == 0) {
-		echo "WARN: '$cmd' returned nothing\n";
-		return $line;
-	}
-
-	if (substr($line,0,1) == '{')
-		return json_decode($line, true);
-
-	$data = array();
-
-	$objs = explode('|', $line);
-	foreach ($objs as $obj) {
-		if (strlen($obj) > 0) {
-			$items = explode(',', $obj);
-			$item = $items[0];
-			$id = explode('=', $items[0], 2);
-			if (count($id) == 1 or !ctype_digit($id[1]))
-				$name = $id[0];
-			else
-				$name = $id[0].$id[1];
-
-			if (strlen($name) == 0)
-				$name = 'null';
-
-			if (isset($data[$name])) {
-				$num = 1;
-				while (isset($data[$name.$num]))
-					$num++;
-				$name .= $num;
-			}
-
-			$counter = 0;
-			foreach ($items as $item) {
-				$id = explode('=', $item, 2);
-				if (count($id) == 2)
-					$data[$name][$id[0]] = $id[1];
-				else
-					$data[$name][$counter] = $id[0];
-
-				$counter++;
-			}
-		}
-	}
-	return $data;
-}
 #
 $pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\sLW\[([0-9]+)\]\sHW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sGHS5m\[([-.0-9]+)\]\sDH5m\[([-.0-9]+)%\]\sTemp\[([0-9]+)\]\sFan\[([0-9]+)\]\sVol\[([.0-9]+)\]\sFreq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)\]/';
 $ip   = $_GET['ip'];
 $ports = explode(',',$_GET['port']);
 $hls = explode('-',$_GET['hl']);
 $data = json_decode(exec("python chkstat.py " . $ip . " " . join(' ', $ports)),true);
-for ($i = 0; $i < 4 ; $i++)
-	for ($j = 0; $j < count($ports); $j++)
-		$data[$i][$j] = decode($data[$i][$j]);
 $summary_l = $data[0];
 $devs_l = $data[1];
 $stats_l = $data[2];

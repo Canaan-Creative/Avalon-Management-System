@@ -1,7 +1,7 @@
 <?php
 if (! isset ($_COOKIE['userId'])){
-        header('Location:/status/login.php');
-        die;
+	header('Location:/status/login.php');
+	die;
 }
 //error_reporting(E_ALL);
 
@@ -14,9 +14,7 @@ if((!$ip) || (!$port)){
 	echo json_encode(array('status'=>'0','msg'=>'ip or port is null'));exit;
 }
 
+system("python ./cgminer_api.py 'ascset|" . $dev . ",led," . $mod . "' " . $ip . " ". $port);
 
-
-system("python ./remote-cgminer-api.py 'ascset|" . $dev . ",led," . $mod . "' " . $ip . " ". $port);
-
-echo json_encode(array('status'=>'1','msg'=>'成功，页面将刷新'));exit;
-
+echo json_encode(array('status'=>'1','msg'=>'成功，页面将刷新'));
+exit;
