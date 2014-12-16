@@ -271,15 +271,16 @@ while ($row = mysql_fetch_array($result)) {
  */
 
 function makeIpToNum($ip) {
-	$ip_arr=explode('.',$ip);//分隔ip段
+	$ip_arr = explode('.', $ip); //分隔ip段
+    $ipstr = "";
 	foreach ($ip_arr as $value) {
-		$iphex=dechex($value);//将每段ip转换成16进制
-		if(strlen($iphex)<2)//255的16进制表示是ff，所以每段ip的16进制长度不会超过2
-			$iphex='0'.$iphex;//如果转换后的16进制数长度小于2，在其前面加一个0
+		$iphex = dechex($value); //将每段ip转换成16进制
+		if(strlen($iphex) < 2) //255的16进制表示是ff，所以每段ip的16进制长度不会超过2
+			$iphex = '0' . $iphex; //如果转换后的16进制数长度小于2，在其前面加一个0
 			//没有长度为2，且第一位是0的16进制表示，这是为了在将数字转换成ip时，好处理
-		$ipstr.=$iphex;//将四段IP的16进制数连接起来，得到一个16进制字符串，长度为8
+		$ipstr .= $iphex; //将四段IP的16进制数连接起来，得到一个16进制字符串，长度为8
 	}
-	return hexdec($ipstr);//将16进制字符串转换成10进制，得到ip的数字表示
+	return hexdec($ipstr); //将16进制字符串转换成10进制，得到ip的数字表示
 }
 
 $getSort = isset($_GET ['sort']) ? $_GET ['sort'] : '';
