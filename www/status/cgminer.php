@@ -6,8 +6,11 @@ if (! isset ($_COOKIE['userId'])) {
 #
 $pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\sLW\[([0-9]+)\]\sHW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sGHS5m\[([-.0-9]+)\]\sDH5m\[([-.0-9]+)%\]\sTemp\[([0-9]+)\]\sFan\[([0-9]+)\]\sVol\[([.0-9]+)\]\sFreq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)\]/';
 $ip   = $_GET['ip'];
-$ports = explode(',',$_GET['port']);
-$hls = explode('-',$_GET['hl']);
+$ports = explode(',', $_GET['port']);
+if ($_GET['hl'] === "" || $_GET['hl'] === null)
+	$hls = null;
+else
+	$hls = explode('-', $_GET['hl']);
 $data = json_decode(exec("python chkstat.py " . $ip . " " . join(' ', $ports)),true);
 $summary_l = $data[0];
 $devs_l = $data[1];
@@ -219,7 +222,7 @@ for ($i = 0; $i < count($ports); $i++) {
 </tr>";
 
 	foreach ($devs as $dev) {
-		if ($dev['ID'] == $hls[0])
+		if (($hls !== null) & ($dev['ID'] == $hls[0]))
 			$td = "<td class=\"highlight\">";
 		else
 			$td = "<td>";
