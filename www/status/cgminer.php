@@ -309,7 +309,7 @@ for ($i = 0; $i < count($ports); $i++) {
 				echo "<tr>";
 				echo "<td></td>";
 				echo "<td></td>";
-				echo "<td></td>";
+				echo $td . substr($stat['ID'],0,3) . "-" . substr($stat['ID'], 3) . "-" . $mod . "</td>";
 				echo "<td></td>";
 				echo "<td></td>";
 				echo "<td></td>";
