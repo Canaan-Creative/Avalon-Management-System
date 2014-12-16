@@ -327,7 +327,7 @@ def analyze(dataQueue, timenow, cfg):
     c.execute("CREATE TABLE Device_{0} "
               "(ip VARCHAR(15), "
               "port SMALLINT UNSIGNED, "
-              "deviceid TINYINT UNSIGNED, "
+              "deviceid SMALLINT UNSIGNED, "
               "summodule TINYINT UNSIGNED, "
               "summodule0 TINYINT UNSIGNED)".format(timenow))
     db.commit()
@@ -360,7 +360,7 @@ def analyze(dataQueue, timenow, cfg):
     c.execute("CREATE TABLE Error_{0} "
               "(ip VARCHAR(15), "
               "port SMALLINT UNSIGNED, "
-              "deviceid TINYINT UNSIGNED, "
+              "deviceid SMALLINT UNSIGNED, "
               "moduleid TINYINT UNSIGNED, "
               "connectionfailed BOOL, "
               "missingdevice BOOL, "
