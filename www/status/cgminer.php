@@ -177,7 +177,7 @@ for ($i = 0; $i < count($ports); $i++) {
 			echo "<tr>";
 			echo "<td>" . $pool['POOL'] . "</td>";
 			echo "<td>" . $pool['URL'] . "</td>";
-			echo "<td>" . ($pool['Stratum Active']? "true": "false") . "</td>";
+			echo "<td>" . ($pool['Stratum Active'] ? "true" : "false") . "</td>";
 			echo "<td>" . $pool['User'] . "</td>";
 			echo "<td>" . $pool['Status'] . "</td>";
 			echo "<td>" . $pool['Works'] . "</td>";
