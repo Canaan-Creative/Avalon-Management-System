@@ -14,6 +14,8 @@ function dec2hex($x) {
 }
 
 function pg_decode($pg) {
+	if ($pg == 0)
+		return "All";
 	$str = "";
 	for ($i = 1; $i < 3; $i++) {
 		for ($j = 1; $j < 6; $j++) {
