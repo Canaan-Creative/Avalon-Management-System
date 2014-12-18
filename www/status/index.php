@@ -33,7 +33,7 @@ function pg_decode($pg) {
 
 function rainbow($x, $xmin, $xmax) {
 	if ($x == 0) {
-		return 'transparent';
+		return '#ffffff';
 	}
 	$x = (float)($x - $xmin) / (float)($xmax - $xmin);
 	if ($x < 0) {
@@ -63,6 +63,13 @@ function rainbow($x, $xmin, $xmax) {
 	}
 	return '#' . dec2hex($r) . dec2hex($g) . dec2hex($b);
 }
+
+function invert_color($color) {
+	$hex = '0x' . substr($color, 1);
+	$invert = 0xffffff - $hex;
+	return '#' . dechex($invert);
+}
+
 ## T-map
 $cfg = parse_ini_file("/home/archang/ams/etc/ams.conf", true);
 $dbname = $cfg['Database']['dbname'];
@@ -136,6 +143,8 @@ foreach ($zones as $zone) {
 			}
 			if (!$ports)
 				$ports = [4028];
+			$backcolor = rainbow($maxtemp, 30, 70);
+			$frontcolor = invert_color($backcolor);
 			$zone_map[$n][$y][$x] = array(
 				"skip" => false,
 				"alive" => $alive,
@@ -144,7 +153,8 @@ foreach ($zones as $zone) {
 				"modnum" => $modnum,
 				"maxtemp" => $maxtemp,
 				"rate" => $rate,
-				"color" => rainbow($maxtemp, 30, 70)
+				"backcolor" => $backcolor,
+				"frontcolor" => $frontcolor
 			);
 		} else
 			$zone_map[$n][$y][$x] = array("skip" => true);
@@ -272,7 +282,7 @@ while ($row = mysql_fetch_array($result)) {
 
 function makeIpToNum($ip) {
 	$ip_arr = explode('.', $ip); //分隔ip段
-    $ipstr = "";
+	$ipstr = "";
 	foreach ($ip_arr as $value) {
 		$iphex = dechex($value); //将每段ip转换成16进制
 		if(strlen($iphex) < 2) //255的16进制表示是ff，所以每段ip的16进制长度不会超过2
@@ -521,11 +531,11 @@ foreach ($farm_map as $zone_map) {
 				if ($atom['skip'])
 					echo "<td class=\"tmap\"></td>";
 				elseif ($atom["alive"])
-					echo "<td title=\"" . $atom['ip'] . "\" class=\"tmap\" style=\"background:" . $atom['color'] .
+					echo "<td title=\"" . $atom['ip'] . "\" class=\"tmap\" style=\"background:" . $atom['backcolor'] .
 						"\" onclick=\"window.open('cgminer.php?ip=" . $atom["ip"] . "&port=" . join(",",$atom['ports']) . "');\">
-						<p class=\"tmapwhite\">" . $atom['modnum'] . "</p>
-						<p class=\"tmapwhite\">" . $atom['maxtemp'] . "&deg;C</p>
-						<p class=\"tmapwhite\">" . $atom['rate'] . "</p>
+						<p class=\"tmap\" style=\"color:" . $atom['frontcolor'] . "\">" . $atom['modnum'] . "</p>
+						<p class=\"tmap\" style=\"color:" . $atom['frontcolor'] . "\">" . $atom['maxtemp'] . "&deg;C</p>
+						<p class=\"tmap\" style=\"color:" . $atom['frontcolor'] . "\">" . $atom['rate'] . "</p>
 						</td>";
 				else
 					echo "<td title=\"" . $atom['ip'] . "\" class=\"tmap\" style=\"background:white\"
