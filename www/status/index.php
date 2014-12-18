@@ -67,7 +67,7 @@ function rainbow($x, $xmin, $xmax) {
 function invert_color($color) {
 	$hex = '0x' . substr($color, 1);
 	$invert = 0xffffff - $hex;
-	return '#' . dechex($invert);
+	return '#' . str_pad(dechex($invert), 6, '0', STR_PAD_LEFT);
 }
 
 ## T-map
