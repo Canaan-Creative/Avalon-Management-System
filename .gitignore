@@ -1,4 +1,6 @@
 *.pyc
 *.conf
-./img
-./csv
+*.template
+*.json
+csv/
+img/
