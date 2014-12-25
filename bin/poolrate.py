@@ -103,6 +103,21 @@ def ckproxy(pool):
         return '0'
 
 
+def kano(pool):
+    try:
+        url = ('http://kano.is/index.php?k=api&username={}&api={}'
+               '&json=y&work=y').format(pool['username'], pool['api_key'])
+        js = urllib2.urlopen(url).read()
+        dict0 = json.loads(js)
+        for key, value in dict0.iteritems():
+            if value == '{}.{}'.format(pool['username'], pool['workername']):
+                index = key.split(':')[1]
+        hs2 = dict0['w_hashrate5m:{}'.format(index)]
+        return float(hs2) / 1000000.0
+    except:
+        return '0'
+
+
 def poolrate(timenow, cfg):
     rate = []
     for pool in cfg['poolList']:
@@ -114,6 +129,8 @@ def poolrate(timenow, cfg):
             rate.append(ckproxy(pool))
         elif pool['name'] == 'btcchina':
             rate.append(btcchina(pool))
+        elif pool['name'] == 'kano':
+            rate.append(kano(pool))
         else:
             rate.append(0.0)
 
