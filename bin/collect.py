@@ -7,6 +7,7 @@ import socket
 import json
 import datetime
 import string
+import re
 
 
 def readAPI(ip, port, command, lock, retry):
@@ -192,8 +193,9 @@ def collect(fetchTime, cfg):
 
     print("Reading cgmonitor log... ", end="")
     cgmonitorLog = {}
-    if ('cgmonitor_log' in cfg['General'] and cfg['General']['cgmonitor_log']):
-            cgmonitorLog = readCgmonitorLog(fetchTime, cfg)
+    if ('cgmonitor_log' in cfg['General'] and
+            cfg['General']['cgmonitor_log'] != 'false'):
+        cgmonitorLog = readCgmonitorLog(fetchTime, cfg)
     print("Done.")
 
     for miner in minerList:
