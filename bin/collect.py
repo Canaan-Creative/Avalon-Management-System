@@ -191,12 +191,12 @@ def collect(fetchTime, cfg):
 
     lock = threading.Lock()
 
-    print("Reading cgmonitor log... ", end="")
     cgmonitorLog = {}
     if ('cgmonitor_log' in cfg['General'] and
             cfg['General']['cgmonitor_log'] != 'false'):
+        print("Reading cgmonitor log... ", end="")
         cgmonitorLog = readCgmonitorLog(fetchTime, cfg)
-    print("Done.")
+        print("Done.")
 
     for miner in minerList:
         monitor = None
