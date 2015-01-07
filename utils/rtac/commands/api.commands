@@ -1,0 +1,12 @@
+uci set cgminer.default.api_allow=W:127.0.0.1,W:192.168.1.1/24
+uci set cgminer.default.pool1url=stratum+tcp://stratum.pool.com:3333
+uci set cgminer.default.pool1user=canaan.p
+uci set cgminer.default.pool1pw=1234
+uci set cgminer.default.pool2url=stratum+tcp://stratum.pool.net:3333
+uci set cgminer.default.pool2user=canaan.p
+uci set cgminer.default.pool2pw=1234
+uci set cgminer.default.pool3url=
+uci set cgminer.default.pool3user=
+uci set cgminer.default.pool3pw=
+uci commit
+/etc/init.d/cgminer restart

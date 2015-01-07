@@ -1,0 +1,21 @@
+uci set cgminer.default.server=10.0.0.1
+uci commit
+rm ./cgminer-monitor
+wget http://10.0.0.1/download/cgminer-monitor
+sleep 3
+chmod +x cgminer-monitor
+cp ./cgminer-monitor /usr/bin/cgminer-monitor
+chmod +x /usr/bin/cgminer-monitor
+rm ./cgminer.init
+wget http://10.0.0.1/download/cgminer.init
+sleep 3
+chmod +x cgminer.init
+cp ./cgminer.init /etc/init.d/cgminer
+chmod +x /etc/init.d/cgminer
+rm ./new.cron
+wget http://10.0.0.1/download/new.cron
+sleep 3
+crontab new.cron
+rm ./cgminer-monitor
+rm ./cgminer.init
+rm ./new.cron
