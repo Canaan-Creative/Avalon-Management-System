@@ -3,7 +3,7 @@ Requirement
 ```
 sudo apt-get install python python-django python-matplotlib \
 python-mysqldb python-numpy python-paramiko python-scipy \
-mysql-server php5 php5-mysql apache2
+mysql-server php5 php5-mysql apache2 libapache2-mod-php5
 ```
 
 MySQL Config
@@ -25,11 +25,17 @@ AMS Config
 * modify configuration files according to the examples in `etc/example`.
 * change username and passwd in `www/status/login.php` line 11.
 * change RPi ssh passwd in `www/status/restart_cgminer.py` line 11.
-* copy everything in `www` folder to your www-server root path.
 * change permission of `csv` folder.
     ```
     chmod 777 /path/to/ams/csv
     ```
+* replace `/path/to` with the real path
+    ```
+    find ./ams/ -type f -exec sed -i -e 's#/path/to#REAL_PATH#g' {} \;
+    find ./etc/ -type f -exec sed -i -e 's#/path/to#REAL_PATH#g' {} \;
+    find ./www/ -type f -exec sed -i -e 's#/path/to#REAL_PATH#g' {} \;
+    ```
+*  link `www/status` folder into your www-server root path.
 
 Cron Config
 -----------

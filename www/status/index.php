@@ -71,7 +71,7 @@ function invert_color($color) {
 }
 
 ## T-map
-$cfg = parse_ini_file("/home/archang/ams/etc/ams.conf", true);
+$cfg = parse_ini_file("/path/to/ams/etc/ams.conf", true);
 $dbname = $cfg['Database']['dbname'];
 $user = $cfg['Database']['user'];
 $passwd = $cfg['Database']['passwd'];
