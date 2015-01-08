@@ -35,7 +35,13 @@ find ./ams/ -type f -exec sed -i -e 's#/path/to#REAL_PATH#g' {} \;
 find ./etc/ -type f -exec sed -i -e 's#/path/to#REAL_PATH#g' {} \;
 find ./www/ -type f -exec sed -i -e 's#/path/to#REAL_PATH#g' {} \;
 ```
-*  link `www/status` folder into your www-server root path.
+* link `www/status` folder into your www-server root path.
+* create folders to store image files
+```
+mkdir img
+mkdir img/hr
+mkdir img/hm
+```
 
 Cron Config
 -----------
