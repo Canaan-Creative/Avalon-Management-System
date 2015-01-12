@@ -163,6 +163,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
             maxtemp = 0
             i = 0
             for devData in data['Devs']:
+                dna_pool = []
                 sumdevmodule = 0
 
                 deviceid = int(devData['ID'])
@@ -203,8 +204,12 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                         moduleid = int(key[5:])
                         module = devStatData[key]
                         module_info = re.match(_pattern, module).groupdict()
-                        sumdevmodule += 1
                         dna = module_info['DNA']
+                        if dna in dna_pool:
+                            continue
+                        else:
+                            dna_pool.append(dna)
+                        sumdevmodule += 1
                         melapsed = module_info['Elapsed']
                         lw = int(module_info['LW'])
                         hw = int(module_info['HW'])

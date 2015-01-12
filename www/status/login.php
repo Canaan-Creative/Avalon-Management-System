@@ -1,5 +1,5 @@
 <?php
-if (isset ($_COOKIE['userId'])){
+if (isset ($_COOKIE['userId'])) {
 	header('Location:/status/index.php');
 	die;
 }
@@ -8,11 +8,11 @@ if (isset($_POST) && $_POST['userName']) {
 	$name = isset ($_POST ['userName']) ? $_POST ['userName'] : '';
 	$pwd = isset ($_POST ['passWord']) ? $_POST ['passWord'] : '';
 	
-	if ($name == 'admin' && $pwd == 'admin'){
+	if ($name == 'admin' && $pwd == 'admin') {
 		setcookie('userId','1');
 		header('Location:/status/index.php');
 		die;
-	}else
+	} else
 		$error = 1;
 }
 
@@ -39,8 +39,8 @@ if (isset($_POST) && $_POST['userName']) {
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
-    $(document).ready(function(){
-        $('form').submit(function(){
+    $(document).ready(function() {
+        $('form').submit(function() {
             if ($('input[name="userName"]').val().trim() == '' || $('input[name="passWord"]').val().trim() == '') {
                 return false;
 			}
