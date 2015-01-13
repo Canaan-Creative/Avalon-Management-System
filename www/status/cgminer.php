@@ -210,6 +210,7 @@ for ($i = 0; $i < count($ports); $i++) {
 <table>
 <tr>
   <th>Device</th>
+  <th>MM Count</th>
   <th>Enabled</th>
   <th>Status</th>
   <th>T(C)</th>
@@ -228,6 +229,11 @@ for ($i = 0; $i < count($ports); $i++) {
 			$td = "<td>";
 		echo "<tr>";
 		echo $td . "ASC" . $dev['ASC']. "-" . $dev['Name'] . "-" . $dev['ID'] ."</td>";
+		foreach ($stats as $stat)
+			if (substr($stat['ID'], 3) == $dev['ID']) {
+				echo $td . $stat['MM Count'] . "</td>";
+				break;
+			}
 		echo $td . $dev['Enabled'] . "</td>";
 		echo $td . $dev['Status'] . "</td>";
 		echo $td . intval($dev['Temperature']) . "</td>";
