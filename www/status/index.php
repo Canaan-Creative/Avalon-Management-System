@@ -594,25 +594,31 @@ foreach ($farm_map as $zone_map) {
 							<tr>
 								<td>
 									<strong>RPi</strong>
-									<?php if ($sortType == 'down' && $sortName == 'ip') {
-									        echo "<a href='?sort=ip_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">"; ?>
-											<img src='./img/down.jpg' width="20" height="20" />
-										</a>
-									<?php} else {
-									        echo "<a href='?sort=ip_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">"; }?>
-											<img src='./img/up.jpg' width="20" height="20" />
-										</a>
+                                    <?php
+                                    if ($sortType == 'down' && $sortName == 'ip')
+                                        echo "
+                                            <a href='?sort=ip_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
+											<img src='./img/down.jpg' width=\"20\" height=\"20\" />
+										</a>";
+									else
+                                        echo "
+                                            <a href='?sort=ip_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
+											<img src='./img/up.jpg' width=\"20\" height=\"20\" />
+                                        </a>"; ?>
 								</td>
 								<td>
 									<strong>Information</strong>
-									<?php if ($sortType == 'down' && $sortName == 'info') {
-									        echo "<a href='?sort=info_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">"; ?>
-											<img src='./img/down.jpg' width="20" height="20" />
-										</a>
-									<?php} else {
-									        echo "<a href='?sort=info_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">"; }?>
-											<img src='./img/up.jpg' width="20" height="20" />
-										</a>
+                                    <?php
+                                    if ($sortType == 'down' && $sortName == 'info')
+                                        echo "
+                                            <a href='?sort=info_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
+                                            <img src='./img/down.jpg' width=\"20\" height=\"20\" />
+										</a>";
+									else
+                                        echo "
+                                            <a href='?sort=info_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
+											<img src='./img/up.jpg' width=\"20\" height=\"20\" />
+                                        </a>"; ?>
 								</td>
 							</tr>
 						</thead>
