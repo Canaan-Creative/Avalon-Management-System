@@ -56,16 +56,19 @@ def readAPI(ip, port, command, lock, retry):
                       ':' + str(e) + "\033[0m")
             continue
 
-        if command == 'summary':
-            return result['SUMMARY'][0]
-        elif command == 'edevs':
-            return result['DEVS']
-        elif command == 'estats':
-            return result['STATS']
-        elif command == 'pools':
-            return result['POOLS']
-        else:
-            return result
+        try:
+            if command == 'summary':
+                return result['SUMMARY'][0]
+            elif command == 'edevs':
+                return result['DEVS']
+            elif command == 'estats':
+                return result['STATS']
+            elif command == 'pools':
+                return result['POOLS']
+            else:
+                return result
+        except KeyError:
+            return None
 
 
 def socketThread(minerQueue, dataQueue, lock, retry):

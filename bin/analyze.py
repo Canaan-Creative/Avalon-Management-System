@@ -106,7 +106,10 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                 (ip, port, 0, 0, True, False, False, False, False,
                  False, False, False, False, False, False, False, 1023)
             )
-        elif data['Summary'] is None:
+        elif (data['Summary'] is None or
+              data['Devs'] is None or
+              data['Stats'] is None or
+              data['Pools'] is None):
             try:
                 if elapsed - elapsed0 > deltatime - 120:
                     rate1hr = (megahash - megahash0) / deltatime
