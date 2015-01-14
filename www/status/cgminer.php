@@ -87,7 +87,7 @@ td{ border:1px solid #c3c3c3;}
 .highlight{border:1px solid #c3c3c3; background:red}
 .lowlight{border:1px solid #c3c3c3; background:yellow}
 .nolight0{border:1px solid #c3c3c3}
-.nolight1{border:1px solid #c3c3c3; background:grey}
+.nolight1{border:1px solid #c3c3c3; background: #c3c3c3}
 </style>
 
 </head>
