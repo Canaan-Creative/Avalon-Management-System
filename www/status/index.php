@@ -70,6 +70,12 @@ function invert_color($color) {
 	return '#' . str_pad(dechex($invert), 6, '0', STR_PAD_LEFT);
 }
 
+$autorefresh = False;
+if (array_key_exists('auto', $_GET) && $_GET['auto'] !== "" && $_GET['auto'] !== null) {
+	$auto = $_GET['auto'];
+	if (strcasecmp($auto, "true") == 0 || strcasecmp($auto, "yes") == 0 || strcasecmp($auto, "y") == 0)
+		$autorefresh = True;
+}
 ## T-map
 $cfg = parse_ini_file("/path/to/ams/etc/ams.conf", true);
 $dbname = $cfg['Database']['dbname'];
@@ -388,7 +394,9 @@ $allMod = $row[2];
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="js/comm.js"></script>
+<?php if ($autorefresh)
+	echo "<script src=\"js/comm.js\"></script>";
+?>
 <script src="js/highcharts.js"></script>
 <script>
 function refresh(){
