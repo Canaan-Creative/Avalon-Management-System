@@ -71,6 +71,10 @@ function invert_color($color) {
 }
 
 $autorefresh = False;
+if (array_key_exists('auto', $_GET))
+	$url_suffix = '&auto=' . $_GET['auto'];
+else
+	$url_suffix = '';
 if (array_key_exists('auto', $_GET) && $_GET['auto'] !== "" && $_GET['auto'] !== null) {
 	$auto = $_GET['auto'];
 	if (strcasecmp($auto, "true") == 0 || strcasecmp($auto, "yes") == 0 || strcasecmp($auto, "y") == 0)
@@ -590,27 +594,25 @@ foreach ($farm_map as $zone_map) {
 							<tr>
 								<td>
 									<strong>RPi</strong>
-									<?php if ($sortType == 'down' && $sortName == 'ip') {?>
-										<a href='?sort=ip_up' style="float: right;font-size: 10px;cursor: pointer;">
+									<?php if ($sortType == 'down' && $sortName == 'ip') {
+									        echo "<a href='?sort=ip_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">"; ?>
 											<img src='./img/down.jpg' width="20" height="20" />
 										</a>
-									<?php } else {?>
-										<a href='?sort=ip_down' style="float: right;font-size: 10px;cursor: pointer;">
+									<?php} else {
+									        echo "<a href='?sort=ip_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">"; }?>
 											<img src='./img/up.jpg' width="20" height="20" />
 										</a>
-									<?php }?>
 								</td>
 								<td>
 									<strong>Information</strong>
-									<?php if ($sortType == 'down' && $sortName == 'info') {?>
-										<a href='?sort=info_up' style="float: right;font-size: 10px;cursor: pointer;">
+									<?php if ($sortType == 'down' && $sortName == 'info') {
+									        echo "<a href='?sort=info_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">"; ?>
 											<img src='./img/down.jpg' width="20" height="20" />
 										</a>
-									<?php } else {?>
-										<a href='?sort=info_down' style="float: right;font-size: 10px;cursor: pointer;">
+									<?php} else {
+									        echo "<a href='?sort=info_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">"; }?>
 											<img src='./img/up.jpg' width="20" height="20" />
 										</a>
-									<?php }?>
 								</td>
 							</tr>
 						</thead>
