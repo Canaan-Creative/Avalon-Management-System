@@ -107,7 +107,7 @@ foreach ($zones as $zone) {
 	for ($i = 0; $i < ceil( count($zone["miner"]) / $miner_per_table); $i++) {
 		$split_map = array();
 		for ($j = 0; $j < $zone["layers"]; $j++)
-			$split_map[] = array_fill(0, $zone["plot_split"], ' ');
+			$split_map[] = array_fill(0, $zone["plot_split"], Null);
 		$zone_map[] = $split_map;
 	}
 	for ($i=0; $i < count($zone["miner"]); $i++) {
@@ -536,6 +536,8 @@ foreach ($farm_map as $zone_map) {
 			echo count($zone_map[$n])-$y . "</p></td>";
 			for ($x = 0; $x < count($zone_map[$n][$y]); $x++) {
 				$atom = $zone_map[$n][$y][$x];
+				if (is_Null($atom))
+					continue;
 				if ($atom['skip'])
 					echo "<td class=\"tmap\"></td>";
 				elseif ($atom["alive"])
@@ -555,7 +557,7 @@ foreach ($farm_map as $zone_map) {
 		}
 		echo "<tr><td class=\"oaxis\"> </td>";
 		for ($x = 0; $x < count($zone_map[$n][0]); $x++) {
-			if($zone_map[$n][0][$x] === ' ')
+			if (is_Null($zone_map[$n][0][$x]))
 				echo "<td class=\"xaxis\"> </td>";
 			else {
 				echo "<td class=\"xaxis\"><p class=\"axis\">" . $s . "</td>";
