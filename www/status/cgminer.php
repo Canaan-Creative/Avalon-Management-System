@@ -285,7 +285,8 @@ for ($i = 0; $i < count($ports); $i++) {
 		foreach ($stat as $key=>$value)
 			if (strpos($key,'MM ID') !== False)
 				$mods[] = substr($key,5);
-
+		if (count($mods) == 0)
+			continue;
 		sort($mods);
 		foreach ($mods as $mod) {
 			if (substr($stat['ID'],3) == $hls[0]) {
