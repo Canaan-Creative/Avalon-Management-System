@@ -86,6 +86,8 @@ th{ background:#efefef ; border:1px solid #c3c3c3;}
 td{ border:1px solid #c3c3c3;}
 .highlight{border:1px solid #c3c3c3; background:red}
 .lowlight{border:1px solid #c3c3c3; background:yellow}
+.nolight0{border:1px solid #c3c3c3}
+.nolight1{border:1px solid #c3c3c3; background:grey}
 </style>
 
 </head>
@@ -277,6 +279,7 @@ for ($i = 0; $i < count($ports); $i++) {
   <th>Power Good</th>
 </tr>";
 
+	$i = 0;
 	foreach ($stats as $stat) {
 		$mods = array();
 		foreach ($stat as $key=>$value)
@@ -284,18 +287,18 @@ for ($i = 0; $i < count($ports); $i++) {
 				$mods[] = substr($key,5);
 
 		foreach ($mods as $mod) {
-			$td = "<td>";
 			if (substr($stat['ID'],3) == $hls[0]) {
 				if (count($hls) == 1)
 					$td = "<td class=\"lowlight\">";
 				else if ($mod == $hls[1])
 					$td = "<td class=\"highlight\">";
-			}
+			} else
+				$td = "<td class=\"nolight" . ($i & 1) . "\">";
 			$key = "MM ID" . $mod;
 			$matches = array();
 			if (preg_match($pattern, $stat[$key], $matches)) {
 				echo "<tr>";
-				echo "<td><button onClick=\"switch_led('" . $ip . "'," . $port . "," . substr($stat['ID'], 3) . "," . $mod . ");\">";
+				echo $td . "<button onClick=\"switch_led('" . $ip . "'," . $port . "," . substr($stat['ID'], 3) . "," . $mod . ");\">";
 				if ($matches[14])
 					echo "Turn OFF</button></td>";
 				else
@@ -334,6 +337,7 @@ for ($i = 0; $i < count($ports); $i++) {
 
 			}
 		}
+		$i ++;
 	}
 	echo "
 </table>
