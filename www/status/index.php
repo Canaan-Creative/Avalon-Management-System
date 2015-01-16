@@ -81,10 +81,9 @@ if (array_key_exists('auto', $_GET) && $_GET['auto'] !== "" && $_GET['auto'] !==
 		$autorefresh = True;
 }
 ## T-map
-$cfg = parse_ini_file("/path/to/ams/etc/ams.conf", true);
-$dbname = $cfg['Database']['dbname'];
-$user = $cfg['Database']['user'];
-$passwd = $cfg['Database']['passwd'];
+
+include 'config.php';
+
 $dbhandle = mysql_connect("localhost", $user, $passwd)
 	or die('Could not connect: ' . mysql_error());
 $selected = mysql_select_db($dbname, $dbhandle)

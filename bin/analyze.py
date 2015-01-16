@@ -315,6 +315,9 @@ def analyze(dataQueue, timenow, cfg):
 
     # avoid a python bug: http://bugs.python.org/issue7980
     datetime.strptime("2014_01_01_00_00", '%Y_%m_%d_%H_%M')
+    c.execute("CREATE TABLE IF NOT EXIST head (time VARCHAR(20), "
+              "command VARCHAR(10), type VARCHAR(10))")
+    db.commit()
     c.execute("CREATE TABLE Miner_{0} "
               "(ip VARCHAR(15), "
               "port SMALLINT UNSIGNED, "

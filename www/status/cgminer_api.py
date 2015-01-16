@@ -12,7 +12,7 @@ def linesplit(socket):
         if not more:
             break
         else:
-            buffer = buffer+more
+            buffer = buffer + more
     if buffer:
         return buffer
 
