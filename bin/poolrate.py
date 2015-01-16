@@ -16,8 +16,11 @@ def getjs(poolcfg, url):
     while i < int(poolcfg['retry']):
         try:
             nonce = '{:.0f}'.format(time.time()*1000)
-            signature = hmac.new(poolcfg['api_secret_key'], msg=nonce +
-                                 poolcfg['username'] + poolcfg['api_key'],
+            if poolcfg['name'] == 'antpool':
+                message = poolcfg['username'] + poolcfg['api_key'] + nonce
+            else:
+                message = nonce + poolcfg['username'] + poolcfg['api_key']
+            signature = hmac.new(poolcfg['api_secret_key'], msg=message,
                                  digestmod=hashlib.sha256).hexdigest().upper()
             post_content = {'key': poolcfg['api_key'],
                             'signature': signature,
