@@ -74,6 +74,11 @@ def antpool(pool):
             hs2 = None
         else:
             try:
+                for worker in dict2['data']['rows']:
+                    if worker['worker'] == '{}.{}'.format(pool['username'],
+                                                          pool['workername']):
+                        hs2 = float(worker['last10m'])
+                        break
                 hs2 = float(dict2[pool['username'] + '.' +
                                   pool['workername']]['last10m'])
             except KeyError:
