@@ -105,7 +105,7 @@ def tangpool(pool):
             n = 1000000000
 
         for i in dict0['share']:
-            return float(i['accept']) * n
+            return float(dict0['share'][i]['accept']) * n
 
     except:
         return None
