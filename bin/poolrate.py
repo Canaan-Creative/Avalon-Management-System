@@ -86,6 +86,31 @@ def antpool(pool):
         return None
 
 
+def tangpool(pool):
+    url = ("https://www.tangpool.com/public/worker/share/?count=1&dimension=15m"
+           "&start_ts=-1000&__access_key__={}".format(pool['api_key']))
+    try:
+        js = urllib2.urlopen(url).read()
+        dict0 = json.loads(js)
+        unit = dict0['unit']
+        if unit == 'K':
+            n = 0.001
+        elif unit == 'M':
+            n = 1
+        elif unit == 'G':
+            n = 1000
+        elif unit == 'T':
+            n = 1000000
+        elif unit == 'P':
+            n = 1000000000
+
+        for i in dict0['share']:
+            return float(i['accept']) * n
+
+    except:
+        return None
+
+
 def ozco(pool):
     url = 'http://ozco.in/api.php?api_key=' + pool['api_key']
     try:
@@ -162,6 +187,8 @@ def poolrate(timenow, cfg):
             rate.append(btcchina(pool))
         elif pool['name'] == 'kano':
             rate.append(kano(pool))
+        elif pool['name'] == 'tangpool':
+            rate.append(tangpool(pool))
         else:
             rate.append(0.0)
 
