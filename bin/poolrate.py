@@ -79,8 +79,6 @@ def antpool(pool):
                                                           pool['workername']):
                         hs2 = float(worker['last10m'])
                         break
-                hs2 = float(dict2[pool['username'] + '.' +
-                                  pool['workername']]['last10m'])
             except KeyError:
                 hs2 = None
         return hs2
