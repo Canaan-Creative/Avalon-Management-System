@@ -25,6 +25,8 @@ def getjs(poolcfg, url):
             post_content = {'key': poolcfg['api_key'],
                             'signature': signature,
                             'nonce': nonce}
+            if poolcfg['name'] == 'antpool':
+                post_content['pageEnable'] = 0
             param = urllib.urlencode(post_content)
             request = urllib2.Request(url, param,
                                       {'User-agent': 'bot-cex.io-' +
