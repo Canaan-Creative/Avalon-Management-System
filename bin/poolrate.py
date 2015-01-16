@@ -49,7 +49,28 @@ def ghash(pool):
         else:
             try:
                 hs2 = float(dict2[pool['username'] + '.' +
-                                  pool['workername']]['last1h'])
+                                  pool['workername']]['last10m'])
+            except KeyError:
+                hs2 = None
+        return hs2
+    except:
+        return None
+
+
+def antpool(pool):
+    url2 = 'https://antpool.com/api/workers.htm'
+    try:
+        proxy_handler = urllib2.ProxyHandler({})
+        opener = urllib2.build_opener(proxy_handler)
+        urllib2.install_opener(opener)
+
+        dict2 = getjs(pool, url2)
+        if dict2 is None:
+            hs2 = None
+        else:
+            try:
+                hs2 = float(dict2[pool['username'] + '.' +
+                                  pool['workername']]['last10m'])
             except KeyError:
                 hs2 = None
         return hs2
@@ -123,6 +144,8 @@ def poolrate(timenow, cfg):
     for pool in cfg['poolList']:
         if pool['name'] == 'ghash':
             rate.append(ghash(pool))
+        elif pool['name'] == 'antpool':
+            rate.append(antpool(pool))
         elif pool['name'] == 'ozco':
             rate.append(ozco(pool))
         elif pool['name'] == 'ckproxy':
