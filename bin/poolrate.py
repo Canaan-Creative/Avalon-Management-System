@@ -88,7 +88,7 @@ def antpool(pool):
 
 def tangpool(pool):
     url = ("https://www.tangpool.com/public/worker/share/?count=1&dimension=15m"
-           "&start_ts=-1000&__access_key__={}".format(pool['api_key']))
+           "&start_ts=-1&__access_key__={}".format(pool['api_key']))
     try:
         js = urllib2.urlopen(url).read()
         dict0 = json.loads(js)
