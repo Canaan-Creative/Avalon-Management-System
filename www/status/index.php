@@ -544,8 +544,8 @@ title:{text:'Time (UTC+8)'},
 		<!--Left Start-->
 		<div class="col-md-6">
 			<div class="jumbotron">
-				<button onClick="led('temp');">LED: High Temp</button>
-				<button onClick="led('dh');">LED: High DH</button>
+				<button onClick="led('temp');">LED: Temp &gt; 45&deg;C</button>
+				<button onClick="led('dh');">LED: DH &gt; 10%</button>
 				<button onClick="led('clear');">LED: Clear</button>
 			</div>
 			<div class="jumbotron">
