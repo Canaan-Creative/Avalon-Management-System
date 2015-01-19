@@ -7,28 +7,32 @@ $selected = mysql_select_db($dbname, $dbhandle)
 
 function switch_led($table, $clause) {
 	$list = array();
-	$result = mysql_query("SELECT ip, port, device, module from " .
+	$result = mysql_query("SELECT ip, port, deviceid, moduleid from " .
 		$table . " " . $clause);
+
 	while ($row = mysql_fetch_array($result))
 		$list[] = $row['ip'] . ',' . $row['port'] . ',' .
-				$row['device'] . ',' . $row['module']; 
-	system("python led.py " . join(' ' , $list));
+			$row['deviceid'] . ',' . $row['moduleid'];
+	system("python led.py " . join(' ' , $list) . " 2>&1 >> /tmp/led.log");
 }
 
 $result = mysql_query("SELECT time, command FROM head WHERE type = 'led'");
-$row = mysql_fetch_array($result)[0];
+$row = mysql_fetch_array($result);
 
-switch ($row['command']) {
-case 'temp':
-	$clause = 'WHERE temp>45';
-	break;
-case 'dh':
-	$clause = 'WHERE dh>10';
-	break;
-default:
+if ($row == False)
 	$clause = Null;
-	exit;
-}
+else
+	switch ($row['command']) {
+	case 'temp':
+		$clause = 'WHERE temp>45';
+		break;
+	case 'dh':
+		$clause = 'WHERE dh>10';
+		break;
+	default:
+		$clause = Null;
+		break;
+	}
 
 if (!is_null($clause)) {
 	$table = 'Module_' . $row['time'];
@@ -39,26 +43,32 @@ if (!is_null($clause)) {
 switch ($_POST['command']) {
 case 'temp':
 	$result = mysql_query("SELECT time FROM head WHERE type = 'main'");
-	$row = mysql_fetch_array($result)[0];
+	$row = mysql_fetch_array($result);
 	$table = 'Module_' . $row['time'];
-	$clause = 'WHERE temp>45';
+	$clause = "WHERE temp>45";
 	switch_led($table, $clause);
-	mysql_query("UPDATE head SET time = '" . $row['time'] .
-		"' WHERE type = 'led'");
+	mysql_query("INSERT INTO head (time, command, type) VALUES ('" .
+		$row['time'] . "', 'temp', 'led') ON DUPLICATE KEY UPDATE " .
+		"time = '" . $row['time'] . "', command = 'temp'");
+	echo json_encode(array('status'=>'1','msg'=>'Done.'));
 	break;
 
 case 'dh':
 	$result = mysql_query("SELECT time FROM head WHERE type = 'main'");
-	$row = mysql_fetch_array($result)[0];
+	$row = mysql_fetch_array($result);
 	$table = 'Module_' . $row['time'];
 	$clause = 'WHERE dh>10';
 	switch_led($table, $clause);
-	mysql_query("UPDATE head SET time = '" . $row['time'] .
-		"' WHERE type = 'led'");
+	mysql_query("INSERT INTO head (time, command, type) VALUES ('" .
+		$row['time'] . "', 'dh', 'led') ON DUPLICATE KEY UPDATE " .
+		"time = '" . $row['time'] . "', command = 'dh'");
+	echo json_encode(array('status'=>'1','msg'=>'Done.'));
 	break;
 
 case 'clear':
-	mysql_query("UPDATE head SET command = NULL WHERE type = 'led'");
+	mysql_query("INSERT INTO head (command, type) VALUES (NULL, 'led')" .
+		"ON DUPLICATE KEY UPDATE command = NULL");
+	echo json_encode(array('status'=>'1','msg'=>'Done.'));
 	break;
 
 default:

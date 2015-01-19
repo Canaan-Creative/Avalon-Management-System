@@ -315,8 +315,8 @@ def analyze(dataQueue, timenow, cfg):
 
     # avoid a python bug: http://bugs.python.org/issue7980
     datetime.strptime("2014_01_01_00_00", '%Y_%m_%d_%H_%M')
-    c.execute("CREATE TABLE IF NOT EXIST head (time VARCHAR(20), "
-              "command VARCHAR(10), type VARCHAR(10))")
+    c.execute("CREATE TABLE IF NOT EXISTS head (time VARCHAR(20), "
+              "command VARCHAR(10), type VARCHAR(10) NOT NULL PRIMARY KEY)")
     db.commit()
     c.execute("CREATE TABLE Miner_{0} "
               "(ip VARCHAR(15), "
@@ -412,6 +412,9 @@ def analyze(dataQueue, timenow, cfg):
     c.execute("INSERT INTO Aliverate (time, modrate, alivemod, totalmod, "
               "iprate, aliveip, totalip) VALUES(%s,%s,%s,%s,%s,%s,%s)",
               (timenow, modrate, alivemod, totalmod, iprate, aliveip, totalip))
+    db.commit()
+    c.execute("INSERT INTO head (time, type) VALUES(%s, %s) ON DUPLICATE KEY "
+              "UPDATE time = %s", (timenow, "main", timenow))
     db.commit()
     c.close()
     db.close()

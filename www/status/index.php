@@ -97,12 +97,11 @@ $farm_map = array();
 
 $z = 0;
 
-$result = mysql_query("SHOW TABLES LIKE 'Miner\_%'");
-while ($row = mysql_fetch_array($result))
-	$table = $row[0];
-$time = explode('Miner_', $table)[1];
-$tmp = explode('_', $table);
-$showTime = $tmp[1] . '-' . $tmp[2] . '-' . $tmp[3] . ' ' . $tmp [4] . ':' . $tmp[5];
+$result = mysql_query("SELECT time FROM head WHERE type = 'main'");
+$time = mysql_fetch_array($result)['time'];
+$tmp = explode('_', $time);
+$showTime = $tmp[0] . '-' . $tmp[1] . '-' . $tmp[2] . ' ' . $tmp [3] . ':' . $tmp[4];
+$table = 'Miner_' . $time;
 
 foreach ($zones as $zone) {
 	$zone_map = array();
@@ -392,6 +391,7 @@ $allMod = $row[2];
 ?>
 
 <html>
+<head>
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" href="css/style.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -401,6 +401,20 @@ $allMod = $row[2];
 	echo "<script src=\"js/comm.js\"></script>";
 ?>
 <script src="js/highcharts.js"></script>
+<script>
+function led(command) {
+	var _command = command;
+	$.ajax({
+		type: "POST",
+		url: "led.php",
+		data: {command: _command},
+		dataType: "json",
+		success: function(data) {
+				alert(data.msg);
+			}
+	});
+}
+</script>
 <script>
 function refresh(){
 	$.ajax({
@@ -508,6 +522,7 @@ title:{text:'Time (UTC+8)'},
 });
 });
 </script>
+</head>
 <body>
 	<nav class="navbar navbar-inverse" style="margin-bottom:0px;" role="navigation">
 	  <div class="container">
@@ -528,6 +543,11 @@ title:{text:'Time (UTC+8)'},
 	<div class="row">
 		<!--Left Start-->
 		<div class="col-md-6">
+			<div class="jumbotron">
+				<button onClick="led('temp');">LED: High Temp</button>
+				<button onClick="led('dh');">LED: High DH</button>
+				<button onClick="led('clear');">LED: Clear</button>
+			</div>
 			<div class="jumbotron">
 <?php
 $s = 1;
