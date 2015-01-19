@@ -37,11 +37,16 @@ def sshThread(hostQueue, lock, commands, passwd, retry):
             if errorFlag:
                 break
             try:
+                out = ""
                 for c in commands:
                     if c[0:5] == 'sleep':
                         time.sleep(int(c[6:]))
+                    elif c == 'print':
+                        with lock:
+                            print("[{}]{}".format(hostIP, out))
                     else:
                         stdin, stdout, stderr = ssh.exec_command(c)
+                        out = stdout.read()
             except:
                 ssh.close()
                 lock.acquire()
@@ -92,16 +97,20 @@ def telnetThread(hostQueue, lock, commands, flag, retry):
 
             try:
                 tn.read_until(flag)
+                out = ""
                 for command in commands:
                     if command[0:5] == 'sleep':
                         time.sleep(int(command[6:]))
                         continue
+                    elif command == 'print':
+                        with lock:
+                            print("[{}]{}".format(hostIP, out))
                     if isinstance(command, basestring):
                         tn.write(command + '\n')
-                        tn.read_until(flag)
+                        out = tn.read_until(flag)
                     else:
                         tn.write(command[0] + '\n')
-                        tn.read_until(command[1])
+                        out = tn.read_until(command[1])
                 tn.write('exit\n')
                 tn.read_all()
             except:
