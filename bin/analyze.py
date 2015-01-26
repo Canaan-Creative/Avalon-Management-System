@@ -104,7 +104,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                           0, 0, block0 + newblock0, 0, 0, rate1hr, .0, 0)
             errorParam.append(
                 (ip, port, 0, 0, True, False, False, False, False,
-                 False, False, False, False, False, False, False, 1023)
+                 False, False, False, False, False, False, False, False, 1023)
             )
         elif (data['Summary'] is None or
               data['Devs'] is None or
@@ -121,7 +121,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                           0, 0, block0 + newblock0, 0, 0, rate1hr, .0, 0)
             errorParam.append(
                 (ip, port, 0, 0, False, sumdevice0, False, False, False,
-                 False, False, False, False, False, False, False, 1023)
+                 False, False, False, False, False, False, False, False, 1023)
             )
         else:
             sumdevice = len(data['Devs'])
@@ -134,7 +134,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                 errorParam.append(
                     (ip, port, 0, 0, False, sumdevice0 - sumdevice, False,
                      False, False, False, False, False, False, False,
-                     False, False, 1023)
+                     False, False, False, 1023)
                 )
 
             try:
@@ -195,7 +195,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                     errorParam.append(
                         (ip, port, deviceid, 0, False, False, False, True,
                          False, False, False, False, False, False, False,
-                         False, 1023)
+                         False, False, 1023)
                     )
                     continue
                 try:
@@ -225,7 +225,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                         freq = float(module_info['Freq'])
                         pg = int(module_info['PG'])
 
-                        flag = [False for k in range(8)]
+                        flag = [False for k in range(9)]
 
                         if temp >= 200:
                             flag[0] = True
@@ -246,6 +246,8 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                             flag[5] = True
                         if fan == 0:
                             flag[7] = True
+                        if ghs5m < 600:
+                            flag[8] = True
 
                         param = (ip, port, deviceid, moduleid, dna, melapsed,
                                  lw, hw, dh, ghs5m, dh5m, temp, fan, volt, freq,
@@ -266,7 +268,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                 if sumdevmodule < sumdevmodule0:
                     errorParam.append(
                         (ip, port, deviceid, 0, False, False,
-                         sumdevmodule0 - sumdevmodule, False, False,
+                         sumdevmodule0 - sumdevmodule, False, False, False,
                          False, False, False, False, False, False, False, 1023)
                     )
                 i += 1
@@ -385,6 +387,7 @@ def analyze(dataQueue, timenow, cfg):
               "ghslow BOOL, "
               "ghsstop BOOL, "
               "fanstop BOOL, "
+              "lowhr BOOL, "
               "wrongpg SMALLINT UNSIGNED)".format(timenow))
     db.commit()
     lock = threading.Lock()

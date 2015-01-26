@@ -223,7 +223,8 @@ $errorcolor = array(
 	"orange",
 	"green",
 	"orange",
-	"green"
+	"green",
+	"orange"
 );
 $errormsg = array(
 	"Temperature over 200. ",
@@ -233,7 +234,8 @@ $errormsg = array(
 	"Wrong Voltage. ",
 	"Hashrate Over 20% Lower Than Average. ",
 	"Mining Stopped. ",
-	"Fan Stopped. "
+	"Fan Stopped. ",
+	"Hashrate lower than 600GHs. "
 );
 while ($row = mysql_fetch_array($result)) {
 	if ($row['connectionfailed'])
@@ -268,14 +270,14 @@ while ($row = mysql_fetch_array($result)) {
 		);
 		if ($row['wrongpg'] != 1023)
 			$error["error"][] = array("color" => "red", "msg" => "Wrong PG: " . pg_decode($row['wrongpg']));
-		for ($i = 0; $i < 8; $i ++) {
+		for ($i = 0; $i < 9; $i ++) {
 			if ($i == 2)
 				$j = 5;
 			elseif ($i > 2 and $i < 6)
 				$j = $i - 1;
 			else
 				$j = $i;
-			if ($row[$j + 8])
+			if ($row[$j + 9])
 				$error["error"][] = array("color" => $errorcolor[$j], "msg" => $errormsg[$j]);
 		}
 		$errors[] = $error;
