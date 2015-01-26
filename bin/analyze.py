@@ -246,7 +246,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                             flag[5] = True
                         if fan == 0:
                             flag[7] = True
-                        if ghs5m < 600:
+                        if ghs5m < 600 and melapsed < 300:
                             flag[8] = True
 
                         param = (ip, port, deviceid, moduleid, dna, melapsed,
