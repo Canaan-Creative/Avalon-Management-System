@@ -43,7 +43,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                    "INSERT INTO Pool_" + timenow + " VALUES(" +
                    ("%s," * 6)[:-1] + ")",
                    "INSERT INTO Error_" + timenow + " VALUES(" +
-                   ("%s," * 17)[:-1] + ")"]
+                   ("%s," * 18)[:-1] + ")"]
         ip = data['IP']
         port = data['Port']
         minerid = '{0}:{1}'.format(ip, port)
@@ -246,7 +246,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                             flag[5] = True
                         if fan == 0:
                             flag[7] = True
-                        if ghs5m < 600 and melapsed < 300:
+                        if ghs5m < 600 and melapsed >= 300:
                             flag[8] = True
 
                         param = (ip, port, deviceid, moduleid, dna, melapsed,

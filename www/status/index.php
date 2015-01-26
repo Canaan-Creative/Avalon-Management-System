@@ -277,7 +277,7 @@ while ($row = mysql_fetch_array($result)) {
 				$j = $i - 1;
 			else
 				$j = $i;
-			if ($row[$j + 9])
+			if ($row[$j + 8])
 				$error["error"][] = array("color" => $errorcolor[$j], "msg" => $errormsg[$j]);
 		}
 		$errors[] = $error;
