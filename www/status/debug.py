@@ -1,12 +1,12 @@
 #!/usr/bin/env python2
 
-import json
 import re
 import sys
 
 from cgminer_api import cgminer_api
 
 pattern = re.compile(r'.*MDH5m\[(?P<dh>[^\]]+)\].*MVol\[(?P<vol>[^]]+)\].*')
+
 
 def debug(ip):
     global pattern

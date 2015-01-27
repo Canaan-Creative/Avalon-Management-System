@@ -4,7 +4,7 @@ if (! isset ($_COOKIE['userId'])) {
 	die;
 }
 #
-$pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\s.*LW\[([0-9]+)\]\s.*HW\[([0-9]+)\]\sDH\[([.0-9]+)%\].*\sGHS5m\[([-.0-9]+)\]\sDH5m\[([-.0-9]+)%\]\sTemp\[([-0-9]+)\]\sFan\[([0-9]+)\]\sVol\[([.0-9]+)\].*\sFreq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)./';
+$pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\s.*LW\[([0-9]+)\]\s.*HW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sGHS5m\[([-.0-9]+)\]\sDH5m\[([-.0-9]+)%\]\s.*Temp\[([-0-9]+)\]\sFan\[([0-9]+)\]\sVol\[([.0-9]+)\]\s.*Freq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)./';
 $ip   = $_GET['ip'];
 $ports = explode(',', $_GET['port']);
 if (array_key_exists('hl', $_GET) && $_GET['hl'] !== "" && $_GET['hl'] !== null)
@@ -95,7 +95,8 @@ td{ border:1px solid #c3c3c3;}
 <h2>
 Cgminer Status
 <span>
-<button onClick="restart_cgminer('<?php echo $ip . "','" . join(',',$ports) ?>');">Restart All</button>
+<button onClick="restart_cgminer('<?php echo $ip . "','" . join(',',$ports);?>');">Restart All</button>
+<button onClick="window.open('./debug.php?ip=<?php echo $ip; ?>');">Debug</button>
 </span>
 </h2>
 <hr>
@@ -347,4 +348,4 @@ for ($i = 0; $i < count($ports); $i++) {
 </fieldset></fieldset>";
 }
 ?>
-<body></html>
+</body></html>
