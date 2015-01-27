@@ -21,6 +21,10 @@ def debug(ip):
 
 if __name__ == '__main__':
     ip = sys.argv[1]
-    cgminer_api(ip, 4028, ['debug', 'D'])
+    try:
+        port = int(sys.argv[2])
+    except IndexError:
+        port = 4028
+    cgminer_api(ip, port, ['debug', 'D'])
     debug(ip)
-    cgminer_api(ip, 4028, ['debug', 'D'])
+    cgminer_api(ip, port, ['debug', 'D'])

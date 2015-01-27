@@ -96,7 +96,6 @@ td{ border:1px solid #c3c3c3;}
 Cgminer Status
 <span>
 <button onClick="restart_cgminer('<?php echo $ip . "','" . join(',',$ports);?>');">Restart All</button>
-<button onClick="window.open('./debug.php?ip=<?php echo $ip; ?>');">Debug</button>
 </span>
 </h2>
 <hr>
@@ -130,6 +129,7 @@ for ($i = 0; $i < count($ports); $i++) {
 <legend>" . $ip . ":" . $port . "
 <span>
 <button onClick=\"restart_cgminer('" . $ip . "'," . $port . ");\">Restart Cgminer</button>
+<button onClick=\"window.open('./debug.php?ip=" . $ip . "&port=" . $port . "');\">Debug</button>
 </span>
 </legend>
 
