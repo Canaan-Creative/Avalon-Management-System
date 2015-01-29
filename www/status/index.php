@@ -61,7 +61,7 @@ function rainbow($x, $xmin, $xmax) {
 		$g = 0;
 		$b = 0;
     } else {
-		$r = 256;
+		$r = 128;
 		$g = 0;
 		$b = 0;
     }
