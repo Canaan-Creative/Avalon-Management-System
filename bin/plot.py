@@ -174,7 +174,7 @@ def heatmap(now, cfg):
     for z in range(len(T)):
         T[z] = np.ma.masked_greater(T[z], 254.5)
     cmap = cm.jet
-    norm = matplotlib.colors.Normalize(vmin=30, vmax=70)
+    norm = matplotlib.colors.Normalize(vmin=40, vmax=50)
     scal = cm.ScalarMappable(norm=norm, cmap=cmap)
 
     fig = plt.figure(figsize=(float(cfg['Heatmap']['width']
@@ -293,8 +293,8 @@ def heatmap(now, cfg):
     ax = plt.subplot(gs[0:, 1])
     cbar = plt.colorbar(gci, cax=ax)
     cbar.set_label('Temperature ($^{\circ}C$)', fontdict=labelfont)
-    cbar.set_ticks(np.linspace(30, 70, 5))
-    cbar.set_ticklabels(('30', '40', '50', '60', '70'))
+    cbar.set_ticks(np.linspace(40, 50, 6))
+    cbar.set_ticklabels(('40', '42', '44', '46', '48', '50'))
     for tick in cbar.ax.yaxis.majorTicks:
         tick.label2.set_fontproperties(ticks_font)
 

@@ -52,15 +52,19 @@ function rainbow($x, $xmin, $xmax) {
 		$r = ($x - 0.375) / 0.25 * 256;
 		$g = 256;
 		$b = 256 - ($x - 0.375) / 0.25 * 256;
-	} elseif($x < 0.875) {
+	} elseif ($x < 0.875) {
 		$r = 256;
 		$g = 256 - ($x - 0.625) / 0.25 * 256;
 		$b = 0;
-	} else {
+	} elseif ($x <= 1) {
 		$r = 256 - ($x - 0.875) / 0.25 * 256;
 		$g = 0;
 		$b = 0;
-	}
+    } else {
+		$r = 256;
+		$g = 0;
+		$b = 0;
+    }
 	return '#' . dec2hex($r) . dec2hex($g) . dec2hex($b);
 }
 
@@ -151,7 +155,7 @@ foreach ($zones as $zone) {
 			}
 			if (!$ports)
 				$ports = [4028];
-			$backcolor = rainbow($maxtemp, 30, 70);
+			$backcolor = rainbow($maxtemp, 40, 50);
 			$frontcolor = invert_color($backcolor);
 			$zone_map[$n][$y][$x] = array(
 				"skip" => false,
