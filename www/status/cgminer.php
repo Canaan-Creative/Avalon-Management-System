@@ -295,6 +295,8 @@ for ($i = 0; $i < count($ports); $i++) {
 					$td = "<td class=\"lowlight\">";
 				else if ($mod == $hls[1])
 					$td = "<td class=\"highlight\">";
+				else
+					$td = "<td class=\"lowlight\">";
 			} else
 				$td = "<td class=\"nolight" . ($i & 1) . "\">";
 			$key = "MM ID" . $mod;
