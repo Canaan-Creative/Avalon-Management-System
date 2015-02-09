@@ -9,6 +9,7 @@ mysql-server php5 php5-mysql apache2 libapache2-mod-php5
 MySQL Config
 ------------
 * login with root.
+
     ```
     mysql -u root -p
     ```
@@ -27,15 +28,18 @@ AMS Config
 * change RPi ssh passwd in `www/status/restart_cgminer.py` line 11.
 * copy `www/status` folder into your www-server root path.
 * replace `/path/to` with the real path
+
     ```
     find ./etc/ -maxdepth 1 -type f -exec sed -i -e 's#/path/to/ams#REAL_PATH_TO_AMS#g' {} \;
     find /var/www/status/ -type f -exec sed -i -e 's#/path/to/ams#REAL_PATH_TO_AMS#g' {} \;
     ```
 * create folders
+
     ```
     mkdir -p img/hr img/hm csv
     ```
 * change permission of `csv` folder.
+
     ```
     chmod 777 csv
     ```
