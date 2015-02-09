@@ -22,26 +22,23 @@ MySQL Config
 
 AMS Config
 ----------
-* modify configuration files according to the examples in `etc/example`.
+* modify configuration files in `etc` according to the examples in `etc/example`.
 * change username and passwd in `www/status/login.php` line 11.
 * change RPi ssh passwd in `www/status/restart_cgminer.py` line 11.
+* copy `www/status` folder into your www-server root path.
+* replace `/path/to` with the real path
+    ```
+    find ./etc/ -maxdepth 1 -type f -exec sed -i -e 's#/path/to/ams#REAL_PATH_TO_AMS#g' {} \;
+    find /var/www/status/ -type f -exec sed -i -e 's#/path/to/ams#REAL_PATH_TO_AMS#g' {} \;
+    ```
+* create folders
+    ```
+    mkdir -p img/hr img/hm csv
+    ```
 * change permission of `csv` folder.
     ```
-    chmod 777 /path/to/ams/csv
+    chmod 777 csv
     ```
-* replace `/path/to` with the real path
-```
-find ./ams/ -type f -exec sed -i -e 's#/path/to#REAL_PATH#g' {} \;
-find ./etc/ -type f -exec sed -i -e 's#/path/to#REAL_PATH#g' {} \;
-find ./www/ -type f -exec sed -i -e 's#/path/to#REAL_PATH#g' {} \;
-```
-* link `www/status` folder into your www-server root path.
-* create folders to store image files
-```
-mkdir img
-mkdir img/hr
-mkdir img/hm
-```
 
 Apache2 Config
 --------------
