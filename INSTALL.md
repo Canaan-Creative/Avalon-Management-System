@@ -43,6 +43,18 @@ mkdir img/hr
 mkdir img/hm
 ```
 
+Apache2 Config
+--------------
+edit `/etc/apache2/sites-available/default`
+
+```
+<Directory /var/www/status/>
+        Options FollowSymLinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        allow from all
+</Directory>
+```
 Cron Config
 -----------
 ```
