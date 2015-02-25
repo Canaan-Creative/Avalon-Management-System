@@ -164,6 +164,9 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
 
             summodule = 0
             maxtemp = 0
+            mintemp = 100
+            avgtemp = 0
+            ntemp = 0
             i = 0
             for devData in data['Devs']:
                 dna_pool = []
@@ -230,8 +233,12 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                         if temp >= 200:
                             flag[0] = True
                         else:
+                            avgtemp += temp
+                            ntemp += 1
                             if temp > maxtemp:
                                 maxtemp = temp
+                            if temp < mintemp:
+                                mintemp = temp
                             if temp > 47:
                                 flag[1] = True
                         if temp < 25:
@@ -281,9 +288,13 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                 lst = '{:%Y_%m_%d_%H_%M}'.format(lst)
                 poolParam.append((ip, port, poolid, alive, url, lst))
 
+            avgtemp = (avgtemp - maxtemp - mintemp) / (ntemp - 2)
+            if avgtemp < 0 or mintemp == 100 or ntemp == 0:
+                avgtemp = 0
+
             minerParam = (ip, port, True, sumdevice, sumdevice0, summodule,
                           summodule0, elapsed, megahash, block, newblock,
-                          newfoundblock, rate1hr, rate15min, maxtemp)
+                          newfoundblock, rate1hr, rate15min, avgtemp)
         c.execute(command[0], minerParam)
         if deviceParam:
             c.executemany(command[1], deviceParam)
