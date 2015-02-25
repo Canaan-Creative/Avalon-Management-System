@@ -69,7 +69,7 @@ def version(ip):
 if __name__ == '__main__':
 
     ip = sys.argv[1]
-    v = version(ip)
+    v = version_ssh(ip)
     if v is None:
-        v = version_ssh(ip)
+        v = version(ip)
     print(v)

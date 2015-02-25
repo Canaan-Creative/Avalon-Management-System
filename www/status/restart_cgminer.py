@@ -104,5 +104,5 @@ if __name__ == '__main__':
                 break
             else:
                 ports.append( str( port - 6000 ) )
-    restart_cgminer(ip,ports)
     restart_cgminer_ssh(ip,ports)
+    restart_cgminer(ip,ports)
