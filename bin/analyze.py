@@ -239,7 +239,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                                 maxtemp = temp
                             if temp < mintemp:
                                 mintemp = temp
-                            if temp > 47:
+                            if temp > 50:
                                 flag[1] = True
                         if temp < 25:
                             flag[2] = True

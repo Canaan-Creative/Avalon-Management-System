@@ -236,7 +236,7 @@ $errorcolor = array(
 );
 $errormsg = array(
 	"Temperature over 200. ",
-	"Temperature Higher Than 47. ",
+	"Temperature Higher Than 50. ",
 	"Temperature Lower Than 25. ",
 	"Device Hardware Error Higher Than 3%. ",
 	"Wrong Voltage. ",
