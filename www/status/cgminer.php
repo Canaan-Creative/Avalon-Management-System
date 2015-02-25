@@ -16,10 +16,6 @@ $summary_l = $data[0];
 $devs_l = $data[1];
 $stats_l = $data[2];
 $pools_l = $data[3];
-
-$output = array();
-exec("python version.py " . $ip, $output);
-$version = $output[0];
 ?>
 
 <html>
@@ -102,7 +98,7 @@ Cgminer Status
 <button onClick="restart_cgminer('<?php echo $ip . "','" . join(',',$ports);?>');">Restart All</button>
 </span>
 </h2>
-<span>Version: <?php echo $version; ?></span>
+<span>Version: <div class='version'></div></span>
 <hr>
 
 <?php
@@ -355,4 +351,16 @@ for ($i = 0; $i < count($ports); $i++) {
 </fieldset></fieldset>";
 }
 ?>
+<script>
+$.ajax({
+	type: "POST",
+	url: "version.php",
+    data: {ip: '<?php echo $ip;?>'},
+    async: true,
+	dataType:"json",
+	success: function(data) {
+        $(".version").text(data.version);
+	}
+});
+</script>
 </body></html>
