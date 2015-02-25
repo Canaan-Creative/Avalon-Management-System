@@ -139,7 +139,7 @@ foreach ($zones as $zone) {
 				$row = mysql_fetch_array($result);
 				$modnum = $row['summod'] . "/" . $row['summod0'];
 				$maxtemp = $row['maxtemp'];
-				$avgtemp = $row['avgtemp'];
+				$avgtemp = (int)$row['avgtemp'];
 				$rate = (int)$row['sumrate'];
 				if (strlen($rate) < 3)
 					$rate = $rate . " MH/s";
@@ -167,6 +167,7 @@ foreach ($zones as $zone) {
 				"ports" => $ports,
 				"modnum" => $modnum,
 				"maxtemp" => $maxtemp,
+				"avgtemp" => $avgtemp,
 				"rate" => $rate,
 				"backcolor" => $backcolor,
 				"frontcolor" => $frontcolor
