@@ -60,11 +60,11 @@ function rainbow($x, $xmin, $xmax) {
 		$r = 256 - ($x - 0.875) / 0.25 * 256;
 		$g = 0;
 		$b = 0;
-    } else {
+	} else {
 		$r = 128;
 		$g = 0;
 		$b = 0;
-    }
+	}
 	return '#' . dec2hex($r) . dec2hex($g) . dec2hex($b);
 }
 
@@ -134,10 +134,12 @@ foreach ($zones as $zone) {
 			if ($row["sum"] > 0) {
 				$alive = true;
 				$result = mysql_query("SELECT SUM(summodule) AS summod, SUM(summodule0) AS summod0,
-					SUM(rate15min) AS sumrate, MAX(maxtemperature) AS maxtemp FROM " . $table . " WHERE ip='" . $ip . "'");
+					SUM(rate15min) AS sumrate, MAX(maxtemperature) AS maxtemp,
+					AVG(avgtemperature) AS avgtemp FROM " . $table . " WHERE ip='" . $ip . "'");
 				$row = mysql_fetch_array($result);
 				$modnum = $row['summod'] . "/" . $row['summod0'];
 				$maxtemp = $row['maxtemp'];
+				$avgtemp = $row['avgtemp'];
 				$rate = (int)$row['sumrate'];
 				if (strlen($rate) < 3)
 					$rate = $rate . " MH/s";
@@ -151,6 +153,7 @@ foreach ($zones as $zone) {
 				$alive = false;
 				$modnum = "";
 				$maxtemp ="";
+				$avgtemp ="";
 				$rate = "";
 			}
 			if (!$ports)
@@ -573,7 +576,7 @@ foreach ($farm_map as $zone_map) {
 					echo "<td title=\"" . $atom['ip'] . "\" class=\"tmap\" style=\"background:" . $atom['backcolor'] .
 						"\" onclick=\"window.open('cgminer.php?ip=" . $atom["ip"] . "&port=" . join(",",$atom['ports']) . "');\">
 						<p class=\"tmap\" style=\"color:" . $atom['frontcolor'] . "\">" . $atom['modnum'] . "</p>
-						<p class=\"tmap\" style=\"color:" . $atom['frontcolor'] . "\">" . $atom['maxtemp'] . "&deg;C</p>
+						<p class=\"tmap\" style=\"color:" . $atom['frontcolor'] . "\">" . $atom['avgtemp'] . "/" . $atom['maxtemp'] . "&deg;C</p>
 						<p class=\"tmap\" style=\"color:" . $atom['frontcolor'] . "\">" . $atom['rate'] . "</p>
 						</td>";
 				else
@@ -619,31 +622,31 @@ foreach ($farm_map as $zone_map) {
 							<tr>
 								<td>
 									<strong>RPi</strong>
-                                    <?php
-                                    if ($sortType == 'down' && $sortName == 'ip')
-                                        echo "
-                                            <a href='?sort=ip_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
+									<?php
+									if ($sortType == 'down' && $sortName == 'ip')
+										echo "
+											<a href='?sort=ip_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
 											<img src='./img/down.jpg' width=\"20\" height=\"20\" />
 										</a>";
 									else
-                                        echo "
-                                            <a href='?sort=ip_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
+										echo "
+											<a href='?sort=ip_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
 											<img src='./img/up.jpg' width=\"20\" height=\"20\" />
-                                        </a>"; ?>
+										</a>"; ?>
 								</td>
 								<td>
 									<strong>Information</strong>
-                                    <?php
-                                    if ($sortType == 'down' && $sortName == 'info')
-                                        echo "
-                                            <a href='?sort=info_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
-                                            <img src='./img/down.jpg' width=\"20\" height=\"20\" />
-										</a>";
+									<?php
+									if ($sortType == 'down' && $sortName == 'info')
+										echo "
+											<a href='?sort=info_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
+											<img src='./img/down.jpg' width=\"20\" height=\"20\" />
+											</a>";
 									else
-                                        echo "
-                                            <a href='?sort=info_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
+										echo "
+											<a href='?sort=info_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
 											<img src='./img/up.jpg' width=\"20\" height=\"20\" />
-                                        </a>"; ?>
+										</a>"; ?>
 								</td>
 							</tr>
 						</thead>

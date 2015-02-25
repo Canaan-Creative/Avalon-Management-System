@@ -35,7 +35,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
             break
 
         command = ["INSERT INTO Miner_" + timenow + " VALUES(" +
-                   ("%s," * 15)[:-1] + ")",
+                   ("%s," * 16)[:-1] + ")",
                    "INSERT INTO Device_" + timenow + " VALUES(" +
                    ("%s," * 5)[:-1] + ")",
                    "INSERT INTO Module_" + timenow + " VALUES(" +
@@ -101,7 +101,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
             except:
                 rate1hr = .0
             minerParam = (ip, port, False, 0, sumdevice0, 0, summodule0,
-                          0, 0, block0 + newblock0, 0, 0, rate1hr, .0, 0)
+                          0, 0, block0 + newblock0, 0, 0, rate1hr, .0, 0, 0)
             errorParam.append(
                 (ip, port, 0, 0, True, False, False, False, False,
                  False, False, False, False, False, False, False, False, 1023)
@@ -118,7 +118,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
             except:
                 rate1hr = .0
             minerParam = (ip, port, True, 0, sumdevice0, 0, summodule0,
-                          0, 0, block0 + newblock0, 0, 0, rate1hr, .0, 0)
+                          0, 0, block0 + newblock0, 0, 0, rate1hr, .0, 0, 0)
             errorParam.append(
                 (ip, port, 0, 0, False, sumdevice0, False, False, False,
                  False, False, False, False, False, False, False, False, 1023)
@@ -297,7 +297,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
 
             minerParam = (ip, port, True, sumdevice, sumdevice0, summodule,
                           summodule0, elapsed, megahash, block, newblock,
-                          newfoundblock, rate1hr, rate15min, avgtemp)
+                          newfoundblock, rate1hr, rate15min, maxtemp, avgtemp)
         c.execute(command[0], minerParam)
         if deviceParam:
             c.executemany(command[1], deviceParam)
@@ -349,7 +349,8 @@ def analyze(dataQueue, timenow, cfg):
               "newfoundblock SMALLINT UNSIGNED, "
               "rate1hr DOUBLE, "
               "rate15min DOUBLE, "
-              "maxtemperature TINYINT UNSIGNED)".format(timenow))
+              "maxtemperature TINYINT UNSIGNED, "
+              "avgtemperature TINYINT UNSIGNED)".format(timenow))
     db.commit()
     c.execute("CREATE TABLE Device_{0} "
               "(ip VARCHAR(15), "
