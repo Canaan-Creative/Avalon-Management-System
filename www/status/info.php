@@ -124,7 +124,7 @@ while ($row = mysql_fetch_array($result)) {
 					$c_index[] = "hightemp";
 					break;
 				case "Temperature Lower Than 25. ":
-					$c_index[] = "lowtsemp";
+					$c_index[] = "lowtemp";
 					break;
 				case "Device Hardware Error Higher Than 3%. ":
 					$c_index[] = "highdh";
