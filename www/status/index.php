@@ -13,24 +13,6 @@ function dec2hex($x) {
 	return str_pad(dechex($x), 2, "0", STR_PAD_LEFT);
 }
 
-function pg_decode($pg) {
-	if ($pg == 0)
-		return "All";
-	$str = "";
-	for ($i = 1; $i < 3; $i++) {
-		for ($j = 1; $j < 6; $j++) {
-			$flag = $pg & 1;
-			$pg = ($pg >> 1);
-			if (!$flag) {
-				if ($str != "")
-					$str = $str . ", ";
-				$str = $str . "PG" . $i . "-" . $j;
-			}
-		}
-	}
-	return $str . ".";
-}
-
 function rainbow($x, $xmin, $xmax) {
 	if ($x == 0) {
 		return '#ffffff';
@@ -220,124 +202,8 @@ while ($row = mysql_fetch_array($result)) {
 			$flag = TRUE;
 	}
 }
-# Error List:
-$result = mysql_query("SELECT * FROM Error_" . $time . " ORDER BY ip, port");
-$errors = array();
-$errorcolor = array(
-	"purple",
-	"red",
-	"blue",
-	"green",
-	"orange",
-	"green",
-	"orange",
-	"green",
-	"orange"
-);
-$errormsg = array(
-	"Temperature over 200. ",
-	"Temperature Higher Than 50. ",
-	"Temperature Lower Than 25. ",
-	"Device Hardware Error Higher Than 3%. ",
-	"Wrong Voltage. ",
-	"Hashrate Over 20% Lower Than Average. ",
-	"Mining Stopped. ",
-	"Fan Stopped. ",
-	"Hashrate lower than 600GHs. "
-);
-while ($row = mysql_fetch_array($result)) {
-	if ($row['connectionfailed'])
-		$errors[] = array(
-			"href" => "cgminer.php?ip=". $row['ip'],
-			"id" => $row['ip'],
-			"error" => array(array("color" => "red", "msg" => "Connection Failed. "))
-		);
-	elseif ($row['missingdevice'])
-		$errors[] = array(
-			"href" => "cgminer.php?ip=" . $row['ip'] . "&port=" . $row['port'],
-			"id" => $row['ip'] . ":" . $row['port'],
-			"error" => array(array("color" => "red", "msg" => $row['missingdevice'] . " Device(s) Missing. "))
-		);
-	elseif($row['missingmodule'])
-		$errors[] = array(
-			"href" => "cgminer.php?ip=" . $row['ip'] . "&port=" . $row['port'] . "&hl=" . $row['deviceid'],
-			"id" => $row['ip'] . ":" . $row['port'] . " dev#" . $row['deviceid'],
-			"error" => array(array("color" => "red", "msg" => $row['missingmodule'] . " Module(s) Missing. "))
-		);
-	elseif($row['apidisaster'])
-		$errors[] = array(
-			"href" => "cgminer.php?ip=" . $row['ip'] . "&port=" . $row['port'] . "&hl=" . $row['deviceid'],
-			"id" => $row['ip'] . ":" . $row['port'] . " dev#" . $row['deviceid'],
-			"error" => array(array("color" => "red", "msg" => "CGMiner API EStats Disaster! "))
-		);
-	else {
-		$error = array(
-			"href" => "cgminer.php?ip=" . $row['ip'] . "&port=" . $row['port'] . "&hl=" . $row['deviceid'] . "-" . $row['moduleid'],
-			"id" => $row['ip'] . ":" . $row['port'] . " dev#" . $row['deviceid'] . " mod#" . $row['moduleid'],
-			"error" => array()
-		);
-		if ($row['wrongpg'] != 1023)
-			$error["error"][] = array("color" => "red", "msg" => "Wrong PG: " . pg_decode($row['wrongpg']));
-		for ($i = 0; $i < 9; $i ++) {
-			if ($i == 2)
-				$j = 5;
-			elseif ($i > 2 and $i < 6)
-				$j = $i - 1;
-			else
-				$j = $i;
-			if ($row[$j + 8])
-				$error["error"][] = array("color" => $errorcolor[$j], "msg" => $errormsg[$j]);
-		}
-		$errors[] = $error;
-	}
-}
 
-/**
- * Sort errorsList
- * @author Wanggh
- * 2014/09/11
- */
-
-function makeIpToNum($ip) {
-	$ip_arr = explode('.', $ip); //分隔ip段
-	$ipstr = "";
-	foreach ($ip_arr as $value) {
-		$iphex = dechex($value); //将每段ip转换成16进制
-		if(strlen($iphex) < 2) //255的16进制表示是ff，所以每段ip的16进制长度不会超过2
-			$iphex = '0' . $iphex; //如果转换后的16进制数长度小于2，在其前面加一个0
-			//没有长度为2，且第一位是0的16进制表示，这是为了在将数字转换成ip时，好处理
-		$ipstr .= $iphex; //将四段IP的16进制数连接起来，得到一个16进制字符串，长度为8
-	}
-	return hexdec($ipstr); //将16进制字符串转换成10进制，得到ip的数字表示
-}
-
-$getSort = isset($_GET ['sort']) ? $_GET ['sort'] : '';
-$sortName = 'ip';
-$sortType = 'desc';
-if ($getSort) {
-	$tmpArr = explode('_', $getSort);
-	$sortName = strtolower($tmpArr [0]);
-	$sortType = strtolower($tmpArr [1]);
-}
-if (is_array($errors)) {
-	$sortArr = $newArr = array();
-	if ($sortName == 'ip')
-		foreach ($errors as $key=>$value) {
-			$t = explode(':', $value ['id']);
-			$ip = array_shift($t);
-			$sortArr [$key] = makeIpToNum($ip);
-		}
-	elseif ($sortName == 'info')
-		foreach ($errors as $key=>$value)
-			foreach ($value ['error'] as $v)
-				$sortArr [$key] .= $v ['msg'];
-	if ($sortType == 'up')
-		asort($sortArr);
-	elseif ($sortType == 'down')
-		arsort($sortArr);
-	foreach ($sortArr as $k=>$v)
-		$newArr [] = $errors [$k];
-}
+include 'info.php';
 # Alive Mod/IP Graph:
 $labels_ag = ['Module', 'RPi'];
 $colorlist_ag = ["red", "orange"];
@@ -618,45 +484,53 @@ foreach ($farm_map as $zone_map) {
 		<div class="col-md-6">
 			<div class="jumbotron">
 				<h3>Information List:</h3>
-					<table class="table table-bordered table-striped">
-						<thead>
-							<tr>
-								<td>
-									<strong>RPi</strong>
-									<?php
-									if ($sortType == 'down' && $sortName == 'ip')
-										echo "
-											<a href='?sort=ip_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
-											<img src='./img/down.jpg' width=\"20\" height=\"20\" />
-										</a>";
-									else
-										echo "
-											<a href='?sort=ip_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
-											<img src='./img/up.jpg' width=\"20\" height=\"20\" />
-										</a>"; ?>
-								</td>
-								<td>
-									<strong>Information</strong>
-									<?php
-									if ($sortType == 'down' && $sortName == 'info')
-										echo "
-											<a href='?sort=info_up" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
-											<img src='./img/down.jpg' width=\"20\" height=\"20\" />
-											</a>";
-									else
-										echo "
-											<a href='?sort=info_down" . $url_suffix . "' style=\"float: right;font-size: 10px;cursor: pointer;\">
-											<img src='./img/up.jpg' width=\"20\" height=\"20\" />
-										</a>"; ?>
-								</td>
-							</tr>
-						</thead>
-						<tbody>
+			<div>
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#all" role="tab" data-toggle="tab">All</a></li>
+
+					<li role="presentation" class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							Critical<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#missing" data-toggle="tab" role="tab">Missing</a></li>
+							<li><a href="#hightemp" data-toggle="tab" role="tab">High Temp</a></li>
+							<li><a href="#wrongpg" data-toggle="tab" role="tab">Wrong PG</a></li>
+							<li><a href="#apimess" data-toggle="tab" role="tab">API Mess</a></li>
+						</ul>
+					</li>
+
+					<li role="presentation" class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							Warning<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#highdh" data-toggle="tab" role="tab">High DH</a></li>
+							<li><a href="#fanstopped" data-toggle="tab" role="tab">Fan Stopped</a></li>
+							<li><a href="#miningstopped" data-toggle="tab" role="tab">Mining Stopped</a></li>
+							<li><a href="#lowhashrate" data-toggle="tab" role="tab">Low Hashrate</a></li>
+							<li><a href="#lowtemp" data-toggle="tab" role="tab">Low Temp</a></li>
+							<li><a href="#wrongvolt" data-toggle="tab" role="tab">Wrong Volt</a></li>
+						</ul>
+					</li>
+
+				</ul>
+				<div class="tab-content">
+
+				<div role="tabpanel" class="tab-pane active" id="all">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<td><strong>RPi</strong></td>
+							<td><strong>Information</strong></td>
+						</tr>
+					</thead>
+					<tbody>
 <?php
-if(count($newArr) === 0)
+if(count($errors) === 0)
 	echo "<tr><td>None</td><td>None</td></tr>";
 else {
-	foreach ($newArr as $error) {
+	foreach ($errors as $error) {
 		echo "<tr><td><a href=\"" . $error["href"] . "\">" . $error["id"] . "</a></td><td>";
 		foreach ($error["error"] as $err)
 			echo "<span style=\"color:" . $err["color"] . "\">" . $err["msg"] . "</span><br />";
@@ -664,8 +538,42 @@ else {
 	}
 }
 ?>
-						</tbody>
-					</table>
+					</tbody>
+				</table>
+				</div>
+
+<?php
+foreach ($errorc as $key => $value) {
+	echo "
+				<div role=\"tabpanel\" class=\"tab-pane\" id=\"" . $key . "\">
+				<table class=\"table table-bordered table-striped\">
+					<thead>
+						<tr>
+							<td><strong>RPi</strong></td>
+							<td><strong>Information</strong></td>
+						</tr>
+					</thead>
+					<tbody>";
+	if(count($value) === 0)
+		echo "<tr><td>None</td><td>None</td></tr>";
+	else {
+		foreach ($value as $error) {
+			echo "<tr><td><a href=\"" . $error["href"] . "\">" . $error["id"] . "</a></td><td>";
+			foreach ($error["error"] as $err)
+				echo "<span style=\"color:" . $err["color"] . "\">" . $err["msg"] . "</span><br />";
+			echo "</td></tr>";
+		}
+	}
+	echo "
+					</tbody>
+				</table>
+				</div>";
+}
+?>
+
+
+				</div>
+			</div>
 			</div>
 		</div>
 		<!--Right end-->
