@@ -493,9 +493,9 @@ foreach ($farm_map as $zone_map) {
 							Critical<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu" role="menu">
-							<li><a href="#missing" data-toggle="tab" role="tab">Missing</a></li>
-							<li><a href="#hightemp" data-toggle="tab" role="tab">High Temp</a></li>
-							<li><a href="#wrongpg" data-toggle="tab" role="tab">Wrong PG</a></li>
+							<li><a href="#missing" data-toggle="tab" role="tab">设备缺失</a></li>
+							<li><a href="#hightemp" data-toggle="tab" role="tab">温度过高</a></li>
+							<li><a href="#wrongpg" data-toggle="tab" role="tab">电源模块错误</a></li>
 							<li><a href="#apimess" data-toggle="tab" role="tab">API Mess</a></li>
 						</ul>
 					</li>
@@ -505,12 +505,12 @@ foreach ($farm_map as $zone_map) {
 							Warning<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu" role="menu">
-							<li><a href="#highdh" data-toggle="tab" role="tab">High DH</a></li>
-							<li><a href="#fanstopped" data-toggle="tab" role="tab">Fan Stopped</a></li>
-							<li><a href="#miningstopped" data-toggle="tab" role="tab">Mining Stopped</a></li>
-							<li><a href="#lowhashrate" data-toggle="tab" role="tab">Low Hashrate</a></li>
-							<li><a href="#lowtemp" data-toggle="tab" role="tab">Low Temp</a></li>
-							<li><a href="#wrongvolt" data-toggle="tab" role="tab">Wrong Volt</a></li>
+							<li><a href="#highdh" data-toggle="tab" role="tab">错误率过高</a></li>
+							<li><a href="#fanstopped" data-toggle="tab" role="tab">风扇停转</a></li>
+							<li><a href="#miningstopped" data-toggle="tab" role="tab">挖矿停止</a></li>
+							<li><a href="#lowhashrate" data-toggle="tab" role="tab">算力过低</a></li>
+							<li><a href="#lowtemp" data-toggle="tab" role="tab">温度过低</a></li>
+							<li><a href="#wrongvolt" data-toggle="tab" role="tab">电压错误</a></li>
 						</ul>
 					</li>
 
