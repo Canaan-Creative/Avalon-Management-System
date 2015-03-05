@@ -5,14 +5,15 @@ $dbhandle = mysql_connect("localhost", $user, $passwd)
 $selected = mysql_select_db($dbname, $dbhandle)
 	or die("Could not select database.");
 
-function switch_led($table, $clause) {
+function switch_led($table, $clause, $status) {
 	$list = array();
 	$result = mysql_query("SELECT ip, port, deviceid, moduleid from " .
 		$table . " " . $clause);
 
 	while ($row = mysql_fetch_array($result))
 		$list[] = $row['ip'] . ',' . $row['port'] . ',' .
-			$row['deviceid'] . ',' . $row['moduleid'];
+			$row['deviceid'] . ',' . $row['moduleid'] .
+			'-' . (is_null($status) ? '' : $status);
 	system("python led.py " . join(' ' , $list) . " 2>&1 >> /tmp/led.log");
 }
 
@@ -36,7 +37,7 @@ else
 
 if (!is_null($clause)) {
 	$table = 'Module_' . $row['time'];
-	switch_led($table, $clause);
+	switch_led($table, $clause, 0);
 }
 
 
@@ -46,7 +47,7 @@ case 'temp':
 	$row = mysql_fetch_array($result);
 	$table = 'Module_' . $row['time'];
 	$clause = "WHERE temp>45";
-	switch_led($table, $clause);
+	switch_led($table, $clause, 1);
 	mysql_query("INSERT INTO head (time, command, type) VALUES ('" .
 		$row['time'] . "', 'temp', 'led') ON DUPLICATE KEY UPDATE " .
 		"time = '" . $row['time'] . "', command = 'temp'");
@@ -58,7 +59,7 @@ case 'dh':
 	$row = mysql_fetch_array($result);
 	$table = 'Module_' . $row['time'];
 	$clause = 'WHERE dh>10';
-	switch_led($table, $clause);
+	switch_led($table, $clause, 1);
 	mysql_query("INSERT INTO head (time, command, type) VALUES ('" .
 		$row['time'] . "', 'dh', 'led') ON DUPLICATE KEY UPDATE " .
 		"time = '" . $row['time'] . "', command = 'dh'");
