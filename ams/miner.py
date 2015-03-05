@@ -17,20 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with AMS.  If not, see <http://www.gnu.org/licenses/>.
 
-import logging
-import logging.handlers
-
-
-def log():
-    ams_logger = logging.getLogger('AMS')
-    ams_logger.setLevel(logging.DEBUG)
-
-    handler = logging.handlers.SysLogHandler(address='/dev/log')
-    formatter = logging.Formatter("[%(name)s][%(levelname)s]%(message)s")
-    handler.setFormatter(formatter)
-
-    ams_logger.addHandler(handler)
-
 import socket
 import queue
 import threading
