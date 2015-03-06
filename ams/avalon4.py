@@ -25,22 +25,22 @@ import ams.sql as sql
 
 
 class Avalon4(miner.Miner):
-    _pattern = re.compile(r'''Ver\[(?P<Ver>[-0-9A-Fa-f]+)\]\s
-                              DNA\[(?P<DNA>[0-9A-Fa-f]+)\]\s
-                              Elapsed\[(?P<Elapsed>[-0-9]+)\]\s
-                              MW\[(?P<MW>[-\s0-9]+)\]\s
-                              LW\[(?P<LW>[-0-9]+)\]\s
-                              MH\[(?P<MH>[-\s0-9]+)\]\s
-                              HW\[(?P<HW>[-0-9]+)\]\s
-                              DH\[(?P<DH>[-.0-9]+)%\]\s
-                              GHS5m\[(?P<GHS5m>[-.0-9]+)\]\s
-                              DH5m\[(?P<DH5m>[-.0-9]+)%\]\s
-                              Temp\[(?P<Temp>[0-9]+)\]\s
-                              Fan\[(?P<Fan>[0-9]+)\]\s
-                              Vol\[(?P<Vol>[.0-9]+)\]\s
-                              Freq\[(?P<Freq>[.0-9]+)\]\s
-                              PG\[(?P<PG>[0-9]+)\]\s
-                              Led\[(?P<Led>0|1)\]''', re.X)
+    _pattern = re.compile(r'Ver\[(?P<Ver>[-0-9A-Fa-f]+)\]\s'
+                          'DNA\[(?P<DNA>[0-9A-Fa-f]+)\]\s'
+                          'Elapsed\[(?P<Elapsed>[-0-9]+)\]\s'
+                          # 'MW\[(?P<MW>[-\s0-9]+)\]\s'
+                          '.*LW\[(?P<LW>[-0-9]+)\]\s'
+                          # 'MH\[(?P<MH>[-\s0-9]+)\]\s'
+                          '.*HW\[(?P<HW>[-0-9]+)\]\s'
+                          'DH\[(?P<DH>[-.0-9]+)%\]\s'
+                          'GHS5m\[(?P<GHS5m>[-.0-9]+)\]\s'
+                          'DH5m\[(?P<DH5m>[-.0-9]+)%\]\s'
+                          'Temp\[(?P<Temp>[0-9]+)\]\s'
+                          'Fan\[(?P<Fan>[0-9]+)\]\s'
+                          'Vol\[(?P<Vol>[.0-9]+)\]\s'
+                          'Freq\[(?P<Freq>[.0-9]+)\]\s'
+                          'PG\[(?P<PG>[0-9]+)\]\s'
+                          'Led\[(?P<Led>0|1)\]', re.X)
 
     name = 'Avalon4'
 
@@ -131,7 +131,6 @@ class Avalon4(miner.Miner):
 
     def _generate_sql_estats(self, run_time):
         # 'estats' -> table 'module'
-        name = 'module'
         try:
             estats = self.raw['estats']['STATS']
         except TypeError:
@@ -144,38 +143,52 @@ class Avalon4(miner.Miner):
                   'device_id', 'module_id']
         value = [run_time, self.ip, self.port, precise_time]
         for estat in estats:
-            device_id = int(estat['ID'][3:])
             for key in estat:
                 if key[:5] == 'MM ID':
-                    module_id = int(key[5:])
-                    module = estat[key]
-                    module_info = re.match(self._pattern, module).groupdict()
-                    new_column = []
-                    new_value = [device_id, module_id]
-                    for k in module_info:
-                        if (k == 'DNA' or k == 'Ver' or
-                                k == 'Led' or k == 'Elapsed'):
-                            new_column.append(k.lower())
-                            new_value.append(module_info[k])
-                        elif (k == 'DH' or k == 'Vol' or k == 'Freq' or
-                              k == 'GHS5m' or k == 'DH5m'):
-                            new_column.append(k.lower())
-                            new_value.append(float(module_info[k]))
-                        elif k == 'MW' or k == 'MH':
-                            i = 0
-                            for m in module_info[k].split(' '):
-                                new_column.append('{}{}'.format(k.lower(), i))
-                                new_value.append(float(m))
-                                i += 1
-                        else:
-                            new_column.append(k.lower())
-                            new_value.append(int(module_info[k]))
-                    self.sql_queue.put({
-                        'command': 'insert',
-                        'name': name,
-                        'column': column + new_column,
-                        'value': value + new_value
-                    })
+                    self._generate_sql_estat(column, value, key, estat)
+
+    def _generate_sql_estat(self, column, value, key, estat):
+        device_id = int(estat['ID'][3:])
+        module_id = int(key[5:])
+        module = estat[key]
+        module_info = re.match(self._pattern, module)
+        if module_info is None:
+            self.log.error('{}[{}][{}] Non-match module info.'.format(
+                self, device_id, module_id
+            ))
+            self.log.debug('{}[{}][{}] {}'.format(
+                self, device_id, module_id, module
+            ))
+            return
+
+        module_info = module_info.groupdict()
+        new_column = []
+        new_value = [device_id, module_id]
+        for k in module_info:
+            if (k == 'DNA' or k == 'Ver' or
+                    k == 'Led' or k == 'Elapsed'):
+                new_column.append(k.lower())
+                new_value.append(module_info[k])
+            elif (k == 'DH' or k == 'Vol' or k == 'Freq' or
+                  k == 'GHS5m' or k == 'DH5m'):
+                new_column.append(k.lower())
+                new_value.append(float(module_info[k]))
+            elif k == 'MW' or k == 'MH':
+                i = 0
+                for m in module_info[k].split(' '):
+                    new_column.append('{}{}'.format(k.lower(), i))
+                    new_value.append(float(m))
+                    i += 1
+            else:
+                new_column.append(k.lower())
+                new_value.append(int(module_info[k]))
+
+        self.sql_queue.put({
+            'command': 'insert',
+            'name': 'module',
+            'column': column + new_column,
+            'value': value + new_value
+        })
 
     def _generate_sql_pools(self, run_time):
         # 'pools' -> table 'pool'
@@ -323,46 +336,46 @@ def db_init(conn, cursor):
             'type': 'BIGINT'},
         {'name': 'hw',
             'type': 'BIGINT'},
-        {'name': 'mw0',
-            'type': 'BIGINT'},
-        {'name': 'mw1',
-            'type': 'BIGINT'},
-        {'name': 'mw2',
-            'type': 'BIGINT'},
-        {'name': 'mw3',
-            'type': 'BIGINT'},
-        {'name': 'mw4',
-            'type': 'BIGINT'},
-        {'name': 'mw5',
-            'type': 'BIGINT'},
-        {'name': 'mw6',
-            'type': 'BIGINT'},
-        {'name': 'mw7',
-            'type': 'BIGINT'},
-        {'name': 'mw8',
-            'type': 'BIGINT'},
-        {'name': 'mw9',
-            'type': 'BIGINT'},
-        {'name': 'mh0',
-            'type': 'BIGINT'},
-        {'name': 'mh1',
-            'type': 'BIGINT'},
-        {'name': 'mh2',
-            'type': 'BIGINT'},
-        {'name': 'mh3',
-            'type': 'BIGINT'},
-        {'name': 'mh4',
-            'type': 'BIGINT'},
-        {'name': 'mh5',
-            'type': 'BIGINT'},
-        {'name': 'mh6',
-            'type': 'BIGINT'},
-        {'name': 'mh7',
-            'type': 'BIGINT'},
-        {'name': 'mh8',
-            'type': 'BIGINT'},
-        {'name': 'mh9',
-            'type': 'BIGINT'},
+        # {'name': 'mw0',
+        #     'type': 'BIGINT'},
+        # {'name': 'mw1',
+        #     'type': 'BIGINT'},
+        # {'name': 'mw2',
+        #     'type': 'BIGINT'},
+        # {'name': 'mw3',
+        #     'type': 'BIGINT'},
+        # {'name': 'mw4',
+        #     'type': 'BIGINT'},
+        # {'name': 'mw5',
+        #     'type': 'BIGINT'},
+        # {'name': 'mw6',
+        #     'type': 'BIGINT'},
+        # {'name': 'mw7',
+        #     'type': 'BIGINT'},
+        # {'name': 'mw8',
+        #     'type': 'BIGINT'},
+        # {'name': 'mw9',
+        #     'type': 'BIGINT'},
+        # {'name': 'mh0',
+        #     'type': 'BIGINT'},
+        # {'name': 'mh1',
+        #     'type': 'BIGINT'},
+        # {'name': 'mh2',
+        #     'type': 'BIGINT'},
+        # {'name': 'mh3',
+        #     'type': 'BIGINT'},
+        # {'name': 'mh4',
+        #     'type': 'BIGINT'},
+        # {'name': 'mh5',
+        #     'type': 'BIGINT'},
+        # {'name': 'mh6',
+        #     'type': 'BIGINT'},
+        # {'name': 'mh7',
+        #     'type': 'BIGINT'},
+        # {'name': 'mh8',
+        #     'type': 'BIGINT'},
+        # {'name': 'mh9',
+        #     'type': 'BIGINT'},
         {'name': 'dh',
             'type': 'DOUBLE'},
         {'name': 'ghs5m',
