@@ -288,12 +288,12 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                 lst = '{:%Y_%m_%d_%H_%M}'.format(lst)
                 poolParam.append((ip, port, poolid, alive, url, lst))
 
-            if ntemp < 3:
+            if avgtemp < 0 or mintemp == 100 or ntemp == 0:
+                avgtemp = 0
+            elif ntemp < 3:
                 avgtemp = avgtemp / ntemp
             else:
                 avgtemp = (avgtemp - maxtemp - mintemp) / (ntemp - 2)
-            if avgtemp < 0 or mintemp == 100 or ntemp == 0:
-                avgtemp = 0
 
             if rate1hr > summodule0 * 2000000.0:
                 rate1hr = .0
