@@ -19,15 +19,13 @@
 
 import socket
 import queue
-import threading
 import json
 import logging
 
-import mysql.connector
+import ams.sql as sql
 
 
 class Miner():
-
     name = 'Miner'
 
     def __init__(self, ip, port, module_list):
@@ -84,15 +82,15 @@ class Miner():
         password = db['password']
         thread_num = db['thread_num']
         for i in range(thread_num):
-            store_thread = SQLThread(
+            sql_thread = sql.SQLThread(
                 self.sql_queue,
                 host,
                 database,
                 user,
                 password
             )
-            store_thread.daemon = True
-            store_thread.start()
+            sql_thread.daemon = True
+            sql_thread.start()
         self.sql_queue.join()
 
     def put(self, command, parameter=None, timeout=3):
@@ -139,74 +137,8 @@ class Miner():
         return json.loads(response.decode().replace('\x00', ''))
 
 
-class SQLThread(threading.Thread):
-    def __init__(self, sql_queue, host, database, user, password):
-        threading.Thread.__init__(self)
-        self.sql_queue = sql_queue
-        self.host = host
-        self.database = database
-        self.user = user
-        self.password = password
-        self.log = logging.getLogger('AMS.SQLThread')
-
-    def run(self):
-        conn = mysql.connector.connect(
-            host=self.host,
-            user=self.user,
-            password=self.password,
-            database=self.database
-        )
-        cursor = conn.cursor()
-        while True:
-            try:
-                sql = self.sql_queue.get(False)
-            except queue.Empty:
-                break
-            insert_table(conn, cursor, sql['name'], sql['column'], sql['value'])
-            self.sql_queue.task_done()
-        cursor.close()
-        conn.close()
-
-
-def create_table(conn, cursor, name, column, additional=None, suffix=None):
-    query = 'CREATE TABLE IF NOT EXISTS `{}` ({}{}) {}'.format(
-        name,
-        ', '.join('`{name}` {type}'.format(**c) for c in column),
-        ', {}'.format(additional) if additional else '',
-        suffix if suffix else ''
-    )
-    try:
-        cursor.execute(query)
-    except mysql.connector.Error as e:
-        log = logging.getLogger('AMS.SQL')
-        log.error(e.msg)
-        log.debug(query)
-
-        cursor.close()
-        conn.close()
-        exit()
-    conn.commit()
-
-
-def insert_table(conn, cursor, name, column, value):
-    query = 'INSERT INTO `{}` (`{}`) VALUES ({})'.format(
-        name,
-        '`, `'.join(column),
-        ', '.join('%s' for i in range(len(value)))
-    )
-    try:
-        cursor.execute(query, value)
-    except mysql.connector.Error as e:
-        log = logging.getLogger('AMS.SQL')
-        log.error(e.msg)
-        log.debug(query)
-        log.debug(value)
-        return
-    conn.commit()
-
-
 def db_init(conn, cursor):
-    data_summary = [
+    column_summary = [
         {'name': 'time',
             'type': 'TIMESTAMP'},
         {'name': 'ip',
@@ -274,7 +206,7 @@ def db_init(conn, cursor):
         {'name': 'last_getwork',
             'type': 'TIMESTAMP'}
     ]
-    data_pools = [
+    column_pools = [
         {'name': 'time',
             'type': 'TIMESTAMP'},
         {'name': 'ip',
@@ -346,12 +278,12 @@ def db_init(conn, cursor):
         {'name': 'pool_stale',
             'type': 'DOUBLE'}
     ]
-
-    create_table(
-        conn, cursor, 'miner', data_summary,
+    miner_sql = sql.SQL(conn, cursor)
+    miner_sql.run(
+        'create', 'miner', column_summary,
         'PRIMARY KEY(`time`, `ip`, `port`)'
     )
-    create_table(
-        conn, cursor, 'pool', data_pools,
+    miner_sql.run(
+        'create', 'pool', column_pools,
         'PRIMARY KEY(`time`, `ip`, `port`, `pool_id`)'
     )

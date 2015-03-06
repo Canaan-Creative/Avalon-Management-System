@@ -21,10 +21,10 @@ import re
 import datetime
 
 import ams.miner as miner
+import ams.sql as sql
 
 
 class Avalon4(miner.Miner):
-
     _pattern = re.compile(r'''Ver\[(?P<Ver>[-0-9A-Fa-f]+)\]\s
                               DNA\[(?P<DNA>[0-9A-Fa-f]+)\]\s
                               Elapsed\[(?P<Elapsed>[-0-9]+)\]\s
@@ -76,7 +76,12 @@ class Avalon4(miner.Miner):
         )
         value = [run_time, self.ip, self.port, precise_time]
         value.extend(summary[k] for k in summary_sorted)
-        self.sql_queue.put({'name': name, 'column': column, 'value': value})
+        self.sql_queue.put({
+            'command': 'insert',
+            'name': name,
+            'column': column,
+            'value': value
+        })
 
     def _generate_sql_edevs(self, run_time):
         # 'edevs' -> table 'device'
@@ -117,6 +122,7 @@ class Avalon4(miner.Miner):
                 or k[:3] == 'USB' or k[:4] == 'Auto'
             )
             self.sql_queue.put({
+                'command': 'insert',
                 'name': name,
                 'column': column + new_column,
                 'value': value + new_value
@@ -165,6 +171,7 @@ class Avalon4(miner.Miner):
                             new_column.append(k.lower())
                             new_value.append(int(module_info[k]))
                     self.sql_queue.put({
+                        'command': 'insert',
                         'name': name,
                         'column': column + new_column,
                         'value': value + new_value
@@ -193,6 +200,7 @@ class Avalon4(miner.Miner):
             new_value = [pool['POOL']]
             new_value.extend(pool[k] for k in pool_sorted)
             self.sql_queue.put({
+                'command': 'insert',
                 'name': name,
                 'column': column + new_column,
                 'value': value + new_value
@@ -208,7 +216,7 @@ class Avalon4(miner.Miner):
 def db_init(conn, cursor):
     miner.db_init(conn, cursor)
 
-    data_edevs = [
+    column_edevs = [
         {'name': 'time',
             'type': 'TIMESTAMP'},
         {'name': 'ip',
@@ -292,7 +300,7 @@ def db_init(conn, cursor):
         {'name': 'usb_tmo',
             'type': 'VARCHAR(32)'}
     ]
-    data_estats = [
+    column_estats = [
         {'name': 'time',
             'type': 'TIMESTAMP'},
         {'name': 'ip',
@@ -374,11 +382,12 @@ def db_init(conn, cursor):
         {'name': 'led',
             'type': 'BOOL'},
     ]
-    miner.create_table(
-        conn, cursor, 'device', data_edevs,
+    miner_sql = sql.SQL(conn, cursor)
+    miner_sql.run(
+        'create', 'device', column_edevs,
         'PRIMARY KEY(`time`, `ip`, `port`, `device_id`)'
     )
-    miner.create_table(
-        conn, cursor, 'module', data_estats,
+    miner_sql.run(
+        'create', 'module', column_estats,
         'PRIMARY KEY(`time`, `ip`, `port`, `device_id`, `module_id`)'
     )
