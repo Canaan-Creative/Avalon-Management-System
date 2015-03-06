@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with AMS.  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+
 from ams.farm import Farm
 from ams.log import log
 
@@ -25,10 +27,10 @@ from ams.log import log
 def main():
     miners = []
     miners.append({'ip': '192.168.1.21', 'port': 4028, 'mods': [5, 5]})
-    # miners.append({'ip': '192.168.2.22', 'port': 4028, 'mods': [5, 5]})
-    # miners.append({'ip': '192.168.2.23', 'port': 4028, 'mods': [5, 5]})
-    # miners.append({'ip': '192.168.2.24', 'port': 4028, 'mods': [5, 5]})
-    # miners.append({'ip': '192.168.2.25', 'port': 4028, 'mods': [4, 4]})
+    miners.append({'ip': '192.168.1.22', 'port': 4028, 'mods': [5, 5]})
+    miners.append({'ip': '192.168.1.23', 'port': 4028, 'mods': [5, 5]})
+    miners.append({'ip': '192.168.1.24', 'port': 4028, 'mods': [5, 5]})
+    miners.append({'ip': '192.168.1.25', 'port': 4028, 'mods': [4, 4]})
     myFarm = Farm(miners, 'avalon4')
 
     db = {'host': '127.0.0.1',
@@ -38,7 +40,8 @@ def main():
           'thread_num': 50}
     myFarm.db_init(db)
 
-    myFarm.run('2000-01-01 00:00:00', 100, 5)
+    now = datetime.datetime.now()
+    myFarm.run('{:%Y-%m-%d %H-%M-%D}'.format(now), 100, 5)
 
 
 if __name__ == '__main__':
