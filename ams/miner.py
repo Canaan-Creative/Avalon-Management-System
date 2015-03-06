@@ -35,26 +35,67 @@ class Miner():
         self.log = logging.getLogger('AMS.Miner')
 
     def __str__(self):
-        ip = '[{}]'.format(self.ip) if ':' in self.ip else self.ip
-        return '{}|{}:{}'.format(self.name, ip, self.port)
+        ip = '({})'.format(self.ip) if ':' in self.ip else self.ip
+        return '[{}:{}]'.format(ip, self.port)
 
     def _collect(self, retry):
-        # TODO: add ping test
+        if not self._ping(retry):
+            for command in ['summary', 'edevs', 'estats', 'pools']:
+                self.raw[command] = None
+            return False
+
         for command in ['summary', 'edevs', 'estats', 'pools']:
-            for timeout in range(1, retry + 1):
+            for r in range(1, retry + 1):
                 try:
-                    response = self.put(command, timeout=timeout)
+                    response = self.put(command, timeout=r/2)
                     break
                 except socket.error:
                     response = None
-                    if timeout == retry:
+                    if r == retry:
                         self.log.error('{} Failed fetching {}.'
                                        .format(self, command))
                     else:
                         self.log.debug('{} Failed fetching {}. Retry {}'
-                                       .format(self, command, timeout))
+                                       .format(self, command, r))
             self.raw[command] = response
         return True
+
+    def _ping(self, retry):
+        for r in range(1, retry + 1):
+            for res in socket.getaddrinfo(
+                    self.ip, 80,
+                    socket.AF_UNSPEC,
+                    socket.SOCK_STREAM):
+
+                af, socktype, proto, canonname, sa = res
+                try:
+                    s = socket.socket(af, socktype, proto)
+                except socket.error:
+                    self.log.debug(
+                        '{} Error in ping test: socket init. '
+                        'Retry: {}.'.format(self, r)
+                    )
+                    s = None
+                    continue
+                s.settimeout(r/2)
+                try:
+                    s.connect(sa)
+                except socket.error:
+                    self.log.debug(
+                        '{} Error in ping test: socket connect. '
+                        'Retry: {}.'.format(self, r)
+                    )
+                    s.close()
+                    s = None
+                    continue
+                break
+            if s is None:
+                continue
+            else:
+                s.close()
+                return True
+        self.log.error('{} Error in ping test: connection failed.'.format(self))
+        return False
 
     def _generate_sql_summary(self, run_time):
         pass
