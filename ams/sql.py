@@ -57,6 +57,7 @@ class SQLThread(threading.Thread):
                     sql_raw['column'],
                     sql_raw['value']
                 )
+                conn.commit()
 
             self.sql_queue.task_done()
         cursor.close()
@@ -94,6 +95,10 @@ class SQL():
         )
         self.value = None
 
+    def _raw(self, query, value=None):
+        self.query = query
+        self.value = value
+
     def run(self, command, *args, **kwargs):
         if command == 'create':
             self._create(*args, **kwargs)
@@ -101,13 +106,14 @@ class SQL():
             self._insert(*args, **kwargs)
         elif command == 'select':
             self._select(*args, **kwargs)
+        elif command == 'raw':
+            self._raw(*args, **kwargs)
         else:
             self.log.error('Unknown sql command: {}'.format(command))
             return False
 
         try:
             self.cursor.execute(self.query, self.value)
-            self.conn.commit()
             return True
         except mysql.connector.Error as e:
             self.log.error(e.msg)

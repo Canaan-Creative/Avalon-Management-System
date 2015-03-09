@@ -55,7 +55,6 @@ class Avalon4(miner.Miner):
 
     def _generate_sql_summary(self, run_time):
         # 'summary' -> table 'miner'
-        name = 'miner'
         try:
             summary = self.raw['summary']['SUMMARY'][0]
         except TypeError:
@@ -78,7 +77,7 @@ class Avalon4(miner.Miner):
         value.extend(summary[k] for k in summary_sorted)
         self.sql_queue.put({
             'command': 'insert',
-            'name': name,
+            'name': 'miner_temp',
             'column': column,
             'value': value
         })
@@ -86,7 +85,6 @@ class Avalon4(miner.Miner):
     def _generate_sql_edevs(self, run_time):
         # 'edevs' -> table 'device'
         # 'estats' -> table 'module'
-        name = 'device'
         try:
             edevs = self.raw['edevs']['DEVS']
             estats = self.raw['estats']['STATS']
@@ -123,7 +121,7 @@ class Avalon4(miner.Miner):
             )
             self.sql_queue.put({
                 'command': 'insert',
-                'name': name,
+                'name': 'device_temp',
                 'column': column + new_column,
                 'value': value + new_value
             })
@@ -185,14 +183,13 @@ class Avalon4(miner.Miner):
 
         self.sql_queue.put({
             'command': 'insert',
-            'name': 'module',
+            'name': 'module_temp',
             'column': column + new_column,
             'value': value + new_value
         })
 
     def _generate_sql_pools(self, run_time):
         # 'pools' -> table 'pool'
-        name = 'pool'
         try:
             pools = self.raw['pools']['POOLS']
         except TypeError:
@@ -214,7 +211,7 @@ class Avalon4(miner.Miner):
             new_value.extend(pool[k] for k in pool_sorted)
             self.sql_queue.put({
                 'command': 'insert',
-                'name': name,
+                'name': 'pool_temp',
                 'column': column + new_column,
                 'value': value + new_value
             })
@@ -226,8 +223,8 @@ class Avalon4(miner.Miner):
         return super().put(*args, **kwargs)
 
 
-def db_init(conn, cursor):
-    miner.db_init(conn, cursor)
+def db_init(conn, cursor, temp=False):
+    miner.db_init(conn, cursor, temp)
 
     column_edevs = [
         {'name': 'time',
@@ -396,11 +393,30 @@ def db_init(conn, cursor):
             'type': 'BOOL'},
     ]
     miner_sql = sql.SQL(conn, cursor)
+    if temp:
+        name = ['device_temp', 'module_temp']
+    else:
+        name = ['device', 'module']
     miner_sql.run(
-        'create', 'device', column_edevs,
+        'create', name[0], column_edevs,
         'PRIMARY KEY(`time`, `ip`, `port`, `device_id`)'
     )
     miner_sql.run(
-        'create', 'module', column_estats,
+        'create', name[1], column_estats,
         'PRIMARY KEY(`time`, `ip`, `port`, `device_id`, `module_id`)'
     )
+    conn.commit()
+
+
+def db_final(conn, cursor):
+    miner_sql = sql.SQL(conn, cursor)
+    for name in ['miner', 'device', 'module', 'pool']:
+        miner_sql.run(
+            'raw',
+            'REPLACE INTO {0} SELECT * FROM {0}_temp'.format(name)
+        )
+    miner_sql.run(
+        'raw',
+        'DROP TABLES miner_temp, device_temp, module_temp, pool_temp'
+    )
+    conn.commit()

@@ -65,9 +65,19 @@ class Farm():
         cursor = conn.cursor()
 
         self.miner_type.db_init(conn, cursor)
+        cursor.close()
         conn.close()
 
     def run(self, run_time, thread_num, retry):
+        conn = mysql.connector.connect(
+            host=self.db['host'],
+            user=self.db['user'],
+            password=self.db['password'],
+            database=self.db['database']
+        )
+        cursor = conn.cursor()
+        self.miner_type.db_init(conn, cursor, temp=True)
+
         miner_queue = queue.Queue()
         for miner in self.miner_list:
             miner_queue.put(miner)
@@ -76,6 +86,10 @@ class Farm():
             miner_thread.daemon = True
             miner_thread.start()
         miner_queue.join()
+
+        self.miner_type.db_final(conn, cursor)
+        cursor.close()
+        conn.close()
 
 
 class Map():

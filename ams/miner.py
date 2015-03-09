@@ -178,7 +178,7 @@ class Miner():
         return json.loads(response.decode().replace('\x00', ''))
 
 
-def db_init(conn, cursor):
+def db_init(conn, cursor, temp=False):
     column_summary = [
         {'name': 'time',
             'type': 'TIMESTAMP'},
@@ -320,11 +320,16 @@ def db_init(conn, cursor):
             'type': 'DOUBLE'}
     ]
     miner_sql = sql.SQL(conn, cursor)
+    if temp:
+        name = ['miner_temp', 'pool_temp']
+    else:
+        name = ['miner', 'pool']
     miner_sql.run(
-        'create', 'miner', column_summary,
+        'create', name[0], column_summary,
         'PRIMARY KEY(`time`, `ip`, `port`)'
     )
     miner_sql.run(
-        'create', 'pool', column_pools,
+        'create', name[1], column_pools,
         'PRIMARY KEY(`time`, `ip`, `port`, `pool_id`)'
     )
+    conn.commit()
