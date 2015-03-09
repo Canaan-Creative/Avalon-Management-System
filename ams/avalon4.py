@@ -392,7 +392,7 @@ def db_init(conn, cursor, temp=False):
         {'name': 'led',
             'type': 'BOOL'},
     ]
-    miner_sql = sql.SQL(conn, cursor)
+    miner_sql = sql.SQL(cursor)
     if temp:
         name = ['device_temp', 'module_temp']
     else:
@@ -409,7 +409,7 @@ def db_init(conn, cursor, temp=False):
 
 
 def db_final(conn, cursor):
-    miner_sql = sql.SQL(conn, cursor)
+    miner_sql = sql.SQL(cursor)
     for name in ['miner', 'device', 'module', 'pool']:
         miner_sql.run(
             'raw',

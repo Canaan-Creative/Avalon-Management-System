@@ -42,7 +42,7 @@ class SQLThread(threading.Thread):
             database=self.database
         )
         cursor = conn.cursor()
-        miner_sql = SQL(conn, cursor)
+        miner_sql = SQL(cursor)
 
         while True:
             try:
@@ -65,8 +65,7 @@ class SQLThread(threading.Thread):
 
 
 class SQL():
-    def __init__(self, conn, cursor):
-        self.conn = conn
+    def __init__(self, cursor):
         self.cursor = cursor
         self.log = logging.getLogger('AMS.SQL')
 

@@ -319,7 +319,7 @@ def db_init(conn, cursor, temp=False):
         {'name': 'pool_stale',
             'type': 'DOUBLE'}
     ]
-    miner_sql = sql.SQL(conn, cursor)
+    miner_sql = sql.SQL(cursor)
     if temp:
         name = ['miner_temp', 'pool_temp']
     else:
