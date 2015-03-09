@@ -15,6 +15,6 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with AMS.  If not, see <http://www.gnu.org/licenses/>.
+# along with AMS. If not, see <http://www.gnu.org/licenses/>.
 
 __version__ = '3.0.dev1'
