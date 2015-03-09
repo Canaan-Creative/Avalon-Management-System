@@ -20,6 +20,7 @@
 import threading
 import logging
 import queue
+import time
 
 import mysql.connector
 
@@ -35,21 +36,27 @@ class SQLThread(threading.Thread):
         self.log = logging.getLogger('AMS.SQLThread')
 
     def run(self):
-        conn = mysql.connector.connect(
-            host=self.host,
-            user=self.user,
-            password=self.password,
-            database=self.database
-        )
+        try:
+            sql_raw = self.sql_queue.get(False)
+        except queue.Empty:
+            return
+
+        while True:
+            try:
+                conn = mysql.connector.connect(
+                    host=self.host,
+                    user=self.user,
+                    password=self.password,
+                    database=self.database
+                )
+                break
+            except mysql.connector.Error:
+                time.sleep(1)
+
         cursor = conn.cursor()
         miner_sql = SQL(cursor)
 
         while True:
-            try:
-                sql_raw = self.sql_queue.get(False)
-            except queue.Empty:
-                break
-
             if sql_raw['command'] == 'insert':
                 miner_sql.run(
                     'insert',
@@ -60,6 +67,12 @@ class SQLThread(threading.Thread):
                 conn.commit()
 
             self.sql_queue.task_done()
+
+            try:
+                sql_raw = self.sql_queue.get(False)
+            except queue.Empty:
+                break
+
         cursor.close()
         conn.close()
 
