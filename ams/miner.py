@@ -323,6 +323,12 @@ def db_init(conn, cursor, temp=False):
     if temp:
         name = ['miner_temp', 'pool_temp']
     else:
+        miner_sql.run(
+            'create',
+            'hashrate',
+            [{'name': 'time', 'type': 'timestamp'}],
+            'PRIMARY KEY (`time`)'
+        )
         name = ['miner', 'pool']
     miner_sql.run(
         'create', name[0], column_summary,

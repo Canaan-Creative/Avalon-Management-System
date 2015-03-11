@@ -15,7 +15,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with AMS.  If not, see <http://www.gnu.org/licenses/>.
+# along with AMS. If not, see <http://www.gnu.org/licenses/>.
 
 import json
 import urllib.parse
@@ -25,10 +25,15 @@ import hashlib
 import hmac
 import time
 import logging
+import threading
+import queue
+
+import mysql.connector
+
+import ams.sql as sql
 
 
 class Pool():
-
     name = "pool"
 
     def __init__(self, user, worker, api_key, api_secret_key=None):
@@ -48,11 +53,11 @@ class Pool():
                 result = self._collect()
             except (URLError, TypeError, ValueError, KeyError) as e:
                 if r == retry - 1:
-                    self.log.error('{} Failed fetching. {}'.
+                    self.log.error('[{}] Failed fetching. {}'.
                                    format(self.name, e))
                     return None
                 else:
-                    self.log.debug('{} Failed fetching. Retry {}. {}'.
+                    self.log.debug('[{}] Failed fetching. Retry {}. {}'.
                                    format(self.name, r, e))
                     continue
             break
@@ -60,129 +65,134 @@ class Pool():
 
 
 class ghash(Pool):
-
     name = "ghash.io"
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, retry):
-        super().run(retry)
 
     def _collect(self):
         url = 'https://cex.io/api/ghash.io/workers'
         nonce = '{:.0f}'.format(time.time()*1000)
-        signature = hmac.new(self.api_secret_key,
-                             msg=nonce + self.user + self.api_key,
-                             digestmod=hashlib.sha256).hexdigest().upper()
-        post_content = {'key': self.api_key,
-                        'signature': signature,
-                        'nonce': nonce}
-        param = urllib.parse.urlencode(post_content)
+        signature = hmac.new(
+            self.api_secret_key.encode(),
+            msg='{}{}{}'.format(nonce, self.user, self.api_key).encode(),
+            digestmod=hashlib.sha256
+        ).hexdigest().upper()
+        post_content = {
+            'key': self.api_key,
+            'signature': signature,
+            'nonce': nonce
+        }
+        param = urllib.parse.urlencode(post_content).encode()
         request = urllib.request.Request(
-            url, param, {'User-agent': 'bot-cex.io-{}'.format(self.username)})
-        js = urllib.request.urlopen(request).read()
-        data = json.loads(js)
+            url,
+            param,
+            {'User-agent': 'bot-cex.io-{}'.format(self.user)}
+        )
+        data = json.loads(urllib.request.urlopen(request).read().decode())
 
         return float(data[self.fullname]['last1h'])
 
 
 class ozcoin(Pool):
-
     name = "ozco.in"
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, retry):
-        super().run(retry)
 
     def _collect(self):
         url = 'http://ozco.in/api.php?api_key={}'.format(self.api_key)
-        js = urllib.request.urlopen(url).read()
-        data = json.loads(js)
+        data = json.loads(urllib.request.urlopen(url).read().decode())
 
         return float(''.join(data['worker'][self.fullname]
                              ['current_speed'].split(',')))
 
 
 class btcchina(Pool):
-
     name = "btcchina.com"
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, retry):
-        super().run(retry)
 
     def _collect(self):
         url = 'https://pool.btcchina.com/api?api_key={}'.format(self.api_key)
-        js = urllib.request.urlopen(url).read()
-        data = json.loads(js)
+        data = json.loads(urllib.request.urlopen(url).read().decode())
 
         for worker in data['user']['workers']:
             if worker['worker_name'] == self.fullname:
                 return float(worker['hashrate']) / 1000000.0
 
 
-class ckpool(Pool):
-
-    name = "ckpool.org"
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, retry):
-        super().run(retry)
-
-    def _collect(self):
-        url = 'http://solo.ckpool.org/ahusers/{}'.format(self.api_key)
-        js = urllib.request.urlopen(url).read()
-        data = json.loads(js)
-
-        result = data['hashrate1hr']
-        if result[-1] == 'P':
-            result = float(result[:-1]) * 1000000000
-        elif result[-1] == 'T':
-            result = float(result[:-1]) * 1000000
-        elif result[-1] == 'G':
-            result = float(result[:-1]) * 1000
-        else:
-            result = float(result[:-1])
-        return result
-
-
 class kano(Pool):
-
     name = "kano.is"
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, retry):
-        super().run(retry)
 
     def _collect(self):
         url = ('http://kano.is/index.php?k=api&username={}&api={}'
                '&json=y&work=y').format(self.user, self.api_key)
-        js = urllib.request.urlopen(url).read()
-        data = json.loads(js)
+        data = json.loads(urllib.request.urlopen(url).read().decode())
 
-        for key, value in data.iteritems():
-            if value == self.fullname:
+        for key in data:
+            if data[key] == self.fullname:
                 index = key.split(':')[1]
                 break
         return float(data['w_hashrate5m:{}'.format(index)]) / 1000000.0
 
 
-def update_poolrate(pool_list, retry):
-    hashrate = []
+def update_poolrate(pool_list, run_time, db, retry):
+    pool_queue = queue.Queue()
+    hashrate_queue = queue.Queue()
+
     for p in pool_list:
-        if p['name'] in ['ghash', 'ozcoin', 'btcchina', 'ckpool', 'kano']:
-            pool_class = eval(p['name'])
-            pool = pool_class(p['user'], p['worker'], p['api_key'],
-                              p['api_secret_key'] if 'api_secret_key' in p
-                              else None)
-            hashrate.append(pool.run(retry))
-    return hashrate
+        if p['name'] in ['ghash', 'ozcoin', 'btcchina', 'kano']:
+            pool_queue.put(p)
+
+    for i in range(len(pool_list)):
+        pool_thread = PoolThread(pool_queue, hashrate_queue, retry)
+        pool_thread.daemon = True
+        pool_thread.start()
+    pool_queue.join()
+
+    column = ['time']
+    value = [run_time]
+    while not hashrate_queue.empty():
+        h = hashrate_queue.get(False)
+        column.append(h['name'])
+        value.append(h['hashrate'])
+
+    conn = mysql.connector.connect(
+        host=db['host'],
+        user=db['user'],
+        password=db['password'],
+        database=db['database']
+    )
+    cursor = conn.cursor()
+
+    pool_sql = sql.SQL(cursor)
+
+    if not pool_sql.run('insert', 'hashrate', column, value):
+        for i in range(len(column) - 1):
+            pool_sql.run(
+                'raw',
+                'ALTER TABLE hashrate ADD `{}` DOUBLE'.format(column[i + 1])
+            )
+        conn.commit()
+        pool_sql.run('insert', 'hashrate', column, value)
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+class PoolThread(threading.Thread):
+    def __init__(self, pool_queue, hashrate_queue, retry):
+        threading.Thread.__init__(self)
+        self.pool_queue = pool_queue
+        self.hashrate_queue = hashrate_queue
+        self.retry = retry
+
+    def run(self):
+        while True:
+            try:
+                p = self.pool_queue.get(False)
+            except queue.Empty:
+                break
+            pool = eval(p['name'])(
+                p['user'],
+                p['worker'],
+                p['api_key'],
+                p['api_secret_key'] if 'api_secret_key' in p else None
+            )
+            hashrate = pool.run(self.retry)
+            self.hashrate_queue.put({'name': p['name'], 'hashrate': hashrate})
+            self.pool_queue.task_done()
