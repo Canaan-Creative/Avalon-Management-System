@@ -24,8 +24,8 @@ Installation
 
 .. code-block:: bash
 
-    $ apt-get install python3 python3-yaml
-    $ wget http://ftp.ntu.edu.tw/MySQL/Downloads/Connector-Python/mysql-connector-python-1.2.3.tar.gz
-    $ tar zxpfv mysql-connector-python-1.2.3.tar.gz
-    $ cd mysql-connector-python-1.2.3
-    $ python3 setup.py install
+    apt-get install python3 python3-yaml
+    wget http://ftp.ntu.edu.tw/MySQL/Downloads/Connector-Python/mysql-connector-python-1.2.3.tar.gz
+    tar zxpfv mysql-connector-python-1.2.3.tar.gz
+    cd mysql-connector-python-1.2.3
+    python3 setup.py install
