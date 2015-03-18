@@ -64,11 +64,11 @@ def main():
         }
     ]
 
-    now = datetime.datetime.now()
+    now = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
 
     farm_process = Process(
         target=myFarm.run,
-        args=('{:%Y-%m-%d %H-%M-%D}'.format(now), 100, 5)
+        args=(now, 100, 5)
     )
     pool_process = Process(
         target=update_poolrate,

@@ -41,7 +41,7 @@ def main():
     myFarm.db_init(db)
 
     now = datetime.datetime.now()
-    myFarm.run('{:%Y-%m-%d %H-%M-%D}'.format(now), 100, 5)
+    myFarm.run('{:%Y-%m-%d %H:%M:%S}'.format(now), 100, 5)
 
 
 if __name__ == '__main__':

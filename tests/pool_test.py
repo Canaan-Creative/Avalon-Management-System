@@ -58,7 +58,7 @@ def main():
         }
     ]
 
-    now = datetime.datetime.now()
+    now = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
     update_poolrate(pool_list, now, db, retry=3)
 
 
