@@ -39,7 +39,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                    "INSERT INTO Device_" + timenow + " VALUES(" +
                    ("%s," * 5)[:-1] + ")",
                    "INSERT INTO Module_" + timenow + " VALUES(" +
-                   ("%s," * 16)[:-1] + ")",
+                   ("%s," * 17)[:-1] + ")",
                    "INSERT INTO Pool_" + timenow + " VALUES(" +
                    ("%s," * 6)[:-1] + ")",
                    "INSERT INTO Error_" + timenow + " VALUES(" +
@@ -77,8 +77,24 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                 block0 = 0
                 newblock0 = 0
                 deltatime = 0
+            c.execute("SELECT dna, elapsed, lw, hw FROM Module_{0}"
+                      " WHERE ip = %s AND port = %s".format(time0), (ip, port))
+            subresult = c.fetchall()
+            if subresult:
+                module_lastinfo = {}
+                for s in subresult:
+                    (dna, elapsed, lw, hw) = s
+                    module_lastinfo[dna] = {
+                        'elapsed': elapsed,
+                        'lw': lw,
+                        'hw': hw
+                    }
+            else:
+                module_lastinfo = None
+
         else:
             # First time running.
+            module_lastinfo = None
             elapsed0 = 0
             megahash0 = 0.0
             block0 = 0
@@ -228,6 +244,22 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                         freq = float(module_info['Freq'])
                         pg = int(module_info['PG'])
 
+                        mghs = None
+                        if module_lastinfo is not None:
+                            if dna in module_lastinfo:
+                                lw0 = module_lastinfo[dna]['lw']
+                                hw0 = module_lastinfo[dna]['hw']
+                                melapsed0 = module_lastinfo[dna]['elapsed']
+                                if melapsed - melapsed0 > deltatime - 5:
+                                    mghs = (lw - lw0 + hw0 - hw) * (
+                                        0xffffffff / 1000000000.0 / deltatime)
+                        if mghs is None:
+                            try:
+                                mghs = (lw - hw) * (
+                                    0xffffffff / 1000000000.0 / melapsed)
+                            except:
+                                mghs = 0
+
                         flag = [False for k in range(9)]
 
                         if temp >= 200:
@@ -258,7 +290,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
 
                         param = (ip, port, deviceid, moduleid, dna, melapsed,
                                  lw, hw, dh, ghs5m, dh5m, temp, fan, volt, freq,
-                                 pg)
+                                 pg, mghs)
                         moduleParam.append(param)
                         error = False
                         for f in flag:
@@ -378,7 +410,8 @@ def analyze(dataQueue, timenow, cfg):
               "fan INT UNSIGNED, "
               "vol SMALLINT UNSIGNED, "
               "freq DOUBLE, "
-              "pg SMALLINT UNSIGNED)".format(timenow))
+              "pg SMALLINT UNSIGNED, "
+              "ghs DOUBLE)".format(timenow))
     db.commit()
     c.execute("CREATE TABLE Pool_{0} "
               "(ip VARCHAR(15), "
