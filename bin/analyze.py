@@ -250,13 +250,13 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                                 lw0 = module_lastinfo[dna]['lw']
                                 hw0 = module_lastinfo[dna]['hw']
                                 melapsed0 = module_lastinfo[dna]['elapsed']
-                                if melapsed - melapsed0 > deltatime - 5:
+                                if int(melapsed) - melapsed0 > deltatime - 5:
                                     mghs = (lw - lw0 + hw0 - hw) * (
                                         0xffffffff / 1000000000.0 / deltatime)
                         if mghs is None:
                             try:
                                 mghs = (lw - hw) * (
-                                    0xffffffff / 1000000000.0 / melapsed)
+                                    0xffffffff / 1000000000.0 / int(melapsed))
                             except:
                                 mghs = 0
 
@@ -285,7 +285,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                             flag[5] = True
                         if fan == 0:
                             flag[7] = True
-                        if ghs5m < 600 and melapsed >= 300:
+                        if ghs5m < 600 and int(melapsed) >= 300:
                             flag[8] = True
 
                         param = (ip, port, deviceid, moduleid, dna, melapsed,
