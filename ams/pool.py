@@ -125,8 +125,8 @@ class kano(Pool):
         for key in data:
             if data[key] == self.fullname:
                 index = key.split(':')[1]
-                break
-        return float(data['w_hashrate5m:{}'.format(index)]) / 1000000.0
+                return float(data['w_hashrate5m:{}'.format(index)]) / 1000000.0
+        return None
 
 
 def update_poolrate(pool_list, run_time, db, retry):
