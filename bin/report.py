@@ -115,7 +115,10 @@ def sendMail(time_d, cfg):
 
         sum_balance = 0
         for balance in mail['balance']:
-            sum_balance += float(balance['final_balance'])
+            try:
+                sum_balance += float(balance['final_balance'])
+            except ValueError:
+                sum_balance += 0
         template_var['sum_balance'] = sum_balance
     else:
         template_var['balance'] = False

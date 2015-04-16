@@ -17,7 +17,7 @@ def balance(cfg):
         addr = address[i]
         print(addr, end="... ")
         sys.stdout.flush()
-        url = ("http://blockchain.info/address/{}?"
+        url = ("https://blockchain.info/address/{}?"
                "format=json&limit=0").format(addr)
 
         try:
