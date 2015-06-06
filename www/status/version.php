@@ -5,9 +5,10 @@ if (! isset ($_COOKIE['userId'])){
 }
 
 $ip = empty($_POST['ip']) ? 0 : $_POST['ip'];
-$output = array();
-exec("python version.py " . $ip, $output);
-$version = $output[0];
+if (preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $ip)) {
+	$output = array();
+	exec("python version.py " . $ip, $output);
+	$version = $output[0];
 
-echo json_encode(array('version' => $version));
-exit;
+	echo json_encode(array('version' => $version));
+}

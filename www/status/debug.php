@@ -9,8 +9,9 @@ $port = empty($_GET['port']) ? 4028 : $_GET['port'];
 
 if (!$ip)
 	exit;
-
-$output = array();
-exec("python debug.py " . $ip . " " . $port, $output);
-foreach ($output as $o)
-	echo $o . "<br />";
+if (preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $ip) && is_numeric($port)) {
+    $output = array();
+    exec("python debug.py " . $ip . " " . $port, $output);
+    foreach ($output as $o)
+		echo $o . "<br />";
+}
