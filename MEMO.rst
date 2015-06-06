@@ -3,21 +3,20 @@ Local Hashrate
 
 .. code-block:: sql
 
-    SELECT a.time,
-           b.time previous_time,
-           SUM(IF(
-               a.precise_time > b.precise_time
-                   AND a.precise_time - b.precise_time > a.elapsed - b.elapsed -1 
-                   AND a.precise_time - b.precise_time < a.elapsed - b.elapsed +1,
-               (a.total_mh - b.total_mh) / (a.elapsed - b.elapsed), a.total_mh / a.elapsed
-           )) mhs
-      FROM miner a 
-      JOIN miner b 
-        ON a.ip = b.ip AND a.port = b.port AND a.time > b.time
-      LEFT OUTER JOIN miner c 
-        ON a.ip = c.ip AND a.port = c.port AND a.time > c.time AND b.time < c.time
-     WHERE c.time IS NULL
-     GROUP BY a.time;
+    UPDATE miner_temp AS a
+      LEFT OUTER JOIN (
+               SELECT time, ip, port, precise_time, elapsed, total_mh
+                 FROM miner
+                WHERE time = (SELECT MAX(time) FROM miner)
+           ) b
+        ON a.ip = b.ip and a.port = b.port
+       SET mhs = IF(
+             a.precise_time > b.precise_time
+                 AND TIMESTAMPDIFF(SECOND, b.precise_time, a.precise_time) >= a.elapsed - b.elapsed - 1
+                 AND TIMESTAMPDIFF(SECOND, b.precise_time, a.precise_time) <= a.elapsed - b.elapsed + 1,
+             (a.total_mh - b.total_mh) / (a.elapsed - b.elapsed),
+             a.total_mh / a.elapsed
+           );
 
 Installation
 ------------
