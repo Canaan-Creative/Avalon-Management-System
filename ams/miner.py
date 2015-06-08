@@ -200,6 +200,8 @@ def db_init(conn, cursor, temp=False):
          'type': 'DOUBLE'},
         {'name': 'mhs_15m',
          'type': 'DOUBLE'},
+        {'name': 'mhs',
+         'type': 'DOUBLE'},
         {'name': 'found_blocks',
          'type': 'INT UNSIGNED'},
         {'name': 'getworks',

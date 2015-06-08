@@ -410,6 +410,27 @@ def db_init(conn, cursor, temp=False):
 
 def db_final(conn, cursor):
     miner_sql = sql.SQL(cursor)
+    miner_sql.run(
+        'raw',
+        '''
+UPDATE miner_temp AS a
+  LEFT OUTER JOIN (
+           SELECT time, ip, port, precise_time, elapsed, total_mh
+             FROM miner
+            WHERE time = (SELECT MAX(time) FROM miner)
+       ) b
+    ON a.ip = b.ip and a.port = b.port
+   SET mhs = IF(
+         a.precise_time > b.precise_time
+             AND TIMESTAMPDIFF(SECOND, b.precise_time, a.precise_time)
+                     >= a.elapsed - b.elapsed - 1
+             AND TIMESTAMPDIFF(SECOND, b.precise_time, a.precise_time)
+                     <= a.elapsed - b.elapsed + 1,
+         (a.total_mh - b.total_mh) / (a.elapsed - b.elapsed),
+         a.total_mh / a.elapsed
+       )
+        '''
+    )
     for name in ['miner', 'device', 'module', 'pool']:
         miner_sql.run(
             'raw',
