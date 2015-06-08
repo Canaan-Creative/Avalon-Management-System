@@ -25,7 +25,7 @@ import ams.sql as sql
 
 
 class Avalon4(miner.Miner):
-    _pattern = re.compile(r'Ver\[(?P<Ver>[-0-9A-Fa-f]+)\]\s'
+    _pattern = re.compile(r'Ver\[(?P<Ver>[-0-9A-Fa-f+]+)\]\s'
                           'DNA\[(?P<DNA>[0-9A-Fa-f]+)\]\s'
                           'Elapsed\[(?P<Elapsed>[-0-9]+)\]\s'
                           # 'MW\[(?P<MW>[-\s0-9]+)\]\s'
