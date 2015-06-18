@@ -28,3 +28,6 @@ Installation
     tar zxpfv mysql-connector-python-1.2.3.tar.gz
     cd mysql-connector-python-1.2.3
     python3 setup.py install
+
+    apt-get install libyaml-devel php5-devel
+    pecl install yaml
