@@ -328,7 +328,7 @@ def db_init(conn, cursor, temp=False):
         miner_sql.run(
             'create',
             'hashrate',
-            [{'name': 'time', 'type': 'timestamp'}],
+            [{'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'}],
             'PRIMARY KEY (`time`)'
         )
         name = ['miner', 'pool']
