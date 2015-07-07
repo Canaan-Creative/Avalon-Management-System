@@ -18,11 +18,8 @@
 # along with AMS. If not, see <http://www.gnu.org/licenses/>.
 
 import socket
-import queue
 import json
 import logging
-
-import ams.sql as sql
 
 
 class Miner():
@@ -48,11 +45,14 @@ class Miner():
             for r in range(1, retry + 1):
                 try:
                     response = self.put(command, timeout=r/2)
-                    break
+                    if not response:
+                        continue
+                    else:
+                        break
                 except socket.error:
                     response = None
                     if r == retry:
-                        self.log.error('{} Failed fetching {}.'
+                        self.log.error('{} Failed fetching {}. Giving up.'
                                        .format(self, command))
                     else:
                         self.log.debug('{} Failed fetching {}. Retry {}'
@@ -109,30 +109,14 @@ class Miner():
     def _generate_sql_pools(self, run_time):
         pass
 
-    def run(self, run_time, retry, db):
+    def run(self, run_time, sql_queue, retry):
         self.raw = {}
-        self.sql_queue = queue.Queue()
+        self.sql_queue = sql_queue
         self._collect(retry)
         self._generate_sql_summary(run_time)
         self._generate_sql_edevs(run_time)
         self._generate_sql_estats(run_time)
         self._generate_sql_pools(run_time)
-        host = db['host']
-        database = db['database']
-        user = db['user']
-        password = db['password']
-        thread_num = db['thread_num']
-        for i in range(thread_num):
-            sql_thread = sql.SQLThread(
-                self.sql_queue,
-                host,
-                database,
-                user,
-                password
-            )
-            sql_thread.daemon = True
-            sql_thread.start()
-        self.sql_queue.join()
 
     def put(self, command, parameter=None, timeout=3):
         if parameter is None:
@@ -168,17 +152,26 @@ class Miner():
         if s is None:
             raise socket.error
         s.sendall(request.encode())
-        response = s.recv(4096)
+        response = s.recv(32768)
         while True:
-            recv = s.recv(4096)
+            recv = s.recv(32768)
             if not recv:
                 break
             else:
                 response += recv
-        return json.loads(response.decode().replace('\x00', ''))
+        response = ''.join(
+            [x if ord(x) >= 32 else '' for x in response.decode()]
+        )
+        try:
+            obj = json.loads(response)
+            return obj
+        except Exception as e:
+            self.log.error('{} Error decoding json: {}'.format(self, e))
+            self.log.debug('{} Error decoding json: {}'.format(self, response))
+            return False
 
 
-def db_init(conn, cursor, temp=False):
+def db_init(sql_queue, temp=False):
     column_summary = [
         {'name': 'time',
          'type': 'TIMESTAMP DEFAULT 0'},
@@ -321,23 +314,25 @@ def db_init(conn, cursor, temp=False):
         {'name': 'pool_stale',
          'type': 'DOUBLE'}
     ]
-    miner_sql = sql.SQL(cursor)
     if temp:
         name = ['miner_temp', 'pool_temp']
     else:
-        miner_sql.run(
-            'create',
-            'hashrate',
-            [{'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'}],
-            'PRIMARY KEY (`time`)'
-        )
+        sql_queue.put({
+            'command': 'create',
+            'name': 'hashrate',
+            'column_def': [{'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'}],
+            'additional': 'PRIMARY KEY (`time`)',
+        })
         name = ['miner', 'pool']
-    miner_sql.run(
-        'create', name[0], column_summary,
-        'PRIMARY KEY(`time`, `ip`, `port`)'
-    )
-    miner_sql.run(
-        'create', name[1], column_pools,
-        'PRIMARY KEY(`time`, `ip`, `port`, `pool_id`)'
-    )
-    conn.commit()
+    sql_queue.put({
+        'command': 'create',
+        'name': name[0],
+        'column_def': column_summary,
+        'additional': 'PRIMARY KEY(`time`, `ip`, `port`)',
+    })
+    sql_queue.put({
+        'command': 'create',
+        'name': name[1],
+        'column_def': column_pools,
+        'additional': 'PRIMARY KEY(`time`, `ip`, `port`, `pool_id`)',
+    })

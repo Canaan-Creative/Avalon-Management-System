@@ -21,7 +21,6 @@ import re
 import datetime
 
 import ams.miner as miner
-import ams.sql as sql
 
 
 class Avalon4(miner.Miner):
@@ -223,8 +222,8 @@ class Avalon4(miner.Miner):
         return super().put(*args, **kwargs)
 
 
-def db_init(conn, cursor, temp=False):
-    miner.db_init(conn, cursor, temp)
+def db_init(sql_queue, temp=False):
+    miner.db_init(sql_queue, temp)
 
     column_edevs = [
         {'name': 'time',
@@ -392,27 +391,30 @@ def db_init(conn, cursor, temp=False):
         {'name': 'led',
          'type': 'BOOL'},
     ]
-    miner_sql = sql.SQL(cursor)
     if temp:
         name = ['device_temp', 'module_temp']
     else:
         name = ['device', 'module']
-    miner_sql.run(
-        'create', name[0], column_edevs,
-        'PRIMARY KEY(`time`, `ip`, `port`, `device_id`)'
-    )
-    miner_sql.run(
-        'create', name[1], column_estats,
-        'PRIMARY KEY(`time`, `ip`, `port`, `device_id`, `module_id`)'
-    )
-    conn.commit()
+    sql_queue.put({
+        'command': 'create',
+        'name': name[0],
+        'column_def': column_edevs,
+        'additional': 'PRIMARY KEY(`time`, `ip`, `port`, `device_id`)',
+    })
+    sql_queue.put({
+        'command': 'create',
+        'name': name[1],
+        'column_def': column_estats,
+        'additional': 'PRIMARY KEY(\
+            `time`, `ip`, `port`, `device_id`, `module_id`\
+        )',
+    })
 
 
-def db_final(conn, cursor):
-    miner_sql = sql.SQL(cursor)
-    miner_sql.run(
-        'raw',
-        '''
+def db_final(sql_queue):
+    sql_queue.put({
+        'command': 'raw',
+        'query': '''
 UPDATE miner_temp AS a
   LEFT OUTER JOIN (
            SELECT time, ip, port, precise_time, elapsed, total_mh
@@ -429,15 +431,14 @@ UPDATE miner_temp AS a
          (a.total_mh - b.total_mh) / (a.elapsed - b.elapsed),
          a.total_mh / a.elapsed
        )
-        '''
-    )
+        ''',
+    })
     for name in ['miner', 'device', 'module', 'pool']:
-        miner_sql.run(
-            'raw',
-            'REPLACE INTO {0} SELECT * FROM {0}_temp'.format(name)
-        )
-    miner_sql.run(
-        'raw',
-        'DROP TABLES miner_temp, device_temp, module_temp, pool_temp'
-    )
-    conn.commit()
+        sql_queue.put({
+            'command': 'raw',
+            'query': 'REPLACE INTO {0} SELECT * FROM {0}_temp'.format(name),
+        })
+    sql_queue.put({
+        'command': 'raw',
+        'query': 'DROP TABLES miner_temp, device_temp, module_temp, pool_temp',
+    })

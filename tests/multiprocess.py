@@ -19,11 +19,12 @@
 # along with AMS. If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 
 from ams.farm import Farm
 from ams.log import log
 from ams.pool import update_poolrate
+from ams.sql import sql_handler
 
 
 def main():
@@ -40,7 +41,6 @@ def main():
           'user': 'ams',
           'password': 'ams',
           'thread_num': 50}
-    myFarm.db_init(db)
 
     pool_list = [
         {
@@ -65,19 +65,26 @@ def main():
     ]
 
     now = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+    sql_queue = [Queue(), Queue()]
 
     farm_process = Process(
         target=myFarm.run,
-        args=(now, 100, 5)
+        args=(now, sql_queue, 5, 100)
     )
     pool_process = Process(
         target=update_poolrate,
         args=(pool_list, now, db, 3)
     )
-    farm_process.start()
+    db_process = Process(
+        target=sql_handler,
+        args=(sql_queue, db)
+    )
+    db_process.start()
     pool_process.start()
-    farm_process.join()
+    farm_process.start()
     pool_process.join()
+    farm_process.join()
+    db_process.join()
 
 
 if __name__ == '__main__':

@@ -21,8 +21,6 @@ import logging
 import threading
 import queue
 
-import mysql.connector
-
 
 class Farm():
     def __init__(self, miner_info, farm_type):
@@ -54,42 +52,26 @@ class Farm():
 
             self.miner_list.append(self.miner_class(ip, port, module_list))
 
-    def db_init(self, db):
-        self.db = db
-        conn = mysql.connector.connect(
-            host=db['host'],
-            user=db['user'],
-            password=db['password'],
-            database=db['database']
-        )
-        cursor = conn.cursor()
-
-        self.miner_type.db_init(conn, cursor)
-        cursor.close()
-        conn.close()
-
-    def run(self, run_time, thread_num, retry):
-        conn = mysql.connector.connect(
-            host=self.db['host'],
-            user=self.db['user'],
-            password=self.db['password'],
-            database=self.db['database']
-        )
-        cursor = conn.cursor()
-        self.miner_type.db_init(conn, cursor, temp=True)
+    def run(self, run_time, sql_queue, retry, thread_num):
+        self.miner_type.db_init(sql_queue[0])
+        self.miner_type.db_init(sql_queue[0], temp=True)
+        sql_queue[0].put("end")
 
         miner_queue = queue.Queue()
         for miner in self.miner_list:
             miner_queue.put(miner)
         for i in range(thread_num):
-            miner_thread = MinerThread(run_time, miner_queue, retry, self.db)
+            miner_thread = MinerThread(
+                run_time, sql_queue[1], retry, miner_queue
+            )
             miner_thread.daemon = True
             miner_thread.start()
         miner_queue.join()
+        sql_queue[1].put("end")
 
-        self.miner_type.db_final(conn, cursor)
-        cursor.close()
-        conn.close()
+        self.miner_type.db_final(sql_queue[0])
+        sql_queue[0].put("end")
+
 
 
 class Map():
@@ -97,12 +79,12 @@ class Map():
 
 
 class MinerThread(threading.Thread):
-    def __init__(self, run_time, miner_queue, retry, db):
+    def __init__(self, run_time, sql_queue, retry, miner_queue):
         threading.Thread.__init__(self)
         self.run_time = run_time
         self.miner_queue = miner_queue
-        self.db = db
         self.retry = retry
+        self.sql_queue = sql_queue
 
     def run(self):
         while True:
@@ -110,5 +92,5 @@ class MinerThread(threading.Thread):
                 miner = self.miner_queue.get(False)
             except queue.Empty:
                 break
-            miner.run(self.run_time, self.retry, self.db)
+            miner.run(self.run_time, self.sql_queue, self.retry)
             self.miner_queue.task_done()

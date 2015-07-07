@@ -19,14 +19,13 @@
 
 import threading
 import logging
-import queue
 import time
 
 import mysql.connector
 
 
 class SQLThread(threading.Thread):
-    def __init__(self, sql_queue, host, database, user, password):
+    def __init__(self, sql_queue, host, database, user, password, single):
         threading.Thread.__init__(self)
         self.sql_queue = sql_queue
         self.host = host
@@ -34,14 +33,11 @@ class SQLThread(threading.Thread):
         self.user = user
         self.password = password
         self.log = logging.getLogger('AMS.SQLThread')
+        self.single = single
 
     def run(self):
-        try:
-            sql_raw = self.sql_queue.get(False)
-        except queue.Empty:
-            return
-
-        while True:
+        retry = 0
+        while retry < 3:
             try:
                 conn = mysql.connector.connect(
                     host=self.host,
@@ -51,27 +47,23 @@ class SQLThread(threading.Thread):
                 )
                 break
             except mysql.connector.Error:
-                time.sleep(1)
+                time.sleep(2)
+                retry += 1
+
+        if retry == 3:
+            return
 
         cursor = conn.cursor()
-        miner_sql = SQL(cursor)
+        sql = SQL(cursor)
 
         while True:
-            if sql_raw['command'] == 'insert':
-                miner_sql.run(
-                    'insert',
-                    sql_raw['name'],
-                    sql_raw['column'],
-                    sql_raw['value']
-                )
-                conn.commit()
-
-            self.sql_queue.task_done()
-
-            try:
-                sql_raw = self.sql_queue.get(False)
-            except queue.Empty:
+            sql_raw = self.sql_queue.get()
+            if sql_raw == "end":
+                if not self.single:
+                    self.sql_queue.put("end")
                 break
+            sql.run(**sql_raw)
+            conn.commit()
 
         cursor.close()
         conn.close()
@@ -128,8 +120,49 @@ class SQL():
             self.cursor.execute(self.query, self.value)
             return True
         except mysql.connector.Error as e:
-            self.log.error(e.msg)
+            self.log.error(str(e))
             self.log.debug(self.query)
             if self.value is not None:
                 self.log.debug(self.value)
             return False
+
+
+def sql_handler(sql_queue, db):
+
+    t = SQLThread(
+        sql_queue[0],
+        db['host'],
+        db['database'],
+        db['user'],
+        db['password'],
+        single=True
+    )
+    t.start()
+    t.join()
+
+    threads = []
+    for i in range(db['thread_num']):
+        t = SQLThread(
+            sql_queue[1],
+            db['host'],
+            db['database'],
+            db['user'],
+            db['password'],
+            single=False
+        )
+        t.start()
+        threads.append(t)
+
+    for t in threads:
+        t.join()
+
+    t = SQLThread(
+        sql_queue[0],
+        db['host'],
+        db['database'],
+        db['user'],
+        db['password'],
+        single=True
+    )
+    t.start()
+    t.join()
