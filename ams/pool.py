@@ -41,7 +41,10 @@ class Pool():
         self.api_secret_key = api_secret_key
         self.user = user
         self.worker = worker
-        self.fullname = '{}.{}'.format(user, worker)
+        if isinstance(worker, list):
+            self.fullname = ['{}.{}'.format(user, w) for w in worker]
+        else:
+            self.fullname = ['{}.{}'.format(user, worker)]
         self.log = logging.getLogger('AMS.Pool')
 
     def _collect(self):
@@ -88,7 +91,10 @@ class ghash(Pool):
         )
         data = json.loads(urllib.request.urlopen(request).read().decode())
 
-        return float(data[self.fullname]['last1h'])
+        mhs = 0
+        for name in self.fullname:
+            mhs += float(data[name]['last1h'])
+        return mhs
 
 
 class ozcoin(Pool):
@@ -98,8 +104,11 @@ class ozcoin(Pool):
         url = 'http://ozco.in/api.php?api_key={}'.format(self.api_key)
         data = json.loads(urllib.request.urlopen(url).read().decode())
 
-        return float(''.join(data['worker'][self.fullname]
-                             ['current_speed'].split(',')))
+        mhs = 0
+        for name in self.fullname:
+            mhs += float(''.join(data['worker'][name]
+                                 ['current_speed'].split(',')))
+        return mhs
 
 
 class btcchina(Pool):
@@ -109,9 +118,11 @@ class btcchina(Pool):
         url = 'https://pool.btcchina.com/api?api_key={}'.format(self.api_key)
         data = json.loads(urllib.request.urlopen(url).read().decode())
 
+        mhs = 0
         for worker in data['user']['workers']:
-            if worker['worker_name'] == self.fullname:
-                return float(worker['hashrate']) / 1000000.0
+            if worker['worker_name'] in self.fullname:
+                mhs += float(worker['hashrate'])
+        return mhs / 1000000.0
 
 
 class kano(Pool):
@@ -122,11 +133,12 @@ class kano(Pool):
                '&json=y&work=y').format(self.user, self.api_key)
         data = json.loads(urllib.request.urlopen(url).read().decode())
 
+        mhs = 0
         for key in data:
-            if data[key] == self.fullname:
+            if data[key] in self.fullname:
                 index = key.split(':')[1]
-                return float(data['w_hashrate5m:{}'.format(index)]) / 1000000.0
-        return None
+                mhs += float(data['w_hashrate5m:{}'.format(index)])
+        return mhs / 1000000.0
 
 
 def update_poolrate(pool_list, run_time, db, retry):
