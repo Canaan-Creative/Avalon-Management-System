@@ -5,9 +5,9 @@ include 'include.php';
 <html>
   <head>
     <meta charset="utf-8" />
-    <link href="style/bootstrap.min.css" rel="stylesheet">
-    <link href="style/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="style/config.css" rel="stylesheet">
+    <link href="style/bootstrap.min.css" rel="stylesheet" />
+    <link href="style/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="style/config.css" rel="stylesheet" />
     <title>AMS - Configuration</title>
   </head>
   <body>

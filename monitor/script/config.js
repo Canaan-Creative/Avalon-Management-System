@@ -31,7 +31,7 @@ function save() {
 			error = true;
 			$(cells[0]).css("color", "red");
 		} else for (var p of ip.split("."))
-			if (!isInterger(p) || parseInt(p) > 255 && parseInt(p) < 0) {
+			if (!isInterger(p) || (parseInt(p) > 255 && parseInt(p) < 0)) {
 				error = true;
 				$(cells[0]).css("color", "red");
 				break;
@@ -43,7 +43,7 @@ function save() {
 		$(cells[1]).css("background", "");
 		if (port === "")
 			$(cells[1]).css("background", "red");
-		if (!isInterger(port) || parseInt(port) > 65535 && parseInt(port) < 0) {
+		if (!isInterger(port) || (parseInt(port) > 65535 && parseInt(port) < 0)) {
 				error = true;
 				$(cells[1]).css("color", "red");
 		}
