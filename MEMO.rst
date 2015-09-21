@@ -31,3 +31,12 @@ Installation
 
     apt-get install libyaml-devel php5-devel
     pecl install yaml
+
+
+LuCI RPC API
+------------
+
+.. code-block:: bash
+    curl -X POST -d '{"method":"login","params":["root","password"]}' http://10.42.0.102/cgi-bin/luci/rpc/auth
+    curl -X POST -d '{"method":"call","params":["cat /etc/config/cgminer"]}' http://10.42.0.102/cgi-bin/luci/rpc/sys?auth=c4d73142c2904c1fc137dd4c77ffeb16
+    curl -X POST -d '{"method":"exec","params":["cat /etc/config/cgminer"]}' http://10.42.0.102/cgi-bin/luci/rpc/sys?auth=c4d73142c2904c1fc137dd4c77ffeb16
