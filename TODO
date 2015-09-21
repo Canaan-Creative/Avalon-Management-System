@@ -1,0 +1,18 @@
+Snapshot and realtime infos for whole farm or single pi/miner
+Custom graph??
+
+ams.lock, mysql database write lock
+
+amscli ctrl *edit RPi list* //Done
+amscli update *fetch RPi data and store in db* //Done
+amscli fetch ip port command *fetch RPi data, single thread* //Done
+
+amscli pool *edit Pool list*
+
+amscli plot ?
+amscli db SQL ?
+
+amscli alert
+
+amscli cfg F:CTR_LIST F:KEY=VALUE_LIST
+// luci api
