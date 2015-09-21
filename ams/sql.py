@@ -20,66 +20,74 @@
 import threading
 import logging
 import time
+from multiprocessing import Queue
 
 import mysql.connector
 
 
 class SQLThread(threading.Thread):
-    def __init__(self, sql_queue, host, database, user, password, single):
+    def __init__(self, sql_queue, db):
         threading.Thread.__init__(self)
         self.sql_queue = sql_queue
-        self.host = host
-        self.database = database
-        self.user = user
-        self.password = password
+        self.db = DataBase(db)
         self.log = logging.getLogger('AMS.SQLThread')
-        self.single = single
 
     def run(self):
         retry = 0
         while retry < 3:
             try:
-                conn = mysql.connector.connect(
-                    host=self.host,
-                    user=self.user,
-                    password=self.password,
-                    database=self.database
-                )
+                self.db.connect()
                 break
-            except mysql.connector.Error:
+            except mysql.connector.Error as e:
+                self.log.error(str(e))
                 time.sleep(2)
                 retry += 1
 
         if retry == 3:
             return
 
-        cursor = conn.cursor()
-        sql = SQL(cursor)
-
         while True:
             sql_raw = self.sql_queue.get()
-            if sql_raw == "end":
-                if not self.single:
-                    self.sql_queue.put("end")
+            if sql_raw == "END":
+                self.sql_queue.put("END")
                 break
-            sql.run(**sql_raw)
-            conn.commit()
+            self.db.run(**sql_raw)
+            self.db.commit()
 
-        cursor.close()
-        conn.close()
+        self.db.disconnect()
 
 
-class SQL():
-    def __init__(self, cursor):
-        self.cursor = cursor
-        self.log = logging.getLogger('AMS.SQL')
+class DataBase():
+    def __init__(self, db):
+        self.host = db['host']
+        self.database = db['database']
+        self.user = db['user']
+        self.password = db['password']
+        self.conn = None
+        self.log = logging.getLogger('AMS.DataBase')
+
+    def connect(self):
+        self.conn = mysql.connector.connect(
+            host=self.host,
+            user=self.user,
+            password=self.password,
+            database=self.database
+        )
+        self.cursor = self.conn.cursor()
+
+    def commit(self):
+        self.conn.commit()
+
+    def disconnect(self):
+        self.cursor.close()
+        self.conn.close()
 
     def _create(self, name, column_def, additional=None, suffix=None):
-        self.query = 'CREATE TABLE IF NOT EXISTS `{}` ({}{}) {}'.format(
+        self.query = 'CREATE TABLE IF NOT EXISTS `{}` ({}{}){}'.format(
             name,
             ', '.join('`{name}` {type}'.format(**c) for c in column_def),
             ', {}'.format(additional) if additional else '',
-            suffix if suffix else ''
+            ' {}'.format(suffix) if suffix else ''
         )
         self.value = None
 
@@ -91,11 +99,11 @@ class SQL():
         )
         self.value = value
 
-    def _select(self, name, column, clause):
-        self.query = 'SELECT `{}` FROM `{}` WHRER {}'.format(
+    def _select(self, name, column, clause=None):
+        self.query = 'SELECT `{}` FROM `{}`{}'.format(
             '`, `'.join(column),
             name,
-            clause
+            ' WHERE {}'.format(clause) if clause else ''
         )
         self.value = None
 
@@ -118,7 +126,8 @@ class SQL():
 
         try:
             self.cursor.execute(self.query, self.value)
-            return True
+            result = self.cursor.fetchall()
+            return result
         except mysql.connector.Error as e:
             self.log.error(str(e))
             self.log.debug(self.query)
@@ -127,42 +136,28 @@ class SQL():
             return False
 
 
-def sql_handler(sql_queue, db):
+class SQLQueue():
+    def __init__(self):
+        self.pre = Queue()
+        self.post = Queue()
+        self.main = Queue()
 
-    t = SQLThread(
-        sql_queue[0],
-        db['host'],
-        db['database'],
-        db['user'],
-        db['password'],
-        single=True
-    )
+
+def sql_handler(sql_queue, db, thread_num):
+
+    t = SQLThread(sql_queue.pre, db)
     t.start()
     t.join()
 
     threads = []
-    for i in range(db['thread_num']):
-        t = SQLThread(
-            sql_queue[1],
-            db['host'],
-            db['database'],
-            db['user'],
-            db['password'],
-            single=False
-        )
+    for i in range(thread_num):
+        t = SQLThread(sql_queue.main, db)
         t.start()
         threads.append(t)
 
     for t in threads:
         t.join()
 
-    t = SQLThread(
-        sql_queue[0],
-        db['host'],
-        db['database'],
-        db['user'],
-        db['password'],
-        single=True
-    )
+    t = SQLThread(sql_queue.post, db)
     t.start()
     t.join()

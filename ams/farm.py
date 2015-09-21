@@ -52,30 +52,27 @@ class Farm():
 
             self.miner_list.append(self.miner_class(ip, port, module_list))
 
+    def db_init(self, sql_queue):
+        self.miner_type.db_init(sql_queue)
+
     def run(self, run_time, sql_queue, retry, thread_num):
-        self.miner_type.db_init(sql_queue[0])
-        self.miner_type.db_init(sql_queue[0], temp=True)
-        sql_queue[0].put("end")
+        self.miner_type.db_init(sql_queue.pre)
+        sql_queue.pre.put("END")
 
         miner_queue = queue.Queue()
         for miner in self.miner_list:
             miner_queue.put(miner)
         for i in range(thread_num):
             miner_thread = MinerThread(
-                run_time, sql_queue[1], retry, miner_queue
+                run_time, sql_queue.main, retry, miner_queue
             )
             miner_thread.daemon = True
             miner_thread.start()
         miner_queue.join()
-        sql_queue[1].put("end")
+        sql_queue.main.put("END")
 
-        self.miner_type.db_final(sql_queue[0])
-        sql_queue[0].put("end")
-
-
-
-class Map():
-    pass
+        self.miner_type.db_final(sql_queue.post)
+        sql_queue.post.put("END")
 
 
 class MinerThread(threading.Thread):

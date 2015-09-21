@@ -25,11 +25,14 @@ import logging
 class Miner():
     name = 'Miner'
 
-    def __init__(self, ip, port, module_list):
+    def __init__(self, ip, port, module_list, log=True):
         self.ip = ip
         self.port = port
         self.module_list = module_list
-        self.log = logging.getLogger('AMS.Miner')
+        if log:
+            self.log = logging.getLogger('AMS.Miner')
+        else:
+            self.log = False
 
     def __str__(self):
         ip = '({})'.format(self.ip) if ':' in self.ip else self.ip
@@ -51,6 +54,8 @@ class Miner():
                         break
                 except socket.error:
                     response = None
+                    if not self.log:
+                        continue
                     if r == retry:
                         self.log.error('{} Failed fetching {}. Giving up.'
                                        .format(self, command))
@@ -71,6 +76,8 @@ class Miner():
                 try:
                     s = socket.socket(af, socktype, proto)
                 except socket.error:
+                    if not self.log:
+                        continue
                     self.log.debug(
                         '{} Error in ping test: socket init. '
                         'Retry: {}.'.format(self, r)
@@ -81,6 +88,8 @@ class Miner():
                 try:
                     s.connect(sa)
                 except socket.error:
+                    if not self.log:
+                        continue
                     self.log.debug(
                         '{} Error in ping test: socket connect. '
                         'Retry: {}.'.format(self, r)
@@ -94,6 +103,8 @@ class Miner():
             else:
                 s.close()
                 return True
+        if not self.log:
+            return False
         self.log.error('{} Error in ping test: connection failed.'.format(self))
         return False
 
@@ -135,6 +146,8 @@ class Miner():
             try:
                 s = socket.socket(af, socktype, proto)
             except socket.error:
+                if not self.log:
+                    continue
                 self.log.debug('{} Error in fetching {}: socket init.'
                                .format(self, command))
                 s = None
@@ -143,6 +156,8 @@ class Miner():
             try:
                 s.connect(sa)
             except socket.error:
+                if not self.log:
+                    continue
                 self.log.debug('{} Error in fetching {}: socket connect.'
                                .format(self, command))
                 s.close()
@@ -166,12 +181,14 @@ class Miner():
             obj = json.loads(response)
             return obj
         except Exception as e:
+            if not self.log:
+                return False
             self.log.error('{} Error decoding json: {}'.format(self, e))
             self.log.debug('{} Error decoding json: {}'.format(self, response))
             return False
 
 
-def db_init(sql_queue, temp=False):
+def db_init(sql_queue):
     column_summary = [
         {'name': 'time',
          'type': 'TIMESTAMP DEFAULT 0'},
@@ -314,25 +331,24 @@ def db_init(sql_queue, temp=False):
         {'name': 'pool_stale',
          'type': 'DOUBLE'}
     ]
-    if temp:
-        name = ['miner_temp', 'pool_temp']
-    else:
+
+    for suffix in ['', '_temp']:
         sql_queue.put({
             'command': 'create',
-            'name': 'hashrate',
-            'column_def': [{'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'}],
-            'additional': 'PRIMARY KEY (`time`)',
+            'name': 'miner{}'.format(suffix),
+            'column_def': column_summary,
+            'additional': 'PRIMARY KEY(`time`, `ip`, `port`)',
         })
-        name = ['miner', 'pool']
+        sql_queue.put({
+            'command': 'create',
+            'name': 'pool{}'.format(suffix),
+            'column_def': column_pools,
+            'additional': 'PRIMARY KEY(`time`, `ip`, `port`, `pool_id`)',
+        })
+
     sql_queue.put({
         'command': 'create',
-        'name': name[0],
-        'column_def': column_summary,
-        'additional': 'PRIMARY KEY(`time`, `ip`, `port`)',
-    })
-    sql_queue.put({
-        'command': 'create',
-        'name': name[1],
-        'column_def': column_pools,
-        'additional': 'PRIMARY KEY(`time`, `ip`, `port`, `pool_id`)',
+        'name': 'hashrate',
+        'column_def': [{'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'}],
+        'additional': 'PRIMARY KEY (`time`)',
     })

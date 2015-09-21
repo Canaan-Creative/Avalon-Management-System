@@ -222,8 +222,8 @@ class Avalon4(miner.Miner):
         return super().put(*args, **kwargs)
 
 
-def db_init(sql_queue, temp=False):
-    miner.db_init(sql_queue, temp)
+def db_init(sql_queue):
+    miner.db_init(sql_queue)
 
     column_edevs = [
         {'name': 'time',
@@ -391,24 +391,22 @@ def db_init(sql_queue, temp=False):
         {'name': 'led',
          'type': 'BOOL'},
     ]
-    if temp:
-        name = ['device_temp', 'module_temp']
-    else:
-        name = ['device', 'module']
-    sql_queue.put({
-        'command': 'create',
-        'name': name[0],
-        'column_def': column_edevs,
-        'additional': 'PRIMARY KEY(`time`, `ip`, `port`, `device_id`)',
-    })
-    sql_queue.put({
-        'command': 'create',
-        'name': name[1],
-        'column_def': column_estats,
-        'additional': 'PRIMARY KEY(\
-            `time`, `ip`, `port`, `device_id`, `module_id`\
-        )',
-    })
+
+    for suffix in ['', '_temp']:
+        sql_queue.put({
+            'command': 'create',
+            'name': 'device{}'.format(suffix),
+            'column_def': column_edevs,
+            'additional': 'PRIMARY KEY(`time`, `ip`, `port`, `device_id`)',
+        })
+        sql_queue.put({
+            'command': 'create',
+            'name': 'module'.format(suffix),
+            'column_def': column_estats,
+            'additional': 'PRIMARY KEY(\
+                `time`, `ip`, `port`, `device_id`, `module_id`\
+            )',
+        })
 
 
 def db_final(sql_queue):

@@ -28,9 +28,7 @@ import logging
 import threading
 import queue
 
-import mysql.connector
-
-import ams.sql as sql
+from ams.sql import DataBase
 
 
 class Pool():
@@ -162,28 +160,20 @@ def update_poolrate(pool_list, run_time, db, retry):
         column.append(h['name'])
         value.append(h['hashrate'])
 
-    conn = mysql.connector.connect(
-        host=db['host'],
-        user=db['user'],
-        password=db['password'],
-        database=db['database']
-    )
-    cursor = conn.cursor()
+    database = DataBase(db)
+    database.connect()
 
-    pool_sql = sql.SQL(cursor)
-
-    if not pool_sql.run('insert', 'hashrate', column, value):
+    if not database.run('insert', 'hashrate', column, value):
         for i in range(len(column) - 1):
-            pool_sql.run(
+            database.run(
                 'raw',
                 'ALTER TABLE hashrate ADD `{}` DOUBLE'.format(column[i + 1])
             )
-        conn.commit()
-        pool_sql.run('insert', 'hashrate', column, value)
+        database.commit()
+        database.run('insert', 'hashrate', column, value)
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+    database.commit()
+    database.disconnect()
 
 
 class PoolThread(threading.Thread):
