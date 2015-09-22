@@ -212,8 +212,10 @@ def ctrl(argv):
         cfg = temp.readlines()
     pattern = re.compile(
         r'\s*(?P<ip>[0-9a-fA-F.:\[\]]+)\s+'
-        '(?P<port>[0-9]+)\s+(?P<mods>([0-9]+,)*[0-9]+)\s+'
-        '(?P<password>[^\s]+)\s*', re.X)
+        '(?P<port>[0-9]+)\s+'
+        '(?P<mods>([0-9]+,)*[0-9]+)\s+'
+        '(?P<password>[^\s]+)\s*', re.X
+    )
 
     result = []
     for c in cfg:
@@ -253,7 +255,6 @@ def ctrl(argv):
     database.disconnect()
 
 
-# TODO: not completed
 def pool(argv):
     import tempfile
     import subprocess
@@ -269,21 +270,26 @@ def pool(argv):
         ['pool', 'address', 'user', 'key', 'seckey']
     )
 
-    with tempfile.NamedTemporaryFile(mod='w+', suffix='.ams') as temp:
+    with tempfile.NamedTemporaryFile(mode='w+', suffix='.ams') as temp:
         temp.write('#pool\taddress\tuser\tkey\tseckey')
         if poolList:
             temp.write('\n')
-            temp.write('\n'.join('\t'.join(m) for m in poolList))
+            temp.write(
+                '\n'.join('\t'.join(i for i in m) for m in poolList)
+            )
         temp.write('\n')
         temp.flush()
         subprocess.call(['vim', temp.name])
         temp.seek(0)
         cfg = temp.readlines()
-    # TODO pattern
+
     pattern = re.compile(
-        r'\s*(?P<pool>[^\s]+)\s+'
-        '(?P<address>[^\s]+)\s+(?P<user>[0-9.a-zA-Z_]+)\s+'
-        '(?P<key>[^\s]+)\s+(?P<seckey>[^\s]+)\s*', re.X)
+        r'\s*(?P<pool>btcchina|kano|ghash)\s+'
+        '(?P<address>[^\s]+)\s+'
+        '(?P<user>[^\s]+)\s+'
+        '(?P<key>[^\s]+)'
+        '(\s+(?P<seckey>[^\s]+))?\s*', re.X
+    )
 
     result = []
     for c in cfg:
@@ -293,12 +299,11 @@ def pool(argv):
         if match is None:
             result = None
             break
-        # TODO: test validation
         pool = match.group('pool')
         address = match.group('address')
         user = match.group('user')
         key = match.group('key')
-        seckey = match.group('seckey')
+        seckey = match.group('seckey') or ''
         result.append({
             "pool": pool, "address": address, "user": user,
             "key": key, "seckey": seckey
@@ -312,13 +317,13 @@ def pool(argv):
     database.run('raw', 'DROP TABLES pool_config')
     database.run('create', 'pool_config', [
         {"name": "pool", "type": "VARCHAR(16)"},
-        {"name": "url", "type": "VARCHAR(64)"},
+        {"name": "address", "type": "VARCHAR(64)"},
         {"name": "user", "type": "VARCHAR(64)"},
         {"name": "key", "type": "VARCHAR(64)"},
         {"name": "seckey", "type": "VARCHAR(64)"}
     ])
     for r in result:
-        database.run('insert', list(r.keys()), list(r.values()))
+        database.run('insert', 'pool_config', list(r.keys()), list(r.values()))
     database.commit()
     database.disconnect()
 
