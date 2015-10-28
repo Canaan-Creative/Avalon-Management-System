@@ -22,6 +22,9 @@ import sys
 from ams.log import log
 
 
+cfgfile = 'ams.cfg'
+
+
 def readCfg(filename):
     import configparser
     config = configparser.ConfigParser()
@@ -77,24 +80,28 @@ def update(argv):
     from ams.pool import update_poolrate
     from ams.sql import sql_handler, DataBase, SQLQueue
 
-    db = readCfg('ams.cfg')['DataBase']
+    cfg = readCfg(cfgfile)
+    db = cfg['DataBase']
+    farm_type = cfg['Farm']['type']
 
     database = DataBase(db)
     database.connect()
-    minerList = database.run('select', 'ctrl_config', ['ip', 'port', 'mods'])
-    if not minerList:
-        print("No miner found.\n Run subcommand 'ctrl' to add.")
+    controllerList = database.run(
+        'select', 'controller_config', ['ip', 'port', 'mods'])
+    if not controllerList:
+        print("No miner found.\n Run subcommand 'controller' to add.")
         exit()
 
     miners = [
         {
             'ip': m[0],
             'port': m[1],
-            'mods': [int(mod) for mod in m[2].split(',')]
+            # 'mods': [int(mod) for mod in m[2].split(',')]
+            'mods': m[2],
         }
-        for m in minerList
+        for m in controllerList
     ]
-    myFarm = Farm(miners, 'avalon4')
+    myFarm = Farm(miners, farm_type)
 
     poolList = database.run(
         'select', 'pools',
@@ -156,45 +163,75 @@ def fetch(argv):
     print(json.dumps(miner.put(command, parameter)))
 
 
-def cfg(argv):
+def config(argv):
     from ams.sql import DataBase
+    from ams.luci import LuCI
+
+    data = []
+    if argv[1] == '-f':
+        with open(argv[2], 'r') as f:
+            for d in f.readlines():
+                data.append({
+                    'lib': d.split(' ')[0],
+                    'method': d.split(' ')[1],
+                    'param': [' '.join(d.split(' ')[2:])]
+                })
+    else:
+        data.append({
+            'lib': argv[1],
+            'method': argv[2],
+            'param': [argv[3]],
+        })
 
     if argv[0] != "all":
         result = ipDecode(argv[0])
         if not result:
             exit()
         ip, port = result
-        if port is None:
-            clause = "`ip` = '{}'".format(ip)
-        else:
-            clause = "`ip` = '{}' and port = '{}'".format(ip, port)
+        clause = "`ip` = '{}'".format(ip)
 
-        db = readCfg('ams.cfg')['DataBase']
+        db = readCfg(cfgfile)['DataBase']
 
         database = DataBase(db)
         database.connect()
-        minerList = database.run('select', 'ctrl_config', ['password'], clause)
+        minerList = database.run(
+            'select', 'controller_config', ['password'], clause)
         database.disconnect()
         if not minerList:
             exit()
         password = minerList[0][0]
 
+        luci = LuCI(ip, port, password)
+        luci.auth()
+        for d in data:
+            print(luci.put(d['lib'], d['method'], d['param']))
+
     else:
-        pass
+        db = readCfg(cfgfile)['DataBase']
+        database = DataBase(db)
+        database.connect()
+        minerList = database.run(
+            'select', 'controller_config',
+            ['ip', 'password']
+        )
+        database.disconnect()
+        if not minerList:
+            exit()
+        # TODO: threading
 
 
-def ctrl(argv):
+def controller(argv):
     import tempfile
     import subprocess
     import re
     from ams.sql import DataBase
 
-    db = readCfg('ams.cfg')['DataBase']
+    db = readCfg(cfgfile)['DataBase']
 
     database = DataBase(db)
     database.connect()
     minerList = database.run(
-        'select', 'ctrl_config',
+        'select', 'controller_config',
         ['ip', 'port', 'mods', 'password']
     )
 
@@ -213,7 +250,7 @@ def ctrl(argv):
     pattern = re.compile(
         r'\s*(?P<ip>[0-9a-fA-F.:\[\]]+)\s+'
         '(?P<port>[0-9]+)\s+'
-        '(?P<mods>([0-9]+,)*[0-9]+)\s+'
+        '(?P<mods>[0-9]+)\s+'
         '(?P<password>[^\s]+)\s*', re.X
     )
 
@@ -242,15 +279,16 @@ def ctrl(argv):
         database.disconnect()
         exit()
 
-    database.run('raw', 'DROP TABLES IF EXISTS ctrl_config')
-    database.run('create', 'ctrl_config', [
+    database.run('raw', 'DROP TABLES IF EXISTS controller_config')
+    database.run('create', 'controller_config', [
         {"name": "ip", "type": "VARCHAR(40)"},
         {"name": "port", "type": "SMALLINT UNSIGNED"},
-        {"name": "mods", "type": "VARCHAR(32)"},
+        {"name": "mods", "type": "SMALLINT UNSIGNED"},
         {"name": "password", "type": "VARCHAR(32)"}
     ])
     for r in result:
-        database.run('insert', 'ctrl_config', list(r.keys()), list(r.values()))
+        database.run(
+            'insert', 'controller_config', list(r.keys()), list(r.values()))
     database.commit()
     database.disconnect()
 
@@ -261,7 +299,7 @@ def pool(argv):
     import re
     from ams.sql import DataBase
 
-    db = readCfg('ams.cfg')['DataBase']
+    db = readCfg(cfgfile)['DataBase']
 
     database = DataBase(db)
     database.connect()
@@ -341,8 +379,8 @@ THIS IS THE DOC.'''
         exit()
 
     log()
-    if (sys.argv[1] == 'ctrl'):
-        ctrl(sys.argv[2:])
+    if (sys.argv[1] == 'controller'):
+        controller(sys.argv[2:])
     elif (sys.argv[1] == 'pool'):
         pool(sys.argv[2:])
     elif (sys.argv[1] == 'fetch'):
@@ -350,8 +388,8 @@ THIS IS THE DOC.'''
     elif (sys.argv[1] == 'update'):
         update(sys.argv[2:])
 
-    elif (sys.argv[1] == 'cfg'):
-        cfg(sys.argv[2:])
+    elif (sys.argv[1] == 'config'):
+        config(sys.argv[2:])
     elif (sys.argv[1] == 'alert'):
         alert(sys.argv[2:])
     else:

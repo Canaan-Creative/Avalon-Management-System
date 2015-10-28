@@ -48,9 +48,9 @@ class Farm():
         for miner in miner_info:
             ip = miner['ip']
             port = miner['port']
-            module_list = miner['mods']
+            module_num = miner['mods']
 
-            self.miner_list.append(self.miner_class(ip, port, module_list))
+            self.miner_list.append(self.miner_class(ip, port, module_num))
 
     def db_init(self, sql_queue):
         self.miner_type.db_init(sql_queue)
