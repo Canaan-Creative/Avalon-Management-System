@@ -405,7 +405,7 @@ def db_init(sql_queue):
         })
         sql_queue.put({
             'command': 'create',
-            'name': 'module'.format(suffix),
+            'name': 'module{}'.format(suffix),
             'column_def': COLUMN_ESTATS,
             'additional': 'PRIMARY KEY(\
                 `time`, `ip`, `port`, `device_id`, `module_id`\
