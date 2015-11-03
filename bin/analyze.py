@@ -243,6 +243,8 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                         ghs5m = float(module_info['GHS5m'])
                         dh5m = float(module_info['DH5m'])
                         temp = int(module_info['Temp'])
+                        temp0 = int(module_info['Temp0'])
+                        temp1 = int(module_info['Temp1'])
                         fan = int(module_info['Fan'])
                         volt = int(float(module_info['Vol']) * 10000)
                         freq = float(module_info['Freq'])
@@ -269,14 +271,22 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                         if temp >= 200:
                             flag[0] = True
                         else:
-                            avgtemp += temp
-                            ntemp += 1
-                            if temp > maxtemp:
-                                maxtemp = temp
-                            if temp < mintemp:
-                                mintemp = temp
-                            if temp > 50:
+                            avgtemp += temp0
+                            avgtemp += temp1
+                            ntemp += 2
+                            if temp0 > maxtemp:
+                                maxtemp = temp0
+                            if temp0 < mintemp:
+                                mintemp = temp0
+                            if temp0 > 50:
                                 flag[1] = True
+                            if temp1 > maxtemp:
+                                maxtemp = temp1
+                            if temp1 < mintemp:
+                                mintemp = temp1
+                            if temp1 > 50:
+                                flag[1] = True
+                        temp = (temp0 + temp1) / 2
                         if temp < 25:
                             flag[2] = True
                         if dh > 3.0 or dh5m > 3.0:
