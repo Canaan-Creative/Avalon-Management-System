@@ -240,7 +240,8 @@ def controller(argv):
         if minerList:
             temp.write('\n')
             temp.write(
-                '\n'.join('\t'.join(str(i) for i in m) for m in minerList)
+                '\n'.join('\t'.join(str(i) for i in m if i is not None)
+                          for m in minerList)
             )
         temp.write('\n')
         temp.flush()
@@ -251,7 +252,7 @@ def controller(argv):
         r'\s*(?P<ip>[0-9a-fA-F.:\[\]]+)\s+'
         '(?P<port>[0-9]+)\s+'
         '(?P<mods>[0-9]+)\s+'
-        '(?P<password>[^\s]+)\s*', re.X
+        '(?P<password>[^\s]+)?\s*', re.X
     )
 
     result = []
@@ -264,14 +265,15 @@ def controller(argv):
             break
         ip = match.group('ip')
         port = int(match.group('port'))
-        mods = match.group('mods')
-        passwd = match.group('password')
+
         if not validIP(ip) or port > 65535:
             result = None
             break
+
         result.append({
             "ip": ip, "port": port,
-            "mods": mods, "password": passwd
+            "mods": match.group('mods'),
+            "password": match.group('password')
         })
 
     if result is None:
