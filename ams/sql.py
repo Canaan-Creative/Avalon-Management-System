@@ -129,6 +129,8 @@ class DataBase():
             result = self.cursor.fetchall()
             return result
         except mysql.connector.Error as e:
+            if 'No result set to fetch from.' in str(e):
+                return True
             self.log.error(str(e))
             self.log.debug(self.query)
             if self.value is not None:
