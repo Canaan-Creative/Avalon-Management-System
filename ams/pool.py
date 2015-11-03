@@ -34,9 +34,9 @@ from ams.sql import DataBase
 class Pool():
     name = "pool"
 
-    def __init__(self, user, worker, api_key, api_secret_key=None):
-        self.api_key = api_key
-        self.api_secret_key = api_secret_key
+    def __init__(self, user, worker, key, seckey=None):
+        self.key = key
+        self.seckey = seckey
         self.user = user
         self.worker = worker
         if isinstance(worker, list):
@@ -72,12 +72,12 @@ class ghash(Pool):
         url = 'https://cex.io/api/ghash.io/workers'
         nonce = '{:.0f}'.format(time.time()*1000)
         signature = hmac.new(
-            self.api_secret_key.encode(),
-            msg='{}{}{}'.format(nonce, self.user, self.api_key).encode(),
+            self.seckey.encode(),
+            msg='{}{}{}'.format(nonce, self.user, self.key).encode(),
             digestmod=hashlib.sha256
         ).hexdigest().upper()
         post_content = {
-            'key': self.api_key,
+            'key': self.key,
             'signature': signature,
             'nonce': nonce
         }
@@ -99,7 +99,7 @@ class ozcoin(Pool):
     name = "ozco.in"
 
     def _collect(self):
-        url = 'http://ozco.in/api.php?api_key={}'.format(self.api_key)
+        url = 'http://ozco.in/api.php?api_key={}'.format(self.key)
         data = json.loads(urllib.request.urlopen(url).read().decode())
 
         mhs = 0
@@ -113,7 +113,7 @@ class btcchina(Pool):
     name = "btcchina.com"
 
     def _collect(self):
-        url = 'https://pool.btcchina.com/api?api_key={}'.format(self.api_key)
+        url = 'https://pool.btcchina.com/api?api_key={}'.format(self.key)
         data = json.loads(urllib.request.urlopen(url).read().decode())
 
         mhs = 0
@@ -128,13 +128,13 @@ class kano(Pool):
 
     def _collect(self):
         url = ('http://kano.is/index.php?k=api&username={}&api={}'
-               '&json=y&work=y').format(self.user, self.api_key)
+               '&json=y&work=y').format(self.user, self.key)
         data = json.loads(urllib.request.urlopen(url).read().decode())
 
         mhs = 0
-        for key in data:
-            if data[key] in self.fullname:
-                index = key.split(':')[1]
+        for index in data:
+            if data[index] in self.fullname:
+                index = index.split(':')[1]
                 mhs += float(data['w_hashrate5m:{}'.format(index)])
         return mhs / 1000000.0
 
@@ -192,8 +192,8 @@ class PoolThread(threading.Thread):
             pool = eval(p['name'])(
                 p['user'],
                 p['worker'],
-                p['api_key'],
-                p['api_secret_key'] if 'api_secret_key' in p else None
+                p['key'],
+                p['seckey'] if 'seckey' in p else None
             )
             hashrate = pool.run(self.retry)
             self.hashrate_queue.put({'name': p['name'], 'hashrate': hashrate})

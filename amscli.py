@@ -104,9 +104,10 @@ def update(argv):
     myFarm = Farm(miners, farm_type)
 
     poolList = database.run(
-        'select', 'pools',
-        ['name', 'user', 'worker', 'api_key', 'api_secret_key']
+        'select', 'pool_config',
+        ['name', 'user', 'worker', 'key', 'seckey']
     )
+    # TODO: should automatically get worker name from cgminer api
     if not poolList:
         pools = []
     else:
@@ -115,8 +116,8 @@ def update(argv):
                 'name': p[0],
                 'user': p[1],
                 'worker': p[2],
-                'api_key': p[3],
-                'api_secret_key': p[4]
+                'key': p[3],
+                'seckey': p[4]
             } for p in poolList
         ]
     database.disconnect()
@@ -307,15 +308,16 @@ def pool(argv):
     database.connect()
     poolList = database.run(
         'select', 'pool_config',
-        ['pool', 'address', 'user', 'key', 'seckey']
+        ['name', 'address', 'user', 'worker', 'key', 'seckey']
     )
 
     with tempfile.NamedTemporaryFile(mode='w+', suffix='.ams') as temp:
-        temp.write('#pool\taddress\tuser\tkey\tseckey')
+        temp.write('#name\taddress\tuser\tworker\tkey\tseckey')
         if poolList:
             temp.write('\n')
             temp.write(
-                '\n'.join('\t'.join(i for i in m) for m in poolList)
+                '\n'.join('\t'.join(i for i in m if i is not None)
+                          for m in poolList)
             )
         temp.write('\n')
         temp.flush()
@@ -324,9 +326,10 @@ def pool(argv):
         cfg = temp.readlines()
 
     pattern = re.compile(
-        r'\s*(?P<pool>btcchina|kano|ghash)\s+'
+        r'\s*(?P<name>btcchina|kano|ghash)\s+'
         '(?P<address>[^\s]+)\s+'
         '(?P<user>[^\s]+)\s+'
+        '(?P<worker>[^\s]+)\s+'
         '(?P<key>[^\s]+)'
         '(\s+(?P<seckey>[^\s]+))?\s*', re.X
     )
@@ -339,14 +342,15 @@ def pool(argv):
         if match is None:
             result = None
             break
-        pool = match.group('pool')
+        name = match.group('name')
         address = match.group('address')
         user = match.group('user')
+        worker = match.group('worker')
         key = match.group('key')
-        seckey = match.group('seckey') or ''
+        seckey = match.group('seckey')
         result.append({
-            "pool": pool, "address": address, "user": user,
-            "key": key, "seckey": seckey
+            "name": name, "address": address, "user": user,
+            "worker": worker, "key": key, "seckey": seckey
         })
 
     if result is None:
@@ -356,9 +360,10 @@ def pool(argv):
 
     database.run('raw', 'DROP TABLES pool_config')
     database.run('create', 'pool_config', [
-        {"name": "pool", "type": "VARCHAR(16)"},
+        {"name": "name", "type": "VARCHAR(16)"},
         {"name": "address", "type": "VARCHAR(64)"},
         {"name": "user", "type": "VARCHAR(64)"},
+        {"name": "worker", "type": "VARCHAR(64)"},
         {"name": "key", "type": "VARCHAR(64)"},
         {"name": "seckey", "type": "VARCHAR(64)"}
     ])
