@@ -5,7 +5,7 @@ import sys
 
 from cgminer_api import cgminer_api
 
-pattern = re.compile(r'.*MDH5m\[(?P<dh>[^\]]+)\].*MVol\[(?P<vol>[^]]+)\].*')
+pattern = re.compile(r'.*DNA\[(?P<dna>[^\]]+)\].*GHSmm\[(?P<ghs>[^]]+)\].*Freq\[(?P<freq>[^\]]+)\].*PLL\[(?P<pll>[^\]]+)\].*')
 
 
 def debug(ip):
@@ -15,8 +15,8 @@ def debug(ip):
         for mm in sorted(estat):
             if mm[:5] == 'MM ID' and re.match(pattern, estat[mm]) is not None:
                 g = re.match(pattern, estat[mm]).groupdict()
-                print '[{:>13}][{:>2}][{:>2}]\tMDH5m[{}]\tMVol[{}]'.format(
-                    ip, estat['ID'][3:], mm[5:], g['dh'], g['vol'])
+                print '[{:>13}][{:>2}][{:>2}]\tDNA[{}]\tGHsmm[{}]]\tFreq[{}]\tPLL[{}]'.format(
+                    ip, estat['ID'][3:], mm[5:], g['dna'], g['ghs'], g['freq'], g['pll'])
 
 
 if __name__ == '__main__':

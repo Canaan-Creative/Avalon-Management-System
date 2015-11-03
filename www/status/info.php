@@ -9,14 +9,12 @@ function pg_decode($pg) {
 		return "All";
 	$str = "";
 	for ($i = 1; $i < 3; $i++) {
-		for ($j = 1; $j < 6; $j++) {
-			$flag = $pg & 1;
-			$pg = ($pg >> 1);
-			if (!$flag) {
-				if ($str != "")
-					$str = $str . ", ";
-				$str = $str . "PG" . $i . "-" . $j;
-			}
+		$flag = $pg & 1;
+		$pg = ($pg >> 1);
+		if (!$flag) {
+			if ($str != "")
+				$str = $str . ", ";
+			$str = $str . "PG" . $i;
 		}
 	}
 	return $str . ".";

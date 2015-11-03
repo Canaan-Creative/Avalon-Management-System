@@ -4,7 +4,7 @@ if (! isset ($_COOKIE['userId'])) {
 	die;
 }
 #
-$pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\s.*LW\[([0-9]+)\]\s.*HW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sGHS5m\[([-.0-9]+)\]\sDH5m\[([-.0-9]+)%\]\s.*Temp\[([-0-9]+)\]\sFan\[([0-9]+)\]\sVol\[([.0-9]+)\]\s.*Freq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)./';
+$pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\s.*LW\[([0-9]+)\]\s.*HW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sGHS5m\[([-.0-9]+)\]\sDH5m\[([-.0-9]+)%\]\s.*Temp\[([-0-9]+)\]\sTemp0\[([-0-9]+)\]\sTemp1\[([-0-9]+)\]\sFan\[([0-9]+)\]\sVol\[([.0-9]+)\]\sGHSmm\[([-.0-9]+)\]\sFreq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)\].*EC\[([0-9]+)\]/';
 $ip   = $_GET['ip'];
 $ports = explode(',', $_GET['port']);
 if (array_key_exists('hl', $_GET) && $_GET['hl'] !== "" && $_GET['hl'] !== null)
@@ -272,13 +272,13 @@ for ($i = 0; $i < count($ports); $i++) {
   <th>DNA</th>
   <th>LocalWorks</th>
   <th>DH%</th>
-  <th>GHS5m</th>
-  <th>DH%5m</th>
+  <th>GHSmm</th>
   <th>T(C)</th>
   <th>Fan(RPM)</th>
   <th>ASIC V(V)</th>
   <th>ASIC F(GHS)</th>
-  <th>Power Good</th>
+  <th>PG</th>
+  <th>EC</th>
 </tr>";
 
 	$i = 0;
@@ -315,13 +315,13 @@ for ($i = 0; $i < count($ports); $i++) {
 				echo $td . substr($matches[2], 12) . "</td>";
 				echo $td . number_format($matches[4], 0, ".", ",") . "</td>";
 				echo $td . $matches[6] . "</td>";
-				echo $td . $matches[7] . "</td>";
-				echo $td . $matches[8] . "</td>";
-				echo $td . $matches[9] . "</td>";
-				echo $td . $matches[10] . "</td>";
-				echo $td . $matches[11] . "</td>";
+				echo $td . $matches[14] . "</td>";
+				echo $td . $matches[9] . " " . $matches[10] . " " . $matches[11] . "</td>";
 				echo $td . $matches[12] . "</td>";
 				echo $td . $matches[13] . "</td>";
+				echo $td . $matches[15] . "</td>";
+				echo $td . $matches[16] . "</td>";
+				echo $td . $matches[18] . "</td>";
 				echo "</tr>";
 			} else {
 				echo "<tr>";

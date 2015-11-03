@@ -16,11 +16,15 @@ _pattern = re.compile(r'Ver\[(?P<Ver>[-+0-9A-Fa-f]+)\]\s'
                       'GHS5m\[(?P<GHS5m>[-.0-9]+)\]\s'
                       'DH5m\[(?P<DH5m>[-.0-9]+)%\].*\s'
                       'Temp\[(?P<Temp>[-0-9]+)\]\s'
+                      'Temp0\[(?P<Temp0>[-0-9]+)\]\s'
+                      'Temp1\[(?P<Temp1>[-0-9]+)\]\s'
                       'Fan\[(?P<Fan>[0-9]+)\]\s'
-                      'Vol\[(?P<Vol>[.0-9]+)\].*\s'
+                      'Vol\[(?P<Vol>[.0-9]+)\]\s'
+                      'GHSmm\[(?P<GHSmm>[-.0-9]+)\]\s'
                       'Freq\[(?P<Freq>[.0-9]+)\]\s'
                       'PG\[(?P<PG>[0-9]+)\]\s'
-                      'Led\[(?P<Led>0|1)\]')
+                      'Led\[(?P<Led>0|1)\].*'
+                      'EC\[(?P<EC>[0-9]+)\]')
 
 
 def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
@@ -296,7 +300,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
                         for f in flag:
                             error = error or f
 
-                        if error or pg != 1023:
+                        if error or pg != 3:
                             param = (ip, port, deviceid, moduleid, False, False,
                                      False, False) + tuple(flag) + (pg,)
                             errorParam.append(param)
