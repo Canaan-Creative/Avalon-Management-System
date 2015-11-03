@@ -30,6 +30,10 @@ class Farm():
         if farm_type == 'avalon4':
             import ams.avalon4 as miner_type
             from ams.avalon4 import Avalon4 as miner_class
+
+        elif farm_type == 'avalon6':
+            import ams.avalon6 as miner_type
+            from ams.avalon6 import Avalon6 as miner_class
         #
         # Add drivers here
         # e.g.
