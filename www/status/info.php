@@ -103,7 +103,7 @@ while ($row = mysql_fetch_array($result)) {
 			"error" => array()
 		);
 		$c_index = array();
-		if ($row['wrongpg'] != 1023) {
+		if ($row['wrongpg'] != 3) {
 			$e["error"][] = array("color" => "red", "msg" => "Wrong PG: " . pg_decode($row['wrongpg']));
 			$c_index[] = "wrongpg";
 		}
