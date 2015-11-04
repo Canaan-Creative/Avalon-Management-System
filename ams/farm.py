@@ -20,6 +20,7 @@
 import logging
 import threading
 import queue
+import importlib
 
 
 class Farm():
@@ -27,24 +28,8 @@ class Farm():
         self.miner_list = []
         self.log = logging.getLogger('AMS.Farm')
 
-        if farm_type == 'avalon4':
-            import ams.avalon4 as miner_type
-            from ams.avalon4 import Avalon4 as miner_class
-
-        elif farm_type == 'avalon6':
-            import ams.avalon6 as miner_type
-            from ams.avalon6 import Avalon6 as miner_class
-        #
-        # Add drivers here
-        # e.g.
-        #
-        # elif farm_type == 'avalon3':
-        #    import ams.avalon3 as miner_type
-        #    from ams.avalon3 import Avalon3 as miner_class
-        #
-        else:
-            self.log.critical('Miner Type Undefined.')
-            exit()
+        miner_type = importlib.import_module('ams.{}'.format(farm_type))
+        miner_class = miner_type.Miner
 
         self.miner_type = miner_type
         self.miner_class = miner_class

@@ -129,6 +129,30 @@ class Miner():
         self._generate_sql_estats(run_time)
         self._generate_sql_pools(run_time)
 
+    def get(self, table):
+        self.sql_queue = []
+        self.raw = {}
+        run_time = 'latest'
+        if table == 'miner' or table == 'summary':
+            self.raw['summary'] = self.put('summary', timeout=1)
+            self._generate_sql_summary(run_time)
+        elif table == 'device':
+            self.raw['estats'] = self.put('estats', timeout=1)
+            self.raw['edevs'] = self.put('edevs', timeout=1)
+            self._generate_sql_edevs(run_time)
+        elif table == 'module':
+            self.raw['estats'] = self.put('estats', timeout=1)
+            self._generate_sql_estats(run_time)
+        elif table == 'pool':
+            self.raw['pools'] = self.put('pools', timeout=1)
+            self._generate_sql_pools(run_time)
+        else:
+            return False
+        return {
+            'column': self.sql_queue[0]['column'],
+            'value': [i['value'] for i in self.sql_queue],
+        }
+
     def put(self, command, parameter=None, timeout=3):
         if parameter is None:
             request = '{{"command": "{}"}}'.format(command)

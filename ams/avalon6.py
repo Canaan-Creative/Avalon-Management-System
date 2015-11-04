@@ -23,7 +23,7 @@ import datetime
 import ams.miner as miner
 
 
-class Avalon6(miner.Miner):
+class Miner(miner.Miner):
     _pattern = re.compile(
         r'Ver\[(?P<Ver>[-0-9A-Fa-f+]+)\]\s'
         'DNA\[(?P<DNA>[0-9A-Fa-f]+)\]\s'
@@ -81,12 +81,20 @@ class Avalon6(miner.Miner):
         )
         value = [run_time, self.ip, self.port, precise_time]
         value.extend(summary[k] for k in summary_sorted)
-        self.sql_queue.put({
-            'command': 'insert',
-            'name': 'miner_temp',
-            'column': column,
-            'value': value
-        })
+        try:
+            self.sql_queue.put({
+                'command': 'insert',
+                'name': 'miner_temp',
+                'column': column,
+                'value': value
+            })
+        except:
+            self.sql_queue.append({
+                'command': 'insert',
+                'name': 'miner_temp',
+                'column': column,
+                'value': value
+            })
 
     def _generate_sql_edevs(self, run_time):
         # 'edevs' -> table 'device'
@@ -125,12 +133,20 @@ class Avalon6(miner.Miner):
                 estat[k] for k in sorted(estat) if k[:3] == 'AUC'
                 or k[:3] == 'USB' or k[:4] == 'Auto'
             )
-            self.sql_queue.put({
-                'command': 'insert',
-                'name': 'device_temp',
-                'column': column + new_column,
-                'value': value + new_value
-            })
+            try:
+                self.sql_queue.put({
+                    'command': 'insert',
+                    'name': 'device_temp',
+                    'column': column + new_column,
+                    'value': value + new_value
+                })
+            except:
+                self.sql_queue.append({
+                    'command': 'insert',
+                    'name': 'device_temp',
+                    'column': column + new_column,
+                    'value': value + new_value
+                })
             i += 1
 
     def _generate_sql_estats(self, run_time):
@@ -187,12 +203,20 @@ class Avalon6(miner.Miner):
                 new_column.append(k.lower())
                 new_value.append(int(module_info[k]))
 
-        self.sql_queue.put({
-            'command': 'insert',
-            'name': 'module_temp',
-            'column': column + new_column,
-            'value': value + new_value
-        })
+        try:
+            self.sql_queue.put({
+                'command': 'insert',
+                'name': 'module_temp',
+                'column': column + new_column,
+                'value': value + new_value
+            })
+        except:
+            self.sql_queue.append({
+                'command': 'insert',
+                'name': 'module_temp',
+                'column': column + new_column,
+                'value': value + new_value
+            })
 
     def _generate_sql_pools(self, run_time):
         # 'pools' -> table 'pool'
@@ -215,15 +239,26 @@ class Avalon6(miner.Miner):
                           for k in pool_sorted]
             new_value = [pool['POOL']]
             new_value.extend(pool[k] for k in pool_sorted)
-            self.sql_queue.put({
-                'command': 'insert',
-                'name': 'pool_temp',
-                'column': column + new_column,
-                'value': value + new_value
-            })
+            try:
+                self.sql_queue.put({
+                    'command': 'insert',
+                    'name': 'pool_temp',
+                    'column': column + new_column,
+                    'value': value + new_value
+                })
+            except:
+                self.sql_queue.append({
+                    'command': 'insert',
+                    'name': 'pool_temp',
+                    'column': column + new_column,
+                    'value': value + new_value
+                })
 
     def run(self, *args, **kwargs):
         return super().run(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return super().get(*args, **kwargs)
 
     def put(self, *args, **kwargs):
         return super().put(*args, **kwargs)
