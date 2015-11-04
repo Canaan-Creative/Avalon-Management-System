@@ -1,0 +1,70 @@
+<html ng-app="ams">
+	<head>
+		<title>Avalon Management System</title>
+		<link href="./lib/css/angular-material.min.css" rel="stylesheet" />
+		<link href="./lib/css/md-data-table.min.css" rel="stylesheet" />
+		<link href="./style/ams.css" rel="stylesheet" />
+	</head>
+	<body layout="row" ng-controller="MainController as vm">
+		<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-4dp"
+				md-component-id="left"
+				md-is-locked-open="$mdMedia('gt-lg')">
+			<md-toolbar class="md-tall" layout="column" layout-align="center center">
+				<img src="./asset/logo.svg" />
+				<h3 class="md-title logo">AMS</h3>
+			</md-toolbar>
+			<md-list>
+				<md-list-item ng-repeat="item in vm.menu">
+					<a ng-click="vm.select(item)">
+						<md-item-content md-ink-ripple layout="row" layout-align="start center">
+							<div class="inset">
+								<ng-md-icon icon="{{ item.icon }}">
+								</ng-md-icon>
+							</div>
+							<div class="inset md-subhead">
+								{{ item.name }}
+							</div>
+							<md-divider></md-divider>
+						</md-item-content>
+					</a>
+				</md-list-item>
+			</md-list>
+		</md-sidenav>
+		<div layout="column" layout-fill>
+			<md-toolbar class="md-toolbar-tools">
+				<md-button ng-click="vm.toggleSidenav()" hide-gt-lg aria-label="Menu">
+					<ng-md-icon icon="menu" style="fill: white"></ng-md-icon>
+				</md-button>
+				<h3 class="md-title">
+					{{ vm.status.title }}
+				</h3>
+				<span flex="5"></span>
+				<span ng-if="!!vm.status.subTitle" class="md-subhead">
+					{{ vm.status.subTitle }}
+				</span>
+				<span flex="auto"></span>
+				<md-button ng-click="vm.chooseSnap()" aria-label="Snapshot">
+					<ng-md-icon icon="assignment" style="fill: white"></ng-md-icon>
+				</md-button>
+			</md-toolbar>
+			<md-content layout="row" flex ng-view></md-content>
+		</div>
+		<script src="./lib/js/angular.min.js"></script>
+		<script src="./lib/js/angular-aria.min.js"></script>
+		<script src="./lib/js/angular-animate.min.js"></script>
+		<script src="./lib/js/angular-route.min.js"></script>
+		<script src="./lib/js/angular-material.min.js"></script>
+		<script src="./lib/js/angular-material-icons.min.js"></script>
+		<script src="./lib/js/md-data-table.min.js"></script>
+		<script src="./app/app.module.js"></script>
+		<script src="./app/app.config.js"></script>
+		<script src="./app/app.route.js"></script>
+		<script src="./app/services/share.service.js"></script>
+		<script src="./app/services/api.service.js"></script>
+		<script src="./app/layout/main.controller.js"></script>
+		<script src="./app/layout/snapshot.controller.js"></script>
+		<script src="./app/pages/overview.controller.js"></script>
+		<script src="./app/pages/detail.controller.js"></script>
+		<script src="./app/pages/setting.controller.js"></script>
+	</body>
+</html>

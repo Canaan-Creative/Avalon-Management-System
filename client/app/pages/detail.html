@@ -1,0 +1,117 @@
+<md-content layout="row" layout-align="center center" flex ng-if="!vm.data.nodes">
+	<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+</md-content>
+
+<md-content layout="row" flex ng-if="!!vm.data.nodes">
+	<!-- Node List -->
+	<md-list class="node">
+		<md-list-item ng-repeat="node in vm.data.nodes">
+			<a ng-click="vm.select(node)">
+				<md-item-content md-ink-ripple layout="row" layout-align="start center">
+					<div class="inset">
+						{{ node.ip + ':' + node.port }}
+					</div>
+				</md-item-content>
+			</a>
+		</md-list-item>
+	</md-list>
+
+	<md-content layout="row" flex>
+		<md-tabs
+				md-selected="selectedIndex"
+				md-stretch-tabs="always"
+				ng-if="!!vm.status.node"
+				md-no-ink flex>
+
+			<!-- Summary -->
+			<md-tab md-on-select="vm.getTab('summary')">
+				<md-tab-label>Summary</md-tab-label>
+				<md-tab-body>
+					<md-content layout="row" layout-fill ng-if="!vm.status.tabLoaded" layout-align="center center">
+						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+					</md-content>
+					<md-content ng-if="vm.status.tabLoaded" flex>
+						
+					</md-content>
+				</md-tab-body>
+			</md-tab>
+
+			<!-- Devices -->
+			<md-tab md-on-select="vm.getTab('device')">
+				<md-tab-label>Devices</md-tab-label>
+				<md-tab-body>
+					<md-content layout="row" layout-fill ng-if="!vm.status.tabLoaded" layout-align="center center">
+						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+					</md-content>
+					<md-content fex ng-if="vm.status.tabLoaded">
+						<md-data-table-container>
+							<table md-data-table md-progress="deferred">
+								<thead md-order="query.order" md-trigger="onOrderChange">
+									<tr>
+										<th ng-repeat="column in vm.deviceTable" name="{{ column.name }}"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr md-auto-select ng-repeat="device in vm.data.device">
+										<td ng-repeat="column in vm.deviceTable">
+											{{ column.value(device) }}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</md-data-table-container>
+					</md-content>
+				</md-tab-body>
+			</md-tab>
+
+			<!-- Modules -->
+			<md-tab md-on-select="vm.getTab('module')">
+				<md-tab-label>Modules</md-tab-label>
+				<md-tab-body>
+					<md-content layout="row" layout-fill ng-if="!vm.status.tabLoaded" layout-align="center center">
+						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+					</md-content>
+					<md-content ng-if="vm.status.tabLoaded">
+						<md-data-table-container>
+							<table md-data-table md-progress="deferred">
+								<thead md-order="query.order" md-trigger="onOrderChange">
+									<tr>
+										<th name="LED"></th>
+										<th ng-repeat="column in vm.moduleTable" name="{{ column.name }}"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr md-auto-select ng-repeat="module in vm.data.module">
+										<td>
+											<md-switch
+												ng-model="module.indicator"
+												ng-change="vm.setLED(module)"
+												aria-label="LED">
+											</md-switch>
+										</td>
+										<td ng-repeat="column in vm.moduleTable">
+											{{ column.value(module) }}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</md-data-table-container>
+					</md-content>
+				</md-tab-body>
+			</md-tab>
+
+			<!-- Config -->
+			<md-tab md-on-select="vm.getTab('config')">
+				<md-tab-label>Config</md-tab-label>
+				<md-tab-body>
+					<md-content layout="row" layout-fill ng-if="!vm.status.tabLoaded" layout-align="center center">
+						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+					</md-content>
+					<md-content ng-if="vm.status.tabLoaded">
+					</md-content>
+				</md-tab-body>
+			</md-tab>
+
+		</md-tabs>
+	</md-content>
+</md-content>

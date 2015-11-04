@@ -1,0 +1,29 @@
+.inset {
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+.node {
+	background-color: #fafafa;
+}
+
+h3.logo {
+	margin-top: 0;
+}
+
+.md-sidenav-left {
+	min-width: 175px !important;
+	max-width: 175px !important;
+	background-color: #eee;
+}
+
+th {
+	padding: 0 14px;
+}
+td {
+	padding: 0 14px;
+}
