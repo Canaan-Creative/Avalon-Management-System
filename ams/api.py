@@ -4,7 +4,7 @@ import json
 import datetime
 import sys
 import importlib
-sys.path.append(__AMS_LIB_PATH__)
+sys.path.append('__AMS_LIB_PATH__')
 
 from flask import Flask, g
 
@@ -13,7 +13,7 @@ from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
 
 
 app = Flask(__name__)
-cfgfile = ___AMS_CFG_PATH__
+cfgfile = '__AMS_CFG_PATH__'
 
 
 def readCfg(filename):
@@ -61,8 +61,22 @@ def get_last_time():
     return json.dumps({'result': result[0][0]}, default=json_serial)
 
 
+@app.route('/config/<ip>/<port>', methods=['GET'])
+def get_config(ip, port):
+    import ams.luci
+    clause = "`ip` = '{}'".format(ip)
+    nodes = g.database.run('select', 'controller_config', ['password'], clause)
+    if not nodes:
+        return '{"result": "wrong node"}'
+    password = nodes[0][0] if nodes[0][0] is not None else ''
+    luci = ams.luci.LuCI(ip, 80, password)
+    luci.auth()
+    result = luci.put('uci', 'get_all', ['cgminer.default'])
+    return json.dumps(result)
+
+
 @app.route('/status/<table>/<time>/<ip>/<port>', methods=['GET'])
-def get_module(table, time, ip, port):
+def get_status(table, time, ip, port):
     # TODO: prevent injection by checking args validation
 
     if time == 'latest':
