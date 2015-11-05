@@ -11,7 +11,7 @@
 		$mdThemingProvider
 			.theme('default')
 			.primaryPalette('blue')
-			.accentPalette('light-blue')
+			.accentPalette('cyan')
 			.warnPalette('red')
 			.backgroundPalette('grey');
 	}

@@ -9,14 +9,14 @@
 		<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-4dp"
 				md-component-id="left"
 				md-is-locked-open="$mdMedia('gt-lg')">
-			<md-toolbar class="md-tall" layout="column" layout-align="center center">
+			<md-toolbar class="md-tall md-hue-2" layout="column" layout-align="center center">
 				<img src="./asset/logo.svg" />
 				<h3 class="md-title logo">AMS</h3>
 			</md-toolbar>
 			<md-list>
 				<md-list-item ng-repeat="item in vm.menu">
 					<a ng-click="vm.select(item)">
-						<md-item-content md-ink-ripple layout="row" layout-align="start center">
+						<md-item-content md-ink-ripple layout="row" layout-align="center center">
 							<div class="inset">
 								<ng-md-icon icon="{{ item.icon }}">
 								</ng-md-icon>

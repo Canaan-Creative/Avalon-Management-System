@@ -8,7 +8,7 @@
 }
 
 .node {
-	background-color: #fafafa;
+	background-color: #bbdefb;
 }
 
 h3.logo {
@@ -18,7 +18,9 @@ h3.logo {
 .md-sidenav-left {
 	min-width: 175px !important;
 	max-width: 175px !important;
-	background-color: #eee;
+	color: #ffffff;
+	fill: #ffffff;
+	background-color: #1976d2;
 }
 
 th {
