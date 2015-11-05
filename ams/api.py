@@ -111,7 +111,21 @@ def get_status(table, time, ip, port):
                 s[column['name']] = r[i]
                 i += 1
             status.append(s)
-    return json.dumps({'result': status}, default=json_serial)
+
+    def sort_order(x):
+        order = []
+        if 'device_id' in x:
+            order.append(x['device_id'])
+        if 'module_id' in x:
+            order.append(x['module_id'])
+        if 'pool_id' in x:
+            order.append(x['pool_id'])
+        return order
+
+    return json.dumps(
+        {'result': sorted(status, key=sort_order)},
+        default=json_serial
+    )
 
 
 @app.teardown_request
