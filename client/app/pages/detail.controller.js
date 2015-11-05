@@ -11,6 +11,8 @@
 		/* jshint validthis: true */
 		var vm = this;
 
+		vm.auth = false;
+
 		// vm.status = {
 		//	tabLoaded: /* loading...    */ bool,
 		//	tabName:   /* selected tab  */ 'summary' | 'device' | 'module' | 'config',
@@ -102,9 +104,6 @@
 		function getSummary() {
 		}
 
-		function getConfig() {
-		}
-
 		function select(node) {
 			vm.status.node = node;
 			share.status.main.subTitle = node.ip + ':' + node.port;
@@ -135,7 +134,12 @@
 				});
 				break;
 			case 'config':
-				getConfig();
+				api.getConfig(
+					vm.status.node.ip,
+					vm.status.node.port
+				).then(function() {
+					vm.status.tabLoaded = true;
+				});
 				break;
 			}
 		}
