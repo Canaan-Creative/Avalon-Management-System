@@ -14,6 +14,7 @@
 		self.data = {};
 		self.getNodes = getNodes;
 		self.getStatus = getStatus;
+		self.getConfig = getConfig;
 
 		function getNodes(){
 			return $http.get('/api/nodes').then(
@@ -33,6 +34,22 @@
 					console.error(
 						'Error fetching ' + name + ' of ' +
 							ip + ':' + port + ' at ' + time
+					);
+				});
+		}
+
+		function getConfig(ip, port) {
+			return $http.get(
+					'/api/config/' + ip + '/' + port
+				).then(function(response) {
+					self.data.config = response.data.result;
+					if (self.data.config.voltage_adjust === '--avalon4-automatic-voltage')
+						self.data.config.autoAdjust = true;
+					else
+						self.data.config.autoAdjust = false;
+				}, function(errResponse) {
+					console.error(
+						'Error fetching config of ' + ip + ':' + port
 					);
 				});
 		}
