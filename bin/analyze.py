@@ -341,7 +341,7 @@ def dbThread(dataQueue, user, passwd, dbname, timenow, time0,
             else:
                 avgtemp = (avgtemp - maxtemp - mintemp) / (ntemp - 2)
 
-            if rate1hr > summodule0 * 2000000.0:
+            if rate1hr > summodule0 * 5000000.0:
                 rate1hr = .0
 
             minerParam = (ip, port, True, sumdevice, sumdevice0, summodule,
