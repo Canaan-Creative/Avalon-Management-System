@@ -67,28 +67,22 @@
 			name: 'LW',
 			value: function(data) {return data.lw;}
 		},{
-			name: 'DH',
-			value: function(data) {return data.dh.toFixed(1);}
-		},{
-			name: 'DH5m',
-			value: function(data) {return data.dh5m.toFixed(1);}
-		},{
-			name: 'GHs5m',
-			value: function(data) {return data.ghs5m.toFixed(0);}
+			name: 'GHs',
+			value: function(data) {return data.ghsmm.toFixed(0);}
 		},{
 			name: 'T',
-			value: function(data) {return data.temp;}
+			value: function(data) {return data.temp + '/' + data.temp0 + '/' + data.temp1;}
 		},{
 			name: 'Fan',
 			value: function(data) {return data.fan;}
 		},{
 			name: 'Volt',
-			value: function(data) {return data.vol * 10000;}
-		},{
-			name: 'Freq',
-			value: function(data) {return data.freq;}
+			value: function(data) {return data.vol;}
 		},{
 			name: 'PG',
+			value: function(data) {return data.pg;}
+		},{
+			name: 'EC',
 			value: function(data) {return data.pg;}
 		}];
 
