@@ -127,11 +127,11 @@ class Miner(miner.Miner):
             estat = estats[i]
             new_column.extend(
                 k.replace(' ', '_').lower() for k in sorted(estat)
-                if k[:3] == 'AUC' or k[:3] == 'USB' or k[:4] == 'Auto'
+                if k[:5] != 'MM ID' and (' ' in k)
             )
             new_value.extend(
-                estat[k] for k in sorted(estat) if k[:3] == 'AUC'
-                or k[:3] == 'USB' or k[:4] == 'Auto'
+                estat[k] for k in sorted(estat)
+                if k[:5] != 'MM ID' and (' ' in k)
             )
             try:
                 self.sql_queue.put({
@@ -331,7 +331,9 @@ COLUMN_EDEVS = [
      'type': 'BIGINT'},
     {'name': 'mm_count',
      'type': 'INT'},
-    {'name': 'automatic_voltage',
+    {'name': 'smart_speed',
+     'type': 'BOOL'},
+    {'name': 'nonce_check',
      'type': 'BOOL'},
     {'name': 'auc_ver',
      'type': 'CHAR(12)'},
