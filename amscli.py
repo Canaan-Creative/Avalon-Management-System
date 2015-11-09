@@ -22,7 +22,7 @@ import sys
 from ams.log import log
 
 
-cfgfile = 'ams.cfg'
+cfgfile = '__AMS_CFG_PATH__'
 
 
 def readCfg(filename):
