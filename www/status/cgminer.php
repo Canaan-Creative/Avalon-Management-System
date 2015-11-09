@@ -271,12 +271,11 @@ for ($i = 0; $i < count($ports); $i++) {
   <th>MM</th>
   <th>DNA</th>
   <th>LocalWorks</th>
-  <th>DH%</th>
-  <th>GHSmm</th>
+  <th>SmartSpeed</th>
+  <th>GHS</th>
   <th>T(C)</th>
   <th>Fan(RPM)</th>
   <th>ASIC V(V)</th>
-  <th>ASIC F(GHS)</th>
   <th>PG</th>
   <th>EC</th>
 </tr>";
@@ -314,12 +313,11 @@ for ($i = 0; $i < count($ports); $i++) {
 				echo $td . $matches[1] . "</td>";
 				echo $td . substr($matches[2], 12) . "</td>";
 				echo $td . number_format($matches[4], 0, ".", ",") . "</td>";
-				echo $td . $matches[6] . "</td>";
+				echo $td . $stat['Smart Speed'] . "</td>";
 				echo $td . $matches[14] . "</td>";
 				echo $td . $matches[9] . " " . $matches[10] . " " . $matches[11] . "</td>";
 				echo $td . $matches[12] . "</td>";
 				echo $td . $matches[13] . "</td>";
-				echo $td . $matches[15] . "</td>";
 				echo $td . $matches[16] . "</td>";
 				echo $td . $matches[18] . "</td>";
 				echo "</tr>";
@@ -328,7 +326,6 @@ for ($i = 0; $i < count($ports); $i++) {
 				echo "<td></td>";
 				echo "<td></td>";
 				echo $td . substr($stat['ID'],0,3) . "-" . substr($stat['ID'], 3) . "-" . $mod . "</td>";
-				echo "<td></td>";
 				echo "<td></td>";
 				echo "<td></td>";
 				echo "<td></td>";
