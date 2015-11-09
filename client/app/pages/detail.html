@@ -81,7 +81,8 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr md-auto-select ng-repeat="module in vm.data.module">
+									<tr md-auto-select ng-repeat="module in vm.data.module"
+											class="{{ vm.moduleColor(module.device_id) }}">
 										<td>
 											<md-switch
 												ng-model="module.indicator"

@@ -12,6 +12,8 @@
 		var vm = this;
 
 		vm.auth = false;
+		vm.colorID = null;
+		vm.darkColorID = false;
 
 		// vm.status = {
 		//	tabLoaded: /* loading...    */ bool,
@@ -89,6 +91,7 @@
 		vm.select = select;
 		vm.getTab = getTab;
 		vm.setLED = setLED;
+		vm.moduleColor = moduleColor;
 
 		share.status.main.title = "Detail";
 		share.status.main.subTitle = false;
@@ -125,6 +128,10 @@
 					vm.status.node.port
 				).then(function() {
 					vm.status.tabLoaded = true;
+					if (name == 'module') {
+						vm.colorID = vm.data.module[0].device_id;
+						vm.darkColorID = false;
+					}
 				});
 				break;
 			case 'config':
@@ -136,6 +143,14 @@
 				});
 				break;
 			}
+		}
+
+		function moduleColor(id) {
+			if (id != vm.colorID) {
+				vm.colorID = id;
+				vm.darkColor = !vm.darkColor;
+			}
+			return 'dark-' + vm.darkColor;
 		}
 
 		function setLED(module) {

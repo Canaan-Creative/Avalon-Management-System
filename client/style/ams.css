@@ -29,3 +29,10 @@ th {
 td {
 	padding: 0 14px;
 }
+
+.dark-false {
+	background-color: #b2ebf2;
+}
+.dark-true {
+	background-color: #dcedc8;
+}
