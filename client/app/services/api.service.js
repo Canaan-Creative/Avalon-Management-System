@@ -15,6 +15,7 @@
 		self.getNodes = getNodes;
 		self.getStatus = getStatus;
 		self.getConfig = getConfig;
+		self.getHashrate = getHashrate;
 
 		function getNodes(){
 			return $http.get('/api/nodes').then(
@@ -35,6 +36,15 @@
 						'Error fetching ' + name + ' of ' +
 							ip + ':' + port + ' at ' + time
 					);
+				});
+		}
+
+		function getHashrate() {
+			return $http.get('/api/hashrate')
+				.then(function(response) {
+					self.data.hashrate = response.data.result;
+				}, function(errResponse) {
+					console.error('Error fetching hashrate');
 				});
 		}
 

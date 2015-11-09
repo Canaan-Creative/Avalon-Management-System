@@ -7,5 +7,6 @@
 			'ngMdIcons',
 			'ngRoute',
 			'md.data.table',
+			'nvd3',
 		]);
 })();

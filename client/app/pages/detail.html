@@ -18,7 +18,6 @@
 
 	<md-content layout="row" flex>
 		<md-tabs
-				class="md-hue-1"
 				md-selected="selectedIndex"
 				md-stretch-tabs="always"
 				ng-if="!!vm.status.node"
@@ -44,7 +43,7 @@
 					<md-content layout="row" layout-fill ng-if="!vm.status.tabLoaded" layout-align="center center">
 						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 					</md-content>
-					<md-content fex ng-if="vm.status.tabLoaded">
+					<md-content ng-if="vm.status.tabLoaded">
 						<md-data-table-container>
 							<table md-data-table md-progress="deferred">
 								<thead md-order="query.order" md-trigger="onOrderChange">
@@ -144,7 +143,7 @@
 										layout-align="center center"
 										layout="row"
 										disabled="{{ vm.auth }}">
-									Auto Adjust
+								<small class="md-caption">Auto Adjust</small>
 								</md-checkbox>
 							</div>
 

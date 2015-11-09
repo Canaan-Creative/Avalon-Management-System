@@ -75,6 +75,32 @@ def get_config(ip, port):
     return json.dumps(result)
 
 
+@app.route('/hashrate', methods=['GET'])
+def get_hashrate():
+    hashrate = [{'values': [], 'key': 'local'}]
+    result = g.database.run('raw', 'DESCRIBE hashrate')
+    for r in result[1:]:
+        hashrate.append({'values': [], 'key': r[0]})
+    result = g.database.run(
+        'raw',
+        '''\
+SELECT pool.*, local.mhs
+  FROM hashrate AS pool
+  JOIN (
+        SELECT time, sum(mhs) AS mhs
+          FROM miner GROUP BY time
+       )
+    AS local
+    ON local.time = pool.time'''
+    )
+    for r in result:
+        hashrate[0]['values'].append({'x': r[0], 'y': r[-1] * 1000000})
+        for i in range(1, len(r) - 1):
+            hashrate[i]['values'].append({'x': r[0], 'y': r[i] * 1000000})
+
+    return json.dumps({'result': hashrate}, default=json_serial)
+
+
 @app.route('/status/<table>/<time>/<ip>/<port>', methods=['GET'])
 def get_status(table, time, ip, port):
     # TODO: prevent injection by checking args validation
