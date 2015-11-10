@@ -22,6 +22,7 @@
 				function(response) {
 					self.data.nodes = response.data.result;
 				}, function(errResponse) {
+					self.data.nodes = null;
 					console.error('Error fetching nodes');
 				});
 		}
@@ -32,6 +33,7 @@
 				).then(function(response) {
 					self.data[name] = response.data.result;
 				}, function(errResponse) {
+					self.data[name] = null;
 					console.error(
 						'Error fetching ' + name + ' of ' +
 							ip + ':' + port + ' at ' + time
@@ -44,6 +46,7 @@
 				.then(function(response) {
 					self.data.hashrate = response.data.result;
 				}, function(errResponse) {
+					self.data.hashrate = null;
 					console.error('Error fetching hashrate');
 				});
 		}
@@ -58,6 +61,7 @@
 					else
 						self.data.config.autoAdjust = false;
 				}, function(errResponse) {
+					self.data.config = null;
 					console.error(
 						'Error fetching config of ' + ip + ':' + port
 					);
