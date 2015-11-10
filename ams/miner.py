@@ -344,6 +344,8 @@ COLUMN_POOLS = [
      'type': 'BOOL'},
     {'name': 'stratum_active',
      'type': 'BOOL'},
+    {'name': 'stratum_difficulty',
+     'type': 'BIGINT UNSIGNED'},
     {'name': 'stratum_url',
      'type': 'BIGINT'},
     {'name': 'has_gbt',
