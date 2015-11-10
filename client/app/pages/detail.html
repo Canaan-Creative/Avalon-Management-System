@@ -31,7 +31,6 @@
 						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 					</md-content>
 					<md-content ng-if="vm.status.tabLoaded" flex>
-						
 					</md-content>
 				</md-tab-body>
 			</md-tab>
@@ -40,7 +39,7 @@
 			<md-tab md-on-select="vm.getTab('device')">
 				<md-tab-label>Devices</md-tab-label>
 				<md-tab-body>
-					<md-content layout="row" layout-fill ng-if="!vm.status.tabLoaded" layout-align="center center">
+					<md-content ng-if="!vm.status.tabLoaded" layout="row" layout-fill layout-align="center center">
 						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 					</md-content>
 					<md-content ng-if="vm.status.tabLoaded">
@@ -68,7 +67,7 @@
 			<md-tab md-on-select="vm.getTab('module')">
 				<md-tab-label>Modules</md-tab-label>
 				<md-tab-body>
-					<md-content layout="row" layout-fill ng-if="!vm.status.tabLoaded" layout-align="center center">
+					<md-content ng-if="!vm.status.tabLoaded" layout="row" layout-fill layout-align="center center">
 						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 					</md-content>
 					<md-content ng-if="vm.status.tabLoaded">
@@ -82,7 +81,7 @@
 								</thead>
 								<tbody>
 									<tr md-auto-select ng-repeat="module in vm.data.module"
-											class="{{ vm.moduleColor(module.device_id) }}">
+											class="dark-{{ module.theme }}">
 										<td>
 											<md-switch
 												ng-model="module.indicator"

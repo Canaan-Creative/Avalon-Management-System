@@ -12,8 +12,6 @@
 		var vm = this;
 
 		vm.auth = false;
-		vm.colorID = null;
-		vm.darkColorID = false;
 
 		// vm.status = {
 		//	tabLoaded: /* loading...    */ bool,
@@ -91,7 +89,6 @@
 		vm.select = select;
 		vm.getTab = getTab;
 		vm.setLED = setLED;
-		vm.moduleColor = moduleColor;
 
 		share.status.main.title = "Detail";
 		share.status.main.subTitle = false;
@@ -109,48 +106,44 @@
 
 		function getTab(name) {
 			var time;
+			var node = vm.status.node;
 			if (share.status.main.latest)
 				time = 'latest';
 			else
 				time = share.status.main.time;
 			vm.status.tabLoaded = false;
 			vm.status.tabName = name;
+
 			switch (name) {
 			case 'summary':
 				getSummary();
 				break;
 			case 'device':
 			case 'module':
-				api.getStatus(
-					name,
-					time,
-					vm.status.node.ip,
-					vm.status.node.port
-				).then(function() {
-					vm.status.tabLoaded = true;
-					if (name == 'module') {
-						vm.colorID = vm.data.module[0].device_id;
-						vm.darkColorID = false;
-					}
+				api.getStatus(name, time, node.ip, node.port).then(
+					function() {
+						if (node == vm.status.node) {
+							var initID = vm.data.module[0].device_id;
+							var theme = true;
+							for (var module of vm.data.module) {
+								if (module.device_id != initID) {
+									initID = module.device_id;
+									theme = !theme;
+								}
+								module.theme = theme;
+							}
+							vm.status.tabLoaded = true;
+						}
 				});
 				break;
 			case 'config':
-				api.getConfig(
-					vm.status.node.ip,
-					vm.status.node.port
-				).then(function() {
-					vm.status.tabLoaded = true;
+				api.getConfig(node.ip, node.port).then(
+					function() {
+						if (node == vm.status.node)
+							vm.status.tabLoaded = true;
 				});
 				break;
 			}
-		}
-
-		function moduleColor(id) {
-			if (id != vm.colorID) {
-				vm.colorID = id;
-				vm.darkColor = !vm.darkColor;
-			}
-			return 'dark-' + vm.darkColor;
 		}
 
 		function setLED(module) {
