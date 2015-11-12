@@ -335,6 +335,8 @@ COLUMN_EDEVS = [
      'type': 'BOOL'},
     {'name': 'nonce_check',
      'type': 'BOOL'},
+    {'name': 'automatic_voltage',
+     'type': 'BOOL'},
     {'name': 'auc_ver',
      'type': 'CHAR(12)'},
     {'name': 'auc_i2c_speed',
