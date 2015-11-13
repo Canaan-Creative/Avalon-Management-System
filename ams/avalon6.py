@@ -437,13 +437,13 @@ COLUMN_ESTATS = [
     {'name': 'freq',
      'type': 'DOUBLE'},
     {'name': 'pg',
-     'type': 'SMALLINT'},
+     'type': 'SMALLINT UNSIGNED'},
     {'name': 'led',
      'type': 'BOOL'},
     {'name': 'ta',
-     'type': 'SMALLINT'},
+     'type': 'SMALLINT UNSIGNED'},
     {'name': 'ec',
-     'type': 'SMALLINT'},
+     'type': 'SMALLINT UNSIGNED'},
 ]
 
 
