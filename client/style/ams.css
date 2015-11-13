@@ -8,7 +8,7 @@
 }
 
 .node {
-	background-color: #bbdefb;
+	background-color: #64b5f6;
 }
 
 h3.logo {
@@ -30,9 +30,9 @@ td {
 	padding: 0 14px;
 }
 
-.dark-false {
-	background-color: #b2ebf2;
-}
 .dark-true {
-	background-color: #dcedc8;
+	background-color: #bbdefb;
+}
+.dark-false {
+	background-color: #e3f2fd;
 }
