@@ -4,17 +4,19 @@
 
 <md-content layout="row" flex ng-if="!!vm.data.nodes">
 	<!-- Node List -->
-	<md-list class="node">
-		<md-list-item ng-repeat="node in vm.data.nodes">
-			<a ng-click="vm.select(node)">
-				<md-item-content md-ink-ripple layout="row" layout-align="start center">
-					<div class="inset">
-						{{ node.ip + ':' + node.port }}
-					</div>
-				</md-item-content>
-			</a>
-		</md-list-item>
-	</md-list>
+	<md-content class="node" layout="row">
+		<md-list flex>
+			<md-list-item ng-repeat="node in vm.data.nodes">
+				<a ng-click="vm.select(node)">
+					<md-item-content md-ink-ripple layout="row" layout-align="start center">
+						<div class="inset">
+							{{ node.ip + ':' + node.port }}
+						</div>
+					</md-item-content>
+				</a>
+			</md-list-item>
+		</md-list>
+	</md-content>
 
 	<md-content layout="row" flex>
 		<md-tabs
