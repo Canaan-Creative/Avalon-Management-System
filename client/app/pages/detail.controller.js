@@ -83,7 +83,7 @@
 			value: function(data) {return data.pg;}
 		},{
 			name: 'EC',
-			value: function(data) {return data.pg;}
+			value: function(data) {return data.ec;}
 		}];
 
 		vm.select = select;
