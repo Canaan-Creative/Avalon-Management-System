@@ -86,7 +86,7 @@ def get_hashrate():
         '''\
 SELECT pool.*, local.mhs
   FROM hashrate AS pool
-  JOIN (
+  LEFT JOIN (
         SELECT time, sum(mhs) AS mhs
           FROM miner GROUP BY time
        )
@@ -94,9 +94,15 @@ SELECT pool.*, local.mhs
     ON local.time = pool.time'''
     )
     for r in result:
-        hashrate[0]['values'].append({'x': r[0], 'y': r[-1] * 1000000})
+        hashrate[0]['values'].append({
+            'x': r[0],
+            'y': r[-1] * 1000000 if r[-1] is not None else 0,
+        })
         for i in range(1, len(r) - 1):
-            hashrate[i]['values'].append({'x': r[0], 'y': r[i] * 1000000})
+            hashrate[i]['values'].append({
+                'x': r[0],
+                'y': r[i] * 1000000 if r[-1] is not None else 0,
+            })
 
     return json.dumps({'result': hashrate}, default=json_serial)
 
