@@ -6,12 +6,15 @@
 	<!-- Node List -->
 	<md-content class="node" layout="row">
 		<md-list flex>
-			<md-list-item ng-repeat="node in vm.data.nodes">
+			<md-list-item
+					ng-repeat="node in vm.data.nodes"
+					class="node-selected-{{ node.selected }}">
 				<a ng-click="vm.select(node)">
 					<md-item-content md-ink-ripple layout="row" layout-align="start center">
 						<div class="inset">
 							{{ node.ip + ':' + node.port }}
 						</div>
+						<md-divider></md-divider>
 					</md-item-content>
 				</a>
 			</md-list-item>

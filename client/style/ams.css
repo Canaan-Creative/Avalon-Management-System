@@ -36,3 +36,6 @@ td {
 .dark-false {
 	background-color: #e3f2fd;
 }
+.node-selected-true {
+	background-color: #1e88e5;
+}
