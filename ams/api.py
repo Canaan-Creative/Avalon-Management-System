@@ -101,7 +101,7 @@ SELECT pool.*, local.mhs
         for i in range(1, len(r) - 1):
             hashrate[i]['values'].append({
                 'x': r[0],
-                'y': r[i] * 1000000 if r[-1] is not None else 0,
+                'y': r[i] * 1000000 if r[i] is not None else 0,
             })
 
     return json.dumps({'result': hashrate}, default=json_serial)
