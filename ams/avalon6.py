@@ -127,11 +127,11 @@ class Miner(miner.Miner):
             estat = estats[i]
             new_column.extend(
                 k.replace(' ', '_').lower() for k in sorted(estat)
-                if k[:5] != 'MM ID' and (' ' in k)
+                if k[:5] != 'MM ID' and (' ' in k) and k[:9] != "Automatic"
             )
             new_value.extend(
                 estat[k] for k in sorted(estat)
-                if k[:5] != 'MM ID' and (' ' in k)
+                if k[:5] != 'MM ID' and (' ' in k) and k[:9] != "Automatic"
             )
             try:
                 self.sql_queue.put({
