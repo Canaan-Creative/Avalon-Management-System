@@ -326,7 +326,7 @@ def pool(argv):
         cfg = temp.readlines()
 
     pattern = re.compile(
-        r'\s*(?P<name>btcchina|kano|ghash)\s+'
+        r'\s*(?P<name>btcchina|kano|ghash|cksolo)\s+'
         '(?P<address>[^\s]+)\s+'
         '(?P<user>[^\s]+)\s+'
         '(?P<worker>[^\s]+)\s+'

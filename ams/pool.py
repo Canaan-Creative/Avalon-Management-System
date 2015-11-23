@@ -123,6 +123,24 @@ class btcchina(Pool):
         return mhs / 1000000.0
 
 
+class cksolo(Pool):
+    name = "solo.ckpool.org"
+
+    def _collect(self):
+        url = 'http://solo.ckpool.org/users/{}'.format(self.key)
+        data = json.loads(urllib.request.urlopen(url).read().decode())
+        mhs = data['hashrate1hr']
+        if mhs[-1] == 'P':
+            mhs = float(mhs[:-1]) * 1000000000
+        elif mhs[-1] == 'T':
+            mhs = float(mhs[:-1]) * 1000000
+        elif mhs[-1] == 'G':
+            mhs = float(mhs[:-1]) * 1000
+        else:
+            mhs = float(mhs[:-1])
+        return mhs
+
+
 class kano(Pool):
     name = "kano.is"
 
@@ -144,7 +162,7 @@ def update_poolrate(pool_list, run_time, db, retry):
     hashrate_queue = queue.Queue()
 
     for p in pool_list:
-        if p['name'] in ['ghash', 'ozcoin', 'btcchina', 'kano']:
+        if p['name'] in ['ghash', 'ozcoin', 'btcchina', 'kano', 'cksolo']:
             pool_queue.put(p)
 
     for i in range(len(pool_list)):
