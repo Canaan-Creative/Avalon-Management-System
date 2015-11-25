@@ -63,7 +63,7 @@ class Miner(miner.Miner):
         # 'summary' -> table 'miner'
         try:
             summary = self.raw['summary']['SUMMARY'][0]
-        except TypeError:
+        except (TypeError, KeyError):
             return
 
         summary['Last getwork'] = datetime.datetime.fromtimestamp(
@@ -102,7 +102,7 @@ class Miner(miner.Miner):
         try:
             edevs = self.raw['edevs']['DEVS']
             estats = self.raw['estats']['STATS']
-        except TypeError:
+        except (TypeError, KeyError):
             return
 
         precise_time = datetime.datetime.fromtimestamp(
@@ -177,7 +177,7 @@ class Miner(miner.Miner):
         # 'estats' -> table 'module'
         try:
             estats = self.raw['estats']['STATS']
-        except TypeError:
+        except (TypeError, KeyError):
             return
 
         precise_time = datetime.datetime.fromtimestamp(
@@ -246,7 +246,7 @@ class Miner(miner.Miner):
         # 'pools' -> table 'pool'
         try:
             pools = self.raw['pools']['POOLS']
-        except TypeError:
+        except (TypeError, KeyError):
             return
 
         precise_time = datetime.datetime.fromtimestamp(
