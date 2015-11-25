@@ -19,6 +19,7 @@
 # along with AMS. If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import json
 from ams.log import log
 
 
@@ -205,7 +206,7 @@ def config(argv):
         luci = LuCI(ip, port, password)
         luci.auth()
         for d in data:
-            print(luci.put(d['lib'], d['method'], d['param']))
+            print(json.dumps(luci.put(d['lib'], d['method'], d['param'])))
 
     else:
         db = readCfg(cfgfile)['DataBase']
