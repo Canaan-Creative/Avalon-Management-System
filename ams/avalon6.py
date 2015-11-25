@@ -127,11 +127,35 @@ class Miner(miner.Miner):
             estat = estats[i]
             new_column.extend(
                 k.replace(' ', '_').lower() for k in sorted(estat)
-                if k[:5] != 'MM ID' and (' ' in k) and k[:9] != "Automatic"
+                if k.replace(' ', '_').lower() in [
+                    'mm_count',
+                    'smart_speed',
+                    'nonce_check',
+                    'automatic_voltage',
+                    'auc_ver',
+                    'auc_i2c_speed',
+                    'auc_i2c_xdelay',
+                    'auc_adc',
+                    'usb_pipe',
+                    'usb_delay',
+                    'usb_tmo'
+                ]
             )
             new_value.extend(
                 estat[k] for k in sorted(estat)
-                if k[:5] != 'MM ID' and (' ' in k) and k[:9] != "Automatic"
+                if k.replace(' ', '_').lower() in [
+                    'mm_count',
+                    'smart_speed',
+                    'nonce_check',
+                    'automatic_voltage',
+                    'auc_ver',
+                    'auc_i2c_speed',
+                    'auc_i2c_xdelay',
+                    'auc_adc',
+                    'usb_pipe',
+                    'usb_delay',
+                    'usb_tmo'
+                ]
             )
             try:
                 self.sql_queue.put({
