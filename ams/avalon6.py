@@ -44,7 +44,10 @@ class Miner(miner.Miner):
         'Freq\[(?P<Freq>[.0-9]+)\]\s'
         'PG\[(?P<PG>[0-9]+)\]\s'
         'Led\[(?P<LED>0|1)\]\s'
-        '.*TA\[(?P<TA>[0-9]+)\]\s'
+        '(MW0\[(?P<MW0>[0-9 ]+)\]\s)?'
+        '(MW1\[(?P<MW1>[0-9 ]+)\]\s)?'
+        '(PLL\[(?P<PLL>[0-9 ]+)\]\s)?'
+        'TA\[(?P<TA>[0-9]+)\]\s'
         'EC\[(?P<EC>[0-9]+)\]', re.X
     )
 
@@ -217,11 +220,11 @@ class Miner(miner.Miner):
                   k == 'GHS5m' or k == 'DH5m' or k == 'GHSmm'):
                 new_column.append(k.lower())
                 new_value.append(float(module_info[k]))
-            elif k == 'MW' or k == 'MH':
+            elif k == 'MW' or k == 'MH' or k == 'PLL':
                 i = 0
                 for m in module_info[k].split(' '):
                     new_column.append('{}{}'.format(k.lower(), i))
-                    new_value.append(float(m))
+                    new_value.append(int(m))
                     i += 1
             else:
                 new_column.append(k.lower())
@@ -464,6 +467,20 @@ COLUMN_ESTATS = [
      'type': 'SMALLINT UNSIGNED'},
     {'name': 'led',
      'type': 'BOOL'},
+    {'name': 'pll1',
+     'type': 'SMALLINT UNSIGNED'},
+    {'name': 'pll2',
+     'type': 'SMALLINT UNSIGNED'},
+    {'name': 'pll3',
+     'type': 'SMALLINT UNSIGNED'},
+    {'name': 'pll4',
+     'type': 'SMALLINT UNSIGNED'},
+    {'name': 'pll5',
+     'type': 'SMALLINT UNSIGNED'},
+    {'name': 'pll6',
+     'type': 'SMALLINT UNSIGNED'},
+    {'name': 'pll7',
+     'type': 'SMALLINT UNSIGNED'},
     {'name': 'ta',
      'type': 'SMALLINT UNSIGNED'},
     {'name': 'ec',
