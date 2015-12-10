@@ -220,7 +220,7 @@ class Miner(miner.Miner):
                   k == 'GHS5m' or k == 'DH5m' or k == 'GHSmm'):
                 new_column.append(k.lower())
                 new_value.append(float(module_info[k]))
-            elif k == 'PLL':
+            elif k == 'PLL' and module_info[k] is not None:
                 i = 0
                 for m in module_info[k].split(' '):
                     new_column.append('{}{}'.format(k.lower(), i))
