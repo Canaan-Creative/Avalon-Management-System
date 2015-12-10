@@ -220,13 +220,13 @@ class Miner(miner.Miner):
                   k == 'GHS5m' or k == 'DH5m' or k == 'GHSmm'):
                 new_column.append(k.lower())
                 new_value.append(float(module_info[k]))
-            elif k == 'MW' or k == 'MH' or k == 'PLL':
+            elif k == 'PLL':
                 i = 0
                 for m in module_info[k].split(' '):
                     new_column.append('{}{}'.format(k.lower(), i))
                     new_value.append(int(m))
                     i += 1
-            else:
+            elif k != 'MW0' and k != 'MW1':
                 new_column.append(k.lower())
                 new_value.append(int(module_info[k]))
 
