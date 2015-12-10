@@ -226,7 +226,7 @@ class Miner(miner.Miner):
                     new_column.append('{}{}'.format(k.lower(), i))
                     new_value.append(int(m))
                     i += 1
-            elif k != 'MW0' and k != 'MW1':
+            elif k != 'MW0' and k != 'MW1' and module_info[k] is not None:
                 new_column.append(k.lower())
                 new_value.append(int(module_info[k]))
 
