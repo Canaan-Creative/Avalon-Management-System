@@ -148,10 +148,13 @@ class Miner():
             self._generate_sql_pools(run_time)
         else:
             return False
-        return {
-            'column': self.sql_queue[0]['column'],
-            'value': [i['value'] for i in self.sql_queue],
-        }
+        if len(self.sql_queue) == 0:
+            return {'column': [], 'value': []}
+        else:
+            return {
+                'column': self.sql_queue[0]['column'],
+                'value': [i['value'] for i in self.sql_queue],
+            }
 
     def put(self, command, parameter=None, timeout=3):
         if parameter is None:
