@@ -307,6 +307,8 @@ COLUMN_POOLS = [
      'type': 'INT'},
     {'name': 'quota',
      'type': 'INT'},
+    {'name': 'bad_work',
+     'type': 'INT'},
     {'name': 'long_poll',
      'type': 'CHAR(1)'},
     {'name': 'getworks',
