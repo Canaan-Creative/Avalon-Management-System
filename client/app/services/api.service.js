@@ -16,6 +16,7 @@
 		self.getStatus = getStatus;
 		self.getConfig = getConfig;
 		self.getHashrate = getHashrate;
+		self.setLED = setLED;
 
 		function getNodes(){
 			return $http.get('/api/nodes').then(
@@ -66,6 +67,10 @@
 						'Error fetching config of ' + ip + ':' + port
 					);
 				});
+		}
+
+		function setLED(data) {
+			return $http.post('/api/led', data);
 		}
 	}
 })();

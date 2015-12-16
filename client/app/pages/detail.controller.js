@@ -88,7 +88,7 @@
 
 		vm.select = select;
 		vm.getTab = getTab;
-		vm.setLED = setLED;
+		vm.setSingleLED = setSingleLED;
 
 		share.status.main.title = "Detail";
 		share.status.main.subTitle = false;
@@ -146,6 +146,7 @@
 										theme = !theme;
 									}
 									module.theme = theme;
+									module.led = parseInt(module.led);
 								}
 							}
 							vm.status.tabLoaded = true;
@@ -162,7 +163,18 @@
 			}
 		}
 
-		function setLED(module) {
+		function setSingleLED(module) {
+			api.setLED({
+				modules: [{
+					ip: module.ip,
+					port: module.port,
+					device_id: module.device_id,
+					module_id: module.module_id,
+					led: module.led,
+				}]
+			}).then(function() {
+				vm.getTab(vm.status.tabName);
+			});
 		}
 	}
 })();

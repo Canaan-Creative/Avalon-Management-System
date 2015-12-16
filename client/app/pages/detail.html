@@ -89,8 +89,10 @@
 											class="dark-{{ module.theme }}">
 										<td>
 											<md-switch
-												ng-model="module.indicator"
-												ng-change="vm.setLED(module)"
+												ng-model="module.led"
+												ng-true-value="1"
+												ng-false-value="0"
+												ng-change="vm.setSingleLED(module)"
 												aria-label="LED">
 											</md-switch>
 										</td>
