@@ -92,7 +92,7 @@
 
 		share.status.main.title = "Detail";
 		share.status.main.subTitle = false;
-		api.getNodes().then(previousSelect());
+		api.getNodes().then(previousSelect);
 
 		function previousSelect() {
 			if (vm.status.node) {
