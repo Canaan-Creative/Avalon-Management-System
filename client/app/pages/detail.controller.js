@@ -92,14 +92,25 @@
 
 		share.status.main.title = "Detail";
 		share.status.main.subTitle = false;
-		api.getNodes();
+		api.getNodes().then(previousSelect());
 
+		function previousSelect() {
+			if (vm.status.node) {
+				for (var node of vm.data.nodes)
+					if (vm.status.node.ip == node.ip &&
+						vm.status.node.port == node.port) {
+							select(node);
+							return;
+					}
+				vm.status.node = false;
+			}
+		}
 
 		function getSummary() {
 		}
 
 		function select(node) {
-			if (vm.status.node)
+			if (vm.status.node && vm.status.node !== node)
 				vm.status.node.selected = false;
 			node.selected = true;
 			vm.status.node = node;
@@ -126,14 +137,16 @@
 				api.getStatus(name, time, node.ip, node.port).then(
 					function() {
 						if (node == vm.status.node) {
-							var initID = vm.data.module[0].device_id;
-							var theme = true;
-							for (var module of vm.data.module) {
-								if (module.device_id != initID) {
-									initID = module.device_id;
-									theme = !theme;
+							if (name == 'module') {
+								var initID = vm.data.module[0].device_id;
+								var theme = true;
+								for (var module of vm.data.module) {
+									if (module.device_id != initID) {
+										initID = module.device_id;
+										theme = !theme;
+									}
+									module.theme = theme;
 								}
-								module.theme = theme;
 							}
 							vm.status.tabLoaded = true;
 						}
