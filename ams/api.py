@@ -6,7 +6,7 @@ import sys
 import importlib
 sys.path.append('__AMS_LIB_PATH__')
 
-from flask import Flask, g
+from flask import Flask, g, request
 
 from ams.sql import DataBase
 from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
@@ -111,10 +111,10 @@ SELECT pool.*, local.mhs
 def get_status(table, time, ip, port):
     # TODO: prevent injection by checking args validation
 
+    status = []
     if time == 'latest':
         node = miner_type.Miner(ip, port, 0, log=False)
         result = node.get(table)
-        status = []
         for r in result['value']:
             s = {}
             i = 0
@@ -130,12 +130,11 @@ def get_status(table, time, ip, port):
             table if table != 'summary' else 'miner',
             None,
             "time = '{:%Y-%m-%d %H:%M:%S}' "
-            "AND ip = '{}' AND port = '{}'".format(
+            "AND ip = '{}' AND port = {}".format(
                 datetime.datetime.fromtimestamp(int(time)),
                 ip, port
             )
         )
-        status = []
         for r in result:
             s = {}
             i = 0
@@ -158,6 +157,40 @@ def get_status(table, time, ip, port):
         {'result': sorted(status, key=sort_order)},
         default=json_serial
     )
+
+
+@app.route('/led', methods=['POST'])
+def set_led():
+    import queue
+    import threading
+
+    def s(modules):
+        while True:
+            try:
+                m = modules.get(False)
+            except queue.Empty:
+                break
+            node = miner_type.Miner(m['ip'], m['port'], 0, log=False)
+            node.put(
+                'ascset',
+                '{},led,{}-{}'.format(
+                    m['device_id'], m['module_id'], m['led']
+                )
+            )
+            modules.task_done()
+
+    modules = queue.Queue()
+    posted = request.json['modules']
+    for m in posted:
+        modules.put(m)
+    for i in range(0, min(50, len(posted))):
+        t = threading.Thread(
+            target=s,
+            args=(modules,)
+        )
+        t.start()
+    modules.join()
+    return '{"result": "success"}'
 
 
 @app.teardown_request
