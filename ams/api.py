@@ -107,6 +107,33 @@ SELECT pool.*, local.mhs
     return json.dumps({'result': hashrate}, default=json_serial)
 
 
+@app.route('/warning/<name>/<time>', methods=['GET'])
+def get_warning(name, time):
+    if time == 'latest':
+        result = g.database.run('raw', 'SELECT MAX(time) from hashrate')
+        time = result[0][0].timestamp()
+
+    if name == 'ec':
+        result = g.database.run(
+            'select', 'module',
+            ['ip', 'port', 'device_id', 'module_id', 'dna', 'ec'],
+            "time = '{:%Y-%m-%d %H:%M:%S}' AND (ec & 65054) != 0 "
+            "ORDER BY ip, port, device_id, module_id".format(
+                datetime.datetime.fromtimestamp(int(time)),
+            )
+        )
+        warning = [{
+            'ip': r[0],
+            'port': r[1],
+            'device_id': r[2],
+            'module_id': r[3],
+            'dna': r[4],
+            'ec': r[5]
+        } for r in result]
+
+    return json.dumps({'result': warning}, default=json_serial)
+
+
 @app.route('/status/<table>/<time>/<ip>/<port>', methods=['GET'])
 def get_status(table, time, ip, port):
     # TODO: prevent injection by checking args validation
