@@ -50,13 +50,19 @@
 					<md-content ng-if="vm.status.tabLoaded">
 						<md-data-table-container>
 							<table md-data-table md-progress="deferred">
-								<thead md-order="query.order" md-trigger="onOrderChange">
+								<thead md-order="vm.sortIndex">
 									<tr>
-										<th ng-repeat="column in vm.deviceTable" name="{{ column.name }}"></th>
+										<th
+											ng-repeat="column in vm.deviceTable"
+											name="{{ column.name }}"
+											descend-first
+											order-by="{{ column.index }}">
+										</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr md-auto-select ng-repeat="device in vm.data.device">
+									<tr md-auto-select
+											ng-repeat="device in vm.data.device | orderBy: vm.getDeviceTable() : vm.sortReverse">
 										<td ng-repeat="column in vm.deviceTable">
 											{{ column.value(device) }}
 										</td>
@@ -78,14 +84,20 @@
 					<md-content ng-if="vm.status.tabLoaded">
 						<md-data-table-container>
 							<table md-data-table md-progress="deferred">
-								<thead md-order="query.order" md-trigger="onOrderChange">
+								<thead md-order="vm.sortIndex">
 									<tr>
 										<th name="LED"></th>
-										<th ng-repeat="column in vm.moduleTable" name="{{ column.name }}"></th>
+										<th
+											ng-repeat="column in vm.moduleTable"
+											name="{{ column.name }}"
+											descend-first
+											order-by="{{ column.index }}">
+										</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr md-auto-select ng-repeat="module in vm.data.module"
+									<tr md-auto-select
+											ng-repeat="module in vm.data.module | orderBy: vm.getModuleTable() : vm.sortReverse"
 											class="dark-{{ module.theme }}">
 										<td>
 											<md-switch

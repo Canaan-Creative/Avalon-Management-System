@@ -24,67 +24,92 @@
 
 		vm.deviceTable = [{
 			name: 'ID',
+			index: 0,
 			value: function(data) {return data.device_id;}
 		},{
 			name: 'Enabled',
+			index: 1,
 			value: function(data) {return data.enabled;}
 		},{
 			name: 'Status',
+			index: 2,
 			value: function(data) {return data.status;}
 		},{
 			name: 'Temp',
+			index: 3,
 			value: function(data) {return data.temperature;}
 		},{
 			name: 'GHsav',
-			value: function(data) {return (data.mhs_av / 1000).toFixed(0);}
+			index: 4,
+			value: function(data) {return parseInt(data.mhs_av / 1000);}
 		},{
 			name: 'GHs5s',
-			value: function(data) {return (data.mhs_5s / 1000).toFixed(0);}
+			index: 5,
+			value: function(data) {return parseInt(data.mhs_5s / 1000);}
 		},{
 			name: 'GHs1m',
-			value: function(data) {return (data.mhs_1m / 1000).toFixed(0);}
+			index: 6,
+			value: function(data) {return parseInt(data.mhs_1m / 1000);}
 		},{
 			name: 'GHs5m',
-			value: function(data) {return (data.mhs_5m / 1000).toFixed(0);}
+			index: 7,
+			value: function(data) {return parseInt(data.mhs_5m / 1000);}
 		},{
 			name: 'GHs15m',
-			value: function(data) {return (data.mhs_15m / 1000).toFixed(0);}
+			index: 8,
+			value: function(data) {return parseInt(data.mhs_15m / 1000);}
 		},{
 			name: 'LastValiddata',
+			index: 9,
 			value: function(data) {return data.last_valid_work;}
 		}];
 
 		vm.moduleTable = [{
 			name: 'ID',
+			index: 0,
 			value: function(data) {return data.device_id + ':' + data.module_id;}
 		},{
 			name: 'Elapesed',
+			index: 1,
 			value: function(data) {return data.elapsed;}
 		},{
 			name: 'Version',
+			index: 2,
 			value: function(data) {return data.ver;}
 		},{
 			name: 'LW',
+			index: 3,
 			value: function(data) {return data.lw;}
 		},{
 			name: 'GHs',
-			value: function(data) {return data.ghsmm.toFixed(0);}
+			index: 4,
+			value: function(data) {return parseInt(data.ghsmm);}
 		},{
 			name: 'T',
+			index: 5,
 			value: function(data) {return data.temp + '/' + data.temp0 + '/' + data.temp1;}
 		},{
 			name: 'Fan',
+			index: 6,
 			value: function(data) {return data.fan;}
 		},{
 			name: 'Volt',
+			index: 7,
 			value: function(data) {return data.vol;}
 		},{
 			name: 'PG',
+			index: 8,
 			value: function(data) {return data.pg;}
 		},{
 			name: 'EC',
+			index: 9,
 			value: function(data) {return data.ec;}
 		}];
+
+		vm.getDeviceTable = getDeviceTable;
+		vm.getModuleTable = getModuleTable;
+		vm.sortIndex = undefined;
+		vm.sortReverse = false;
 
 		vm.select = select;
 		vm.getTab = getTab;
@@ -93,6 +118,7 @@
 		share.status.main.title = "Detail";
 		share.status.main.subTitle = false;
 		api.getNodes().then(previousSelect);
+
 
 		function previousSelect() {
 			if (vm.status.node) {
@@ -127,6 +153,8 @@
 				time = share.status.main.time;
 			vm.status.tabLoaded = false;
 			vm.status.tabName = name;
+			vm.sortIndex = undefined;
+			vm.sortReverse = false;
 
 			switch (name) {
 			case 'summary':
@@ -176,5 +204,20 @@
 				vm.getTab(vm.status.tabName);
 			});
 		}
+
+		function getDeviceTable() {
+			if (vm.sortIndex === undefined)
+				return;
+			vm.sortReverse = (1 / vm.sortIndex > 0);
+			return vm.deviceTable[Math.abs(vm.sortIndex)].value;
+		}
+
+		function getModuleTable() {
+			if (vm.sortIndex === undefined)
+				return;
+			vm.sortReverse = (1 / vm.sortIndex > 0);
+			return vm.moduleTable[Math.abs(vm.sortIndex)].value;
+		}
+
 	}
 })();
