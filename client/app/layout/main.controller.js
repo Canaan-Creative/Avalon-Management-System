@@ -39,8 +39,10 @@
 			smallDevice = true;
 		}
 		function select(menuItem) {
-			vm.status.title = menuItem.name;
-			vm.status.subTitle = false;
+			if (vm.status.title !== menuItem.name) {
+				vm.status.title = menuItem.name;
+				vm.status.subTitle = false;
+			}
 			if (smallDevice)
 				$mdSidenav('left').toggle();
 			$location.path(menuItem.link);
