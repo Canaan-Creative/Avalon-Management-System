@@ -32,10 +32,41 @@
 			<md-tab md-on-select="vm.getTab('summary')">
 				<md-tab-label>Summary</md-tab-label>
 				<md-tab-body>
-					<md-content layout="row" layout-fill ng-if="!vm.status.tabLoaded" layout-align="center center">
-						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
-					</md-content>
-					<md-content ng-if="vm.status.tabLoaded" flex>
+					<md-content flex>
+
+						<md-card>
+							<md-card-header>
+								<md-card-header-text>
+									<div class="md-title">Pool Status</div>
+								</md-card-header-text>
+							</md-card-header>
+							<md-card-content layout="row" ng-if="!vm.status.poolCardLoaded" layout-align="center center">
+								<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+							</md-card-content>
+							<md-card-content ng-if="vm.status.poolCardLoaded">
+								<md-data-table-container>
+									<table md-data-table md-progress="deferred">
+										<thead>
+											<tr>
+												<th ng-repeat="column in vm.poolTable" name="{{ column.name }}">
+													<md-tooltip ng-if="column.tooltip !== undefined">
+														{{ column.tooltip }}
+													</md-tooltip>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="pool in vm.data.pool">
+												<td ng-repeat="column in vm.poolTable">
+													{{ column.value(pool) }}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</md-data-table-container>
+							</md-card-content>
+						</md-card>
+
 					</md-content>
 				</md-tab-body>
 			</md-tab>
@@ -49,7 +80,7 @@
 					</md-content>
 					<md-content ng-if="vm.status.tabLoaded">
 						<md-data-table-container>
-							<table md-data-table md-progress="deferred">
+							<table md-data-table>
 								<thead md-order="vm.sortIndex">
 									<tr>
 										<th
@@ -60,8 +91,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr md-auto-select
-											ng-repeat="device in vm.data.device | orderBy: vm.getDeviceTable() : vm.sortReverse">
+									<tr ng-repeat="device in vm.data.device | orderBy: vm.getDeviceTable() : vm.sortReverse">
 										<td ng-repeat="column in vm.deviceTable">
 											{{ column.value(device) }}
 										</td>
@@ -82,7 +112,7 @@
 					</md-content>
 					<md-content ng-if="vm.status.tabLoaded">
 						<md-data-table-container>
-							<table md-data-table md-progress="deferred">
+							<table md-data-table>
 								<thead md-order="vm.sortIndex">
 									<tr>
 										<th name="LED"></th>
@@ -94,8 +124,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr md-auto-select
-											ng-repeat="module in vm.data.module | orderBy: vm.getModuleTable() : vm.sortReverse"
+									<tr ng-repeat="module in vm.data.module | orderBy: vm.getModuleTable() : vm.sortReverse"
 											class="dark-{{ module.theme }}">
 										<td>
 											<md-switch

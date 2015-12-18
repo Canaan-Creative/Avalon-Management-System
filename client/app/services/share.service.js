@@ -21,6 +21,7 @@
 			detail: {
 				node: false,
 				tabLoaded: false,
+				poolCardLoaded: false,
 				tabName: "summary",
 			},
 		};
