@@ -5,9 +5,9 @@
 		.module('ams')
 		.controller('DetailController', DetailController);
 
-	DetailController.$inject = ['ShareService', 'APIService'];
+	DetailController.$inject = ['$filter', 'ShareService', 'APIService'];
 
-	function DetailController(share, api) {
+	function DetailController($filter, share, api) {
 		/* jshint validthis: true */
 		var vm = this;
 
@@ -60,7 +60,12 @@
 			value: function(data) {return data.stale;}
 		},{
 			name: 'LST',
-			value: function(data) {return data.last_share_time;}
+			value: function(data) {
+				return $filter('date')(
+					data.last_share_time * 1000,
+					'yyyy-MM-dd HH:mm:ss'
+				);
+			}
 		},{
 			name: 'LSD',
 			value: function(data) {return data.last_share_difficulty;}
