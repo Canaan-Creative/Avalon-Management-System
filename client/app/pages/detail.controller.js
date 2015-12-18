@@ -165,7 +165,7 @@
 				api.getStatus(name, time, node.ip, node.port).then(
 					function() {
 						if (node == vm.status.node) {
-							if (name == 'module') {
+							if (name == 'module' && vm.data.module.length > 0) {
 								var initID = vm.data.module[0].device_id;
 								var theme = true;
 								for (var module of vm.data.module) {
