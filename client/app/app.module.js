@@ -3,6 +3,7 @@
 
 	angular
 		.module('ams', [
+			'templates',
 			'ngMaterial',
 			'ngMdIcons',
 			'ngRoute',
