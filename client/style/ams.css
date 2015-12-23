@@ -23,13 +23,6 @@ h3.logo {
 	background-color: #1976d2;
 }
 
-th {
-	padding: 0 14px;
-}
-td {
-	padding: 0 14px;
-}
-
 .dark-true {
 	background-color: #bbdefb;
 }
@@ -38,4 +31,35 @@ td {
 }
 .node-selected-true {
 	background-color: #1e88e5;
+}
+
+table[md-data-table]:not([md-row-select]) > thead:not([md-table-progress]) > tr > th:first-child,
+table[md-data-table]:not([md-row-select]) > tbody > tr > td:first-child,
+table[md-data-table]:not([md-row-select]) > tfoot > tr > td:first-child {
+	padding: 0 14px 0 12px;
+}
+table[md-data-table]:not([md-row-select]) > thead:not([md-table-progress]) > tr > th:nth-child(n+2):nth-last-child(n+2),
+table[md-data-table]:not([md-row-select]) > tbody > tr > td:nth-child(n+2):nth-last-child(n+2),
+table[md-data-table]:not([md-row-select]) > tfoot > tr > td:nth-child(n+2):nth-last-child(n+2) {
+	padding: 0 14px;
+}
+table[md-data-table][md-row-select] > thead:not([md-table-progress]) > tr > th:nth-child(n+3):nth-last-child(n+2),
+table[md-data-table][md-row-select] > tbody > tr > td:nth-child(n+3):nth-last-child(n+2),
+table[md-data-table][md-row-select] > tfoot > tr > td:nth-child(n+3):nth-last-child(n+2) {
+	padding: 0 14px;
+}
+table[md-data-table][md-row-select] > thead:not([md-table-progress]) > tr > th:first-child,
+table[md-data-table][md-row-select] > tbody > tr > td:first-child,
+table[md-data-table][md-row-select] > tfoot > tr > td:first-child {
+	padding: 0 12px;
+}
+table[md-data-table][md-row-select] > thead:not([md-table-progress]) > tr > th:nth-child(2),
+table[md-data-table][md-row-select] > tbody > tr > td:nth-child(2),
+table[md-data-table][md-row-select] > tfoot > tr > td:nth-child(2) {
+	padding: 0 14px 0 0;
+}
+table[md-data-table] > thead:not([md-table-progress]) > tr > th:last-child,
+table[md-data-table] > tbody > tr > td:last-child,
+table[md-data-table] > tfoot > tr > td:last-child {
+	padding: 0 12px 0 14px;
 }
