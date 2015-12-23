@@ -76,7 +76,8 @@
 				{prefix: 'M', base: 100000},
 				{prefix: 'k', base: 100},
 			];
-			for (var p of prefix)
+			for (var i = 0; i < prefix.length; i++) {
+				var p = prefix[i];
 				if (num >= p.base) {
 					if (num >= p.base * 10) {
 						return (num / p.base / 10).toFixed(0) + ' ' + p.prefix;
@@ -85,6 +86,7 @@
 						return (num / p.base / 10).toFixed(1) + ' ' + p.prefix;
 					}
 				}
+			}
 			return num;
 		}
 	}

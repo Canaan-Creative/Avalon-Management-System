@@ -171,12 +171,14 @@
 
 		function previousSelect() {
 			if (vm.status.node) {
-				for (var node of vm.data.nodes)
+				for (var i = 0; i < vm.data.nodes.length; i++) {
+					var node = vm.data.nodes[i];
 					if (vm.status.node.ip == node.ip &&
 						vm.status.node.port == node.port) {
 							select(node);
 							return;
 					}
+				}
 				vm.status.node = false;
 			}
 		}
@@ -219,7 +221,8 @@
 							if (name == 'module' && vm.data.module.length > 0) {
 								var initID = vm.data.module[0].device_id;
 								var theme = true;
-								for (var module of vm.data.module) {
+								for (var i = 0; i < vm.data.module.length; i++) {
+									var module = vm.data.module[i];
 									if (module.device_id != initID) {
 										initID = module.device_id;
 										theme = !theme;
