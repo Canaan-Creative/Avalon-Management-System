@@ -1,0 +1,9 @@
+[DataBase]
+host = localhost
+user = ams
+password = 
+database = ams
+thread_num = 50
+
+[Farm]
+type = avalon6
