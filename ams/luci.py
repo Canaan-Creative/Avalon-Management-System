@@ -41,7 +41,7 @@ class LuCI():
         response = self.put('auth', 'login', ['root', self.password])
         self.token = response['result']
 
-    def put(self, lib, method, params=None, timeout=3):
+    def put(self, lib, method, params=None, timeout=60):
         url = 'http://{}:{}/cgi-bin/luci/rpc/{}{}'.format(
             self.ip, self.port, lib,
             '?auth={}'.format(self.token) if self.token is not None else ''
