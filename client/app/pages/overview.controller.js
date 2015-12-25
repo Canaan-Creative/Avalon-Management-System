@@ -70,8 +70,7 @@
 				xScale: d3.time.scale(),
 			},
 			title: {
-				enable: true,
-				text: 'Hashrate'
+				enable: false,
 			},
 		};
 
