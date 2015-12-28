@@ -168,6 +168,24 @@
 		share.status.main.subTitle = false;
 		api.getNodes().then(previousSelect);
 
+		vm.hashrateChart = {};
+		vm.hashrateChart.loaded = false;
+		vm.hashrateChart.options = share.hashrateChartOptions;
+
+		vm.data = api.data;
+
+		function getNodeHashrate() {
+			api.getNodeHashrate(
+				vm.status.node.ip,
+				vm.status.node.port,
+				share.status.main.time - 30 * 24 * 3600,
+				share.status.main.time
+			).then(
+				function() {
+					vm.hashrateChart.loaded = true;
+			});
+		}
+
 
 		function previousSelect() {
 			if (vm.status.node) {
@@ -204,6 +222,7 @@
 			vm.status.tabName = name;
 			vm.sortIndex = undefined;
 			vm.sortReverse = false;
+			vm.hashrateChart.loaded = false;
 
 			switch (name) {
 			case 'summary':
@@ -212,6 +231,10 @@
 						if (node == vm.status.node)
 							vm.status.poolCardLoaded = true;
 				});
+				if (share.status.main.time === 0)
+					share.getLastTime().then(getNodeHashrate);
+				else
+					getNodeHashrate();
 				break;
 			case 'device':
 			case 'module':

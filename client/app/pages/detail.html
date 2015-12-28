@@ -42,8 +42,15 @@
 											<div class="md-title">Hashrate Graph</div>
 										</md-card-header-text>
 									</md-card-header>
-									<md-card-content>
-									</md-card-content>
+										<md-card-content ng-if="!vm.hashrateChart.loaded" layout="row" layout-align="center center">
+											<div style="height:{{ vm.hashrateChart.options.chart.height }}px" layout="column" layout-align="center center">
+												<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+											</div>
+										</md-card-content>
+										<md-card-content ng-if="vm.hashrateChart.loaded">
+											<nvd3 options="vm.hashrateChart.options" data="vm.data.nodeHashrate">
+											</nvd3>
+										</md-card-content>
 								</md-card>
 							</div>
 							<div flex>
@@ -54,6 +61,10 @@
 										</md-card-header-text>
 									</md-card-header>
 									<md-card-content>
+									<md-content>
+										<div style="height:{{ vm.hashrateChart.options.chart.height }}px">
+										</div>
+									</md-content>
 									</md-card-content>
 								</md-card>
 							</div>

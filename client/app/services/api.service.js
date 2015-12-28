@@ -15,7 +15,8 @@
 		self.getNodes = getNodes;
 		self.getStatus = getStatus;
 		self.getConfig = getConfig;
-		self.getHashrate = getHashrate;
+		self.getFarmHashrate = getFarmHashrate;
+		self.getNodeHashrate = getNodeHashrate;
 		self.setLED = setLED;
 
 		var getStatusLock = {
@@ -59,12 +60,30 @@
 				});
 		}
 
-		function getHashrate() {
-			return $http.get('/api/hashrate')
-				.then(function(response) {
-					self.data.hashrate = response.data.result;
+		function getFarmHashrate(start, end) {
+			return $http.post('/api/hashrate', {
+					scope: 'farm',
+					start: start,
+					end: end,
+				}).then(function(response) {
+					self.data.farmHashrate = response.data.result;
 				}, function(errResponse) {
-					self.data.hashrate = null;
+					self.data.farmHashrate = null;
+					console.error('Error fetching hashrate');
+				});
+		}
+
+		function getNodeHashrate(ip, port, start, end) {
+			return $http.post('/api/hashrate', {
+					scope: 'node',
+					ip: ip,
+					port: port,
+					start: start,
+					end: end,
+				}).then(function(response) {
+					self.data.nodeHashrate = response.data.result;
+				}, function(errResponse) {
+					self.data.nodeHashrate = null;
 					console.error('Error fetching hashrate');
 				});
 		}
