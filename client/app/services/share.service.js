@@ -69,7 +69,7 @@
 					axisLabel: 'Hashrate (Hash/s)',
 					showMaxMin: false,
 					tickFormat: function(d) {
-						return numberShorten(d, 1);
+						return numberShorten(d, 2);
 					},
 					axisLabelDistance: -10,
 				},
@@ -107,7 +107,7 @@
 				var p = prefix[i];
 				if (num >= p.base) {
 					if (num >= p.base * 100)
-						return (num / p.base / 10).toFixed(Math.max(precise - 2, 0)) + ' ' + p.prefix;
+						return (num / p.base / 10).toFixed(precise - 2) + ' ' + p.prefix;
 					else if (num >= p.base * 10)
 						return (num / p.base / 10).toFixed(precise - 1) + ' ' + p.prefix;
 					else
