@@ -4,7 +4,6 @@ import json
 import datetime
 import sys
 import importlib
-sys.path.append('__AMS_LIB_PATH__')
 
 from flask import Flask, g, request
 
@@ -13,6 +12,7 @@ from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
 
 
 app = Flask(__name__)
+sys.path.append('__AMS_LIB_PATH__')
 cfgfile = '__AMS_CFG_PATH__'
 
 
@@ -75,15 +75,30 @@ def get_config(ip, port):
     return json.dumps(result)
 
 
-@app.route('/hashrate', methods=['GET'])
+@app.route('/hashrate', methods=['POST'])
+# format:
+# {
+#  scope: str 'farm' | 'node' | 'module'
+#  ip:    str *node scope only*
+#  port:  int *node scope only*
+#  start: int timestamp
+#  end:   int timestamp
+# }
 def get_hashrate():
-    hashrate = [{'values': [], 'key': 'local'}]
-    result = g.database.run('raw', 'DESCRIBE hashrate')
-    for r in result[1:]:
-        hashrate.append({'values': [], 'key': r[0]})
-    result = g.database.run(
-        'raw',
-        '''\
+    req = request.json
+    start = '{:%Y-%m-%d %H:%M:%S}'.format(
+        datetime.datetime.fromtimestamp(req['start']))
+    end = '{:%Y-%m-%d %H:%M:%S}'.format(
+        datetime.datetime.fromtimestamp(req['end']))
+    clause = "WHERE time > '{}' AND time < '{}'".format(start, end)
+    if req['scope'] == 'farm':
+        hashrate = [{'values': [], 'key': 'local'}]
+        result = g.database.run('raw', 'DESCRIBE hashrate')
+        for r in result[1:]:
+            hashrate.append({'values': [], 'key': r[0]})
+        result = g.database.run(
+            'raw',
+            '''\
 SELECT pool.*, local.mhs
   FROM hashrate AS pool
   LEFT JOIN (
@@ -91,20 +106,41 @@ SELECT pool.*, local.mhs
           FROM miner GROUP BY time
        )
     AS local
-    ON local.time = pool.time'''
-    )
-    for r in result:
-        hashrate[0]['values'].append({
-            'x': r[0],
-            'y': r[-1] * 1000000 if r[-1] is not None else 0,
-        })
-        for i in range(1, len(r) - 1):
-            hashrate[i]['values'].append({
+    ON local.time = pool.time ''' + clause.replace('time', 'pool.time')
+        )
+        for r in result:
+            hashrate[0]['values'].append({
                 'x': r[0],
-                'y': r[i] * 1000000 if r[i] is not None else 0,
+                'y': r[-1] * 1000000 if r[-1] is not None else 0,
             })
+            for i in range(1, len(r) - 1):
+                hashrate[i]['values'].append({
+                    'x': r[0],
+                    'y': r[i] * 1000000 if r[i] is not None else 0,
+                })
 
-    return json.dumps({'result': hashrate}, default=json_serial)
+        return json.dumps({'result': hashrate}, default=json_serial)
+    elif req['scope'] == 'node':
+        hashrate = [{'values': [], 'key': 'node'}]
+        result = g.database.run(
+            'raw',
+            "SELECT a.time, a.mhs FROM miner AS a RIGHT JOIN "
+            "(SELECT time FROM hashrate) AS b ON a.time = b.time "
+            "{} AND a.ip = '{}' AND a.port = '{}'".format(
+                clause.replace('time', 'b.time'), req['ip'], req['port']
+            ))
+        for r in result:
+            hashrate[0]['values'].append({
+                'x': r[0],
+                'y': r[1] * 1000000 if r[1] is not None else 0,
+            })
+        return json.dumps({'result': hashrate}, default=json_serial)
+    elif req['scope'] == 'module':
+        # TODO
+        pass
+    else:
+        # TODO: error
+        pass
 
 
 @app.route('/warning/<name>/<time>', methods=['GET'])
