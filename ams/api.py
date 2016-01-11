@@ -75,6 +75,22 @@ def get_config(ip, port):
     return json.dumps(result)
 
 
+@app.route('/info/<ip>/<port>', methods=['GET'])
+def get_info(ip, port):
+    import ams.luci
+    clause = "`ip` = '{}'".format(ip)
+    nodes = g.database.run('select', 'controller_config', ['password'], clause)
+    if not nodes:
+        return '{"result": "wrong node"}'
+    password = nodes[0][0] if nodes[0][0] is not None else ''
+    luci = ams.luci.LuCI(ip, 80, password)
+    luci.auth()
+    result = luci.put('uci', 'exec', ['ubus call network.device status'])
+    result = json.loads(result['result'])
+    mac = result['eth0']['macaddr']
+    return json.dumps({'mac': mac})
+
+
 @app.route('/hashrate', methods=['POST'])
 # format:
 # {
