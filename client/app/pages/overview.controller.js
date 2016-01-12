@@ -19,14 +19,17 @@
 		vm.hashrateChart = {};
 		vm.hashrateChart.loaded = false;
 		vm.hashrateChart.options = share.hashrateChartOptions;
+		vm.aliverateChart = {};
+		vm.aliverateChart.loaded = false;
+		vm.aliverateChart.options = share.aliverateChartOptions;
 		vm.data = api.data;
 
 		if (share.status.main.time === 0)
-			share.getLastTime().then(getFarmHashrate);
+			share.getLastTime().then(getChart);
 		else
-			getFarmHashrate();
+			getChart();
 
-		function getFarmHashrate() {
+		function getChart() {
 			api.getFarmHashrate(
 				share.status.main.time - 30 * 24 * 3600,
 				share.status.main.time
@@ -34,7 +37,14 @@
 				function() {
 					vm.hashrateChart.loaded = true;
 			});
-		}
 
+			api.getAliverate(
+				share.status.main.time - 30 * 24 * 3600,
+				share.status.main.time
+			).then(
+				function() {
+					vm.aliverateChart.loaded = true;
+			});
+		}
 	}
 })();

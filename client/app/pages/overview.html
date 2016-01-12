@@ -25,8 +25,14 @@
 						<div class="md-title">Aliverate Graph</div>
 					</md-card-header-text>
 				</md-card-header>
-				<md-card-content>
-
+				<md-card-content ng-if="!vm.aliverateChart.loaded" layout="row" layout-align="center center">
+					<div style="height:{{ vm.aliverateChart.options.chart.height }}px" layout="column" layout-align="center center">
+						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+					</div>
+				</md-card-content>
+				<md-card-content ng-if="vm.aliverateChart.loaded">
+					<nvd3 options="vm.aliverateChart.options" data="vm.data.aliverate">
+					</nvd3>
 				</md-card-content>
 			</md-card>
 		</div>

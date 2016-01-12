@@ -15,6 +15,7 @@
 		self.getNodes = getNodes;
 		self.getStatus = getStatus;
 		self.getConfig = getConfig;
+		self.getAliverate = getAliverate;
 		self.getFarmHashrate = getFarmHashrate;
 		self.getNodeHashrate = getNodeHashrate;
 		self.setLED = setLED;
@@ -60,6 +61,22 @@
 				});
 		}
 
+		function getAliverate(start, end) {
+			return $http.post('/api/aliverate', {
+					start: start,
+					end: end,
+				}).then(function(response) {
+					self.data.aliverate = response.data.result;
+					self.data.aliverate[0].type = 'line';
+					self.data.aliverate[0].yAxis = 1;
+					self.data.aliverate[1].type = 'line';
+					self.data.aliverate[1].yAxis = 2;
+				}, function(errResponse) {
+					self.data.aliverate = null;
+					console.error('Error fetching hashrate');
+				});
+		}
+
 		function getFarmHashrate(start, end) {
 			return $http.post('/api/hashrate', {
 					scope: 'farm',
@@ -69,7 +86,7 @@
 					self.data.farmHashrate = response.data.result;
 				}, function(errResponse) {
 					self.data.farmHashrate = null;
-					console.error('Error fetching hashrate');
+					console.error('Error fetching aliverate');
 				});
 		}
 

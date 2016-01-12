@@ -26,6 +26,67 @@
 			},
 		};
 		self.getLastTime = getLastTime;
+		self.aliverateChartOptions = {
+			chart: {
+				type: 'multiChart',
+				height: 350,
+				margin : {
+					top: 20,
+					right: 54,
+					bottom: 40,
+					left: 54
+				},
+				line1: {
+					x: function(d) {return d.x * 1000;},
+					y: function(d) {return d.y;},
+				},
+				line2: {
+					x: function(d) {return d.x * 1000;},
+					y: function(d) {return d.y;},
+				},
+				useInteractiveGuideline: true,
+				interactiveLayer: {
+					tooltip: {
+						headerFormatter: function(d) {
+							return d3.time.format('%Y.%m.%d %H:%M')(new Date(d * 1000));
+						},
+					},
+				},
+				dispatch: {
+					stateChange: function(e) {},
+					changeState: function(e) {},
+					tooltipShow: function(e) {},
+					tooltipHide: function(e) {},
+				},
+				xAxis: {
+					axisLabel: 'Time',
+					showMaxMin: false,
+					ticks: function(start, stop) {
+						return d3.time.days(start, stop, 7);
+					},
+					tickFormat: function(d) {
+						return d3.time.format('%m.%d')(new Date(d * 1000));
+					},
+				},
+				yAxis1: {
+					axisLabel: 'Nodes',
+					showMaxMin: false,
+					axisLabelDistance: -10,
+				},
+				yAxis2: {
+					axisLabel: 'Modules',
+					showMaxMin: false,
+					axisLabelDistance: -10,
+				},
+				callback: function(chart) {},
+				forceY: [0],
+				xScale: d3.time.scale(),
+			},
+			title: {
+				enable: false,
+			},
+		};
+
 		self.hashrateChartOptions = {
 			chart: {
 				type: 'lineChart',
