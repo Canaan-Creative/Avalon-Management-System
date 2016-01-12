@@ -91,6 +91,53 @@ def get_info(ip, port):
     return json.dumps({'mac': mac})
 
 
+@app.route('/aliverate', methods=['POST'])
+def get_aliverate():
+    req = request.json
+    start = '{:%Y-%m-%d %H:%M:%S}'.format(
+        datetime.datetime.fromtimestamp(req['start']))
+    end = '{:%Y-%m-%d %H:%M:%S}'.format(
+        datetime.datetime.fromtimestamp(req['end']))
+    clause = "WHERE time > '{}' AND time < '{}'".format(start, end)
+    aliverate = [{'values': [], 'key': 'nodes'},
+                 {'values': [], 'key': 'modules'}]
+
+    result = g.database.run(
+        'raw',
+        '''\
+SELECT pool.time, miner.number
+  FROM hashrate AS pool
+  LEFT JOIN (
+        SELECT time, count(ip) AS number
+          FROM miner GROUP BY time
+       )
+    AS miner
+    ON miner.time = pool.time ''' + clause.replace('time', 'pool.time'))
+    for r in result:
+        aliverate[0]['values'].append({
+            'x': r[0],
+            'y': r[-1] if r[-1] is not None else 0,
+        })
+
+    result = g.database.run(
+        'raw',
+        '''\
+SELECT pool.time, module.number
+  FROM hashrate AS pool
+  LEFT JOIN (
+        SELECT time, count(dna) AS number
+          FROM module GROUP BY time
+       )
+    AS module
+    ON module.time = pool.time ''' + clause.replace('time', 'pool.time'))
+    for r in result:
+        aliverate[1]['values'].append({
+            'x': r[0],
+            'y': r[-1] if r[-1] is not None else 0,
+        })
+    return json.dumps({'result': aliverate}, default=json_serial)
+
+
 @app.route('/hashrate', methods=['POST'])
 # format:
 # {
