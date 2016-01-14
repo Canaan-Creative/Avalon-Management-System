@@ -4,6 +4,7 @@ import json
 import datetime
 import sys
 import importlib
+import decimal
 
 from flask import Flask, g, request
 
@@ -36,6 +37,8 @@ COLUMNS = {
 
 
 def json_serial(obj):
+    if isinstance(obj, decimal.Decimal):
+        return float(obj)
     if isinstance(obj, datetime.datetime):
         return int(obj.timestamp())
 
@@ -89,6 +92,46 @@ def get_info(ip, port):
     result = json.loads(result['result'])
     mac = result['eth0']['macaddr']
     return json.dumps({'mac': mac})
+
+
+@app.route('/summary/<time>', methods=['GET'])
+def get_summary(time):
+    if time == 'latest':
+        result = g.database.run('raw', 'SELECT MAX(time) from hashrate')
+        time = result[0][0].timestamp()
+    time = datetime.datetime.fromtimestamp(int(time))
+
+    result = g.database.run(
+        'raw',
+        """\
+SELECT miner.ip, miner.port, miner.mhs,
+       module.number, module.temp, module.temp0, module.temp1
+  FROM miner
+  LEFT JOIN (
+        SELECT COUNT(dna) AS number,
+               AVG(temp) AS temp,
+               AVG(temp0) AS temp0,
+               AVG(temp1) AS temp1,
+               ip, port
+          FROM module
+         WHERE time = '{:%Y-%m-%d %H:%M:%S}'
+         GROUP BY ip, port
+       )
+    AS module
+    ON miner.ip = module.ip AND miner.port = module.port
+ WHERE miner.time = '{:%Y-%m-%d %H:%M:%S}'""".format(time, time)
+    )
+    summary = [{
+        'ip': r[0],
+        'port': r[1],
+        'mhs': r[2],
+        'module': r[3],
+        'temp': r[4],
+        'temp0': r[5],
+        'temp1': r[6],
+    } for r in result]
+
+    return json.dumps({'result': summary}, default=json_serial)
 
 
 @app.route('/aliverate', methods=['POST'])
