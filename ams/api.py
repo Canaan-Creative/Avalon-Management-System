@@ -109,7 +109,8 @@ SELECT pool.time, miner.number
   FROM hashrate AS pool
   LEFT JOIN (
         SELECT time, count(ip) AS number
-          FROM miner GROUP BY time
+          FROM miner ''' + clause + '''\
+         GROUP BY time
        )
     AS miner
     ON miner.time = pool.time ''' + clause.replace('time', 'pool.time'))
@@ -126,7 +127,8 @@ SELECT pool.time, module.number
   FROM hashrate AS pool
   LEFT JOIN (
         SELECT time, count(dna) AS number
-          FROM module GROUP BY time
+          FROM module ''' + clause + '''\
+         GROUP BY time
        )
     AS module
     ON module.time = pool.time ''' + clause.replace('time', 'pool.time'))
@@ -166,7 +168,8 @@ SELECT pool.*, local.mhs
   FROM hashrate AS pool
   LEFT JOIN (
         SELECT time, sum(mhs) AS mhs
-          FROM miner GROUP BY time
+          FROM miner ''' + clause + '''\
+         GROUP BY time
        )
     AS local
     ON local.time = pool.time ''' + clause.replace('time', 'pool.time')
