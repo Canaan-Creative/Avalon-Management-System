@@ -283,7 +283,9 @@ COLUMN_SUMMARY = [
     {'name': 'pool_stale',
      'type': 'DOUBLE'},
     {'name': 'last_getwork',
-     'type': 'TIMESTAMP DEFAULT 0'}
+     'type': 'TIMESTAMP DEFAULT 0'},
+    {'name': 'dead',
+     'type': 'BOOL DEFAULT 0'},
 ]
 
 COLUMN_POOLS = [

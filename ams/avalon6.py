@@ -67,6 +67,13 @@ class Miner(miner.Miner):
         try:
             summary = self.raw['summary']['SUMMARY'][0]
         except (TypeError, KeyError):
+            self.sql_queue.put({
+                'command': 'insert',
+                'name': 'miner_temp',
+                'column': ['time', 'ip', 'port',
+                           'precise_time', 'total_mh', 'dead'],
+                'value': [run_time, self.ip, self.port, run_time, 0, 1],
+            })
             return
 
         summary['Last getwork'] = datetime.datetime.fromtimestamp(
