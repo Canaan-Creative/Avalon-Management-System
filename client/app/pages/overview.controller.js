@@ -22,7 +22,23 @@
 		vm.aliverateChart = {};
 		vm.aliverateChart.loaded = false;
 		vm.aliverateChart.options = share.aliverateChartOptions;
+		vm.summaryLoaded = false;
 		vm.data = api.data;
+
+		vm.summaryTable = [{
+			name: 'Node',
+			value: function(data) {return data.ip + ':' + data.port;},
+		}, {
+			name: 'Modules',
+			value: function(data) {return data.module;},
+		}, {
+			name: 'Temperature',
+			value: function(data) {
+				return parseFloat(data.temp).toFixed(1) +
+					' / ' + parseFloat(data.temp0).toFixed(1) +
+					' / ' + parseFloat(data.temp1).toFixed(1);
+			},
+		}];
 
 		if (share.status.main.time === 0)
 			share.getLastTime().then(getChart);
@@ -36,6 +52,11 @@
 			).then(
 				function() {
 					vm.hashrateChart.loaded = true;
+			});
+
+			api.getSummary(share.status.main.time).then(
+				function() {
+					vm.summaryLoaded = true;
 			});
 
 			api.getAliverate(

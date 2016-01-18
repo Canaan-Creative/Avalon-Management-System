@@ -14,6 +14,7 @@
 		self.data = {};
 		self.getNodes = getNodes;
 		self.getStatus = getStatus;
+		self.getSummary = getSummary;
 		self.getConfig = getConfig;
 		self.getAliverate = getAliverate;
 		self.getFarmHashrate = getFarmHashrate;
@@ -58,6 +59,16 @@
 						self.data[name] = null;
 					if (--getStatusLock.number === 0)
 						getStatusLock.id = 0;
+				});
+		}
+
+		function getSummary(time) {
+			return $http.get('/api/summary/' + time).then(
+				function(response) {
+					self.data.summary = response.data.result;
+				}, function(errResponse) {
+					self.data.summary = null;
+					console.error('Error fetching summary');
 				});
 		}
 

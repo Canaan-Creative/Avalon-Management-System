@@ -45,8 +45,28 @@
 						<div class="md-title">Summary</div>
 					</md-card-header-text>
 				</md-card-header>
-				<md-card-content>
-
+				<md-card-content ng-if="!vm.summaryLoaded" layout="row" layout-align="center center">
+					<div layout="column" layout-align="center center">
+						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+					</div>
+				</md-card-content>
+				<md-card-content ng-if="vm.summaryLoaded">
+					<md-data-table-container>
+						<table md-data-table md-progress="deferred">
+							<thead>
+								<tr>
+									<th ng-repeat="column in vm.summaryTable" name="{{ column.name }}"></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="node in vm.data.summary">
+									<td ng-repeat="column in vm.summaryTable">
+										{{ column.value(node) }}
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</md-data-table-container>
 				</md-card-content>
 			</md-card>
 		</md-content>
