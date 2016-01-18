@@ -168,11 +168,13 @@
 		share.status.main.subTitle = false;
 
 		var params = $location.search();
-		if (params.ip && params.port)
+		if (params.ip && params.port) {
 			vm.status.node = {
 				ip: params.ip,
 				port: params.port,
 			};
+			$location.search('ip', null).search('port', null);
+		}
 		api.getNodes().then(previousSelect);
 
 
