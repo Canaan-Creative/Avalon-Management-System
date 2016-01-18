@@ -5,9 +5,9 @@
 		.module('ams')
 		.controller('OverviewController', OverviewController);
 
-	OverviewController.$inject = ['ShareService', 'APIService'];
+	OverviewController.$inject = ['$location', 'ShareService', 'APIService'];
 
-	function OverviewController(share, api) {
+	function OverviewController($location, share, api) {
 		/* jshint validthis: true */
 		var vm = this;
 
@@ -24,6 +24,7 @@
 		vm.aliverateChart.options = share.aliverateChartOptions;
 		vm.summaryLoaded = false;
 		vm.data = api.data;
+		vm.gotoDetail = gotoDetail;
 
 		vm.summaryTable = [{
 			name: 'Node',
@@ -66,6 +67,10 @@
 				function() {
 					vm.aliverateChart.loaded = true;
 			});
+		}
+
+		function gotoDetail(ip, port) {
+			$location.path('/detail').search('ip', ip).search('port', port);
 		}
 	}
 })();

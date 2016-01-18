@@ -5,9 +5,9 @@
 		.module('ams')
 		.controller('DetailController', DetailController);
 
-	DetailController.$inject = ['$filter', 'ShareService', 'APIService'];
+	DetailController.$inject = ['$filter', '$location', 'ShareService', 'APIService'];
 
-	function DetailController($filter, share, api) {
+	function DetailController($filter, $location, share, api) {
 		/* jshint validthis: true */
 		var vm = this;
 
@@ -166,7 +166,15 @@
 
 		share.status.main.title = "Detail";
 		share.status.main.subTitle = false;
+
+		var params = $location.search();
+		if (params.ip && params.port)
+			vm.status.node = {
+				ip: params.ip,
+				port: params.port,
+			};
 		api.getNodes().then(previousSelect);
+
 
 		vm.hashrateChart = {};
 		vm.hashrateChart.loaded = false;
