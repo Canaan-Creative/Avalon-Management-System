@@ -252,31 +252,45 @@ SELECT pool.*, local.mhs
         pass
 
 
-@app.route('/warning/<name>/<time>', methods=['GET'])
-def get_warning(name, time):
+@app.route('/warning/<time>', methods=['GET'])
+def get_warning(time):
     if time == 'latest':
         result = g.database.run('raw', 'SELECT MAX(time) from hashrate')
         time = result[0][0].timestamp()
 
-    if name == 'ec':
-        result = g.database.run(
-            'select', 'module',
-            ['ip', 'port', 'device_id', 'module_id', 'dna', 'ec'],
-            "time = '{:%Y-%m-%d %H:%M:%S}' AND (ec & 65054) != 0 "
-            "ORDER BY ip, port, device_id, module_id".format(
-                datetime.datetime.fromtimestamp(int(time)),
-            )
+    result = g.database.run(
+        'select', 'module',
+        ['ip', 'port', 'device_id', 'module_id', 'dna', 'ec'],
+        "time = '{:%Y-%m-%d %H:%M:%S}' AND (ec & 65054) != 0 "
+        "ORDER BY ip, port, device_id, module_id".format(
+            datetime.datetime.fromtimestamp(int(time)),
         )
-        warning = [{
-            'ip': r[0],
-            'port': r[1],
-            'device_id': r[2],
-            'module_id': r[3],
-            'dna': r[4],
-            'ec': r[5]
-        } for r in result]
+    )
+    ec_warn = [{
+        'ip': r[0],
+        'port': r[1],
+        'device_id': r[2],
+        'module_id': r[3],
+        'dna': r[4],
+        'ec': r[5]
+    } for r in result]
 
-    return json.dumps({'result': warning}, default=json_serial)
+    result = g.database.run(
+        'select', 'miner',
+        ['ip', 'port'],
+        "time = '{:%Y-%m-%d %H:%M:%S}' AND dead is TRUE "
+        "ORDER BY ip, port".format(
+            datetime.datetime.fromtimestamp(int(time)),
+        )
+    )
+    node_warn = [{'ip': r[0], 'port': r[1]} for r in result]
+
+    return json.dumps({
+        'result': {
+            'ec': ec_warn,
+            'node': node_warn
+        }
+    }, default=json_serial)
 
 
 @app.route('/status/<table>/<time>/<ip>/<port>', methods=['GET'])
