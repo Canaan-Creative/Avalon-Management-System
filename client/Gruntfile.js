@@ -75,6 +75,23 @@ grunt production'
 			}
 		},
 
+		usebanner: {
+			build: {
+				options: {
+					position: 'top',
+					banner:
+						'/*\n' +
+						' AMS Client\n' +
+						' (c) 2015-2016  DING Changchang (of Canaan Creative)\n' +
+						' License: GPLv3\n' +
+						'*/',
+				},
+				files: {
+					src: ['dist/ams.min.js', 'dist/ams.min.css']
+				}
+			}
+		},
+
 		html2js: {
 			options: {
 				base: '',
@@ -101,6 +118,9 @@ grunt production'
 		clean: {
 			temp: {
 				src: ['tmp']
+			},
+			full: {
+				src: ['dist/ams.js']
 			},
 			lib: {
 				src: ['lib']
@@ -137,6 +157,7 @@ grunt production'
 	grunt.loadNpmTasks('grunt-html2js');
 	grunt.loadNpmTasks('grunt-bower-task');
 	grunt.loadNpmTasks('grunt-exec');
+	grunt.loadNpmTasks('grunt-banner');
 
 	grunt.registerTask('prereq', [
 		'clean:lib',
@@ -150,6 +171,8 @@ grunt production'
 		'concat:build',
 		'uglify:build',
 		'cssmin:build',
-		'clean:temp'
+		'usebanner:build',
+		'clean:temp',
+		'clean:full'
 	]);
 };
