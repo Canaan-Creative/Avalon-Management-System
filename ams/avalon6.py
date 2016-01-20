@@ -207,6 +207,8 @@ class Miner(miner.Miner):
         module = estat[key]
         module_info = re.match(self._pattern, module)
         if module_info is None:
+            if not self.log:
+                return
             self.log.error('{}[{}][{}] Non-match module info.'.format(
                 self, device_id, module_id
             ))
