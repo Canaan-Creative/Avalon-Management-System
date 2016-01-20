@@ -15,6 +15,7 @@
 		self.getNodes = getNodes;
 		self.getStatus = getStatus;
 		self.getSummary = getSummary;
+		self.getIssue = getIssue;
 		self.getConfig = getConfig;
 		self.getAliverate = getAliverate;
 		self.getFarmHashrate = getFarmHashrate;
@@ -69,6 +70,16 @@
 				}, function(errResponse) {
 					self.data.summary = null;
 					console.error('Error fetching summary');
+				});
+		}
+
+		function getIssue(time) {
+			return $http.get('/api/issue/' + time).then(
+				function(response) {
+					self.data.issue = response.data.result;
+				}, function(errResponse) {
+					self.data.issue = null;
+					console.error('Error fetching issue');
 				});
 		}
 
