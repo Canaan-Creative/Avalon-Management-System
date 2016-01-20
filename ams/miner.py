@@ -146,15 +146,16 @@ class Miner():
         elif table == 'pool':
             self.raw['pools'] = self.put('pools', timeout=1)
             self._generate_sql_pools(run_time)
-        else:
-            return False
-        if len(self.sql_queue) == 0:
-            return {'column': [], 'value': []}
-        else:
-            return {
-                'column': self.sql_queue[0]['column'],
-                'value': [i['value'] for i in self.sql_queue],
-            }
+
+        result = []
+        for s in self.sql_queue:
+            r = {}
+            i = 0
+            for c in s['column']:
+                r[c] = s['value'][i]
+                i += 1
+            result.append(r)
+        return result
 
     def put(self, command, parameter=None, timeout=3):
         if parameter is None:

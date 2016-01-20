@@ -297,18 +297,11 @@ def get_issue(time):
 def get_status(table, time, ip, port):
     # TODO: prevent injection by checking args validation
 
-    status = []
     if time == 'latest':
         node = miner_type.Miner(ip, port, 0, log=False)
-        result = node.get(table)
-        for r in result['value']:
-            s = {}
-            i = 0
-            for column in result['column']:
-                s[column] = r[i]
-                i += 1
-            status.append(s)
+        status = node.get(table)
     else:
+        status = []
         result = g.database.run(
             'select',
             # TODO: some naming problem...
