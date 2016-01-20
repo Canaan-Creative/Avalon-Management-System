@@ -252,8 +252,8 @@ SELECT pool.*, local.mhs
         pass
 
 
-@app.route('/warning/<time>', methods=['GET'])
-def get_warning(time):
+@app.route('/issue/<time>', methods=['GET'])
+def get_issue(time):
     if time == 'latest':
         result = g.database.run('raw', 'SELECT MAX(time) from hashrate')
         time = result[0][0].timestamp()
@@ -266,7 +266,7 @@ def get_warning(time):
             datetime.datetime.fromtimestamp(int(time)),
         )
     )
-    ec_warn = [{
+    ec_issue = [{
         'ip': r[0],
         'port': r[1],
         'device_id': r[2],
@@ -283,12 +283,12 @@ def get_warning(time):
             datetime.datetime.fromtimestamp(int(time)),
         )
     )
-    node_warn = [{'ip': r[0], 'port': r[1]} for r in result]
+    node_issue = [{'ip': r[0], 'port': r[1]} for r in result]
 
     return json.dumps({
         'result': {
-            'ec': ec_warn,
-            'node': node_warn
+            'ec': ec_issue,
+            'node': node_issue
         }
     }, default=json_serial)
 
