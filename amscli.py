@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; -*-
 #
-# Copyright (C) 2014-2015  DING Changchang
+# Copyright (C) 2014-2016  DING Changchang
 #
 # This file is part of Avalon Management System (AMS).
 #

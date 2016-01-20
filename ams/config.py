@@ -1,6 +1,6 @@
 # -*- coding: utf-8; -*-
 #
-# Copyright (C) 2014-2015  DING Changchang
+# Copyright (C) 2014-2016  DING Changchang (of Canaan Creative)
 #
 # This file is part of Avalon Management System (AMS).
 #
