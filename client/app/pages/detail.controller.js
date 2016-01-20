@@ -169,6 +169,7 @@
 
 		var params = $location.search();
 		if (params.ip && params.port) {
+			vm.status.tabIndex = 0;
 			vm.status.node = {
 				ip: params.ip,
 				port: params.port,
