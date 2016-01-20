@@ -29,6 +29,9 @@ h3.logo {
 .dark-false {
 	background-color: #e3f2fd;
 }
+.highlight-true > td {
+	color: #ff6e40 !important;
+}
 .node-selected-true {
 	background-color: #1e88e5;
 }

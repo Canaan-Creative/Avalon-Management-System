@@ -173,7 +173,15 @@
 				ip: params.ip,
 				port: params.port,
 			};
-			$location.search('ip', null).search('port', null);
+			if (params.dna) {
+				vm.status.tabName = "module";
+				vm.status.tabIndex = 2;
+				vm.status.highlightDNA = params.dna;
+			}
+			$location
+				.search('ip', null)
+				.search('port', null)
+				.search('dna', null);
 		}
 		api.getNodes().then(previousSelect);
 
@@ -256,6 +264,7 @@
 								var theme = true;
 								for (var i = 0; i < vm.data.module.length; i++) {
 									var module = vm.data.module[i];
+									module.highlight = (module.dna === vm.status.highlightDNA);
 									if (module.device_id != initID) {
 										initID = module.device_id;
 										theme = !theme;

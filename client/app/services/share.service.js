@@ -23,6 +23,8 @@
 				tabLoaded: false,
 				poolCardLoaded: false,
 				tabName: "summary",
+				tabIndex: 0,
+				highlightDNA: null,
 			},
 		};
 		self.getLastTime = getLastTime;

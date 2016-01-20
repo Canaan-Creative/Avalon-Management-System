@@ -23,7 +23,7 @@
 
 	<md-content layout="row" flex>
 		<md-tabs
-				md-selected="selectedIndex"
+				md-selected="vm.status.tabIndex"
 				md-stretch-tabs="always"
 				ng-if="!!vm.status.node"
 				md-no-ink flex>
@@ -161,7 +161,7 @@
 								</thead>
 								<tbody>
 									<tr ng-repeat="module in vm.data.module | orderBy: vm.getModuleTable() : vm.sortReverse"
-											class="dark-{{ module.theme }}">
+											class="highlight-{{ module.highlight }} dark-{{ module.theme }}">
 										<td>
 											<md-switch
 												ng-model="module.led"
