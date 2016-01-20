@@ -285,10 +285,22 @@ def get_issue(time):
     )
     node_issue = [{'ip': r[0], 'port': r[1]} for r in result]
 
+    def sort_order(x):
+        order = []
+        if 'ip' in x:
+            order.extend([int(i) for i in x['ip'].split('.')])
+        if 'port' in x:
+            order.append(int(x['port']))
+        if 'device_id' in x:
+            order.append(int(x['device_id']))
+        if 'module_id' in x:
+            order.append(int(x['module_id']))
+        return order
+
     return json.dumps({
         'result': {
-            'ec': ec_issue,
-            'node': node_issue
+            'ec': sorted(ec_issue, key=sort_order),
+            'node': sorted(node_issue, key=sort_order)
         }
     }, default=json_serial)
 
