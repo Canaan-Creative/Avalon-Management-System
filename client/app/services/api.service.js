@@ -41,8 +41,10 @@
 		self.setLED = setLED;
 
 		var getStatusLock = {
-			number: 0,
-			id: 0
+			summary: {number: 0, id: 0},
+			pool: {number: 0, id: 0},
+			device: {number: 0, id: 0},
+			module: {number: 0, id: 0},
 		};
 		var getConfigLock = {
 			number: 0,
@@ -60,24 +62,24 @@
 		}
 
 		function getStatus(name, time, ip, port) {
-			var id = getStatusLock.id++;
-			getStatusLock.number++;
+			var id = getStatusLock[name].id++;
+			getStatusLock[name].number++;
 			return $http.get(
 					'/api/status/' + name + '/' + time + '/' + ip + '/' + port
 				).then(function(response) {
-					if (id === getStatusLock.id - 1)
+					if (id === getStatusLock[name].id - 1)
 						self.data[name] = response.data.result;
-					if (--getStatusLock.number === 0)
-						getStatusLock.id = 0;
+					if (--getStatusLock[name].number === 0)
+						getStatusLock[name].id = 0;
 				}, function(errResponse) {
 					console.error(
 						'Error fetching ' + name + ' of ' +
 							ip + ':' + port + ' at ' + time
 					);
-					if (id === getStatusLock.id - 1)
+					if (id === getStatusLock[name].id - 1)
 						self.data[name] = null;
-					if (--getStatusLock.number === 0)
-						getStatusLock.id = 0;
+					if (--getStatusLock[name].number === 0)
+						getStatusLock[name].id = 0;
 				});
 		}
 
