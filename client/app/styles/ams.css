@@ -54,9 +54,11 @@ md-list-item {
 
 .dark-true {
 	background-color: #bbdefb;
+	height: auto !important;
 }
 .dark-false {
 	background-color: #e3f2fd;
+	height: auto !important;
 }
 .highlight-true > td {
 	color: #ff6e40 !important;
@@ -68,6 +70,11 @@ md-list-item {
 .md-body-2 {
 	font-weight: bold;
 }
+
+md-switch {
+	margin-top: 0px;
+	margin-bottom: 0px;
+};
 
 table[md-data-table]:not([md-row-select]) > thead:not([md-table-progress]) > tr > th:first-child,
 table[md-data-table]:not([md-row-select]) > tbody > tr > td:first-child,
