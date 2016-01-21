@@ -42,92 +42,92 @@
 
 		vm.summaryTable = [{
 			name: 'Elapsed',
-			value: function(data) {return data.elapsed;}
+			value: function(data) {return data && data.elapsed;}
 		},{
 			name: 'GHs 15m',
-			value: function(data) {return parseInt(data.mhs_15m / 1000);}
+			value: function(data) {return data && parseInt(data.mhs_15m / 1000);}
 		},{
 			name: 'GHs 1m',
-			value: function(data) {return parseInt(data.mhs_1m / 1000);}
+			value: function(data) {return data && parseInt(data.mhs_1m / 1000);}
 		},{
 			name: 'GHs 5m',
-			value: function(data) {return parseInt(data.mhs_5m / 1000);}
+			value: function(data) {return data && parseInt(data.mhs_5m / 1000);}
 		},{
 			name: 'GHs 5s',
-			value: function(data) {return parseInt(data.mhs_5s / 1000);}
+			value: function(data) {return data && parseInt(data.mhs_5s / 1000);}
 		},{
 			name: 'GHs av',
-			value: function(data) {return parseInt(data.mhs_av / 1000);}
+			value: function(data) {return data && parseInt(data.mhs_av / 1000);}
 		},{
 			name: 'Found Blocks',
-			value: function(data) {return data.found_blocks;}
+			value: function(data) {return data && data.found_blocks;}
 		},{
 			name: 'Getworks',
-			value: function(data) {return data.getworks;}
+			value: function(data) {return data && data.getworks;}
 		},{
 			name: 'Accepted',
-			value: function(data) {return data.accepted;}
+			value: function(data) {return data && data.accepted;}
 		},{
 			name: 'Rejected',
-			value: function(data) {return data.rejected;}
+			value: function(data) {return data && data.rejected;}
 		},{
 			name: 'Hardware Errors',
-			value: function(data) {return data.hardware_errors;}
+			value: function(data) {return data && data.hardware_errors;}
 		},{
 			name: 'Utility',
-			value: function(data) {return data.utility;}
+			value: function(data) {return data && data.utility;}
 		},{
 			name: 'Discarded',
-			value: function(data) {return data.discarded;}
+			value: function(data) {return data && data.discarded;}
 		},{
 			name: 'Stale',
-			value: function(data) {return data.stale;}
+			value: function(data) {return data && data.stale;}
 		},{
 			name: 'Get Failures',
-			value: function(data) {return data.get_failures;}
+			value: function(data) {return data && data.get_failures;}
 		},{
 			name: 'Local Work',
-			value: function(data) {return data.local_work;}
+			value: function(data) {return data && data.local_work;}
 		},{
 			name: 'Remote Failures',
-			value: function(data) {return data.remote_failures;}
+			value: function(data) {return data && data.remote_failures;}
 		},{
 			name: 'Network Blocks',
-			value: function(data) {return data.network_blocks;}
+			value: function(data) {return data && data.network_blocks;}
 		},{
 			name: 'Total MHash',
-			value: function(data) {return data.total_mh;}
+			value: function(data) {return data && data.total_mh;}
 		},{
 			name: 'Work Utility',
-			value: function(data) {return data.work_utility;}
+			value: function(data) {return data && data.work_utility;}
 		},{
 			name: 'Diff Accepted',
-			value: function(data) {return data.difficulty_accepted;}
+			value: function(data) {return data && data.difficulty_accepted;}
 		},{
 			name: 'Diff Rejected',
-			value: function(data) {return data.difficulty_rejected;}
+			value: function(data) {return data && data.difficulty_rejected;}
 		},{
 			name: 'Diff Stale',
-			value: function(data) {return data.difficulty_stale;}
+			value: function(data) {return data && data.difficulty_stale;}
 		},{
 			name: 'Best Share',
-			value: function(data) {return data.best_share;}
+			value: function(data) {return data && data.best_share;}
 		},{
 			name: 'Device Hardware Error',
-			value: function(data) {return data.device_hardware + '%';}
+			value: function(data) {return data && (data.device_hardware + '%');}
 		},{
 			name: 'Device Rejected',
-			value: function(data) {return data.device_rejected + '%';}
+			value: function(data) {return data && (data.device_rejected + '%');}
 		},{
 			name: 'Pool Rejected',
-			value: function(data) {return data.pool_rejected + '%';}
+			value: function(data) {return data && (data.pool_rejected + '%');}
 		},{
 			name: 'Pool Stale',
-			value: function(data) {return data.pool_stale + '%';}
+			value: function(data) {return data && (data.pool_stale + '%');}
 		},{
 			name: 'Last Getwork',
 			value: function(data) {
-				return $filter('date')(
+				return data && $filter('date')(
 					data.last_getwork * 1000,
 					'yyyy-MM-dd HH:mm:ss'
 				);
