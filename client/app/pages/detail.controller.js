@@ -40,6 +40,100 @@
 
 		vm.data = api.data;
 
+		vm.summaryTable = [{
+			name: 'Elapsed',
+			value: function(data) {return data.elapsed;}
+		},{
+			name: 'GHs 15m',
+			value: function(data) {return parseInt(data.mhs_15m / 1000);}
+		},{
+			name: 'GHs 1m',
+			value: function(data) {return parseInt(data.mhs_1m / 1000);}
+		},{
+			name: 'GHs 5m',
+			value: function(data) {return parseInt(data.mhs_5m / 1000);}
+		},{
+			name: 'GHs 5s',
+			value: function(data) {return parseInt(data.mhs_5s / 1000);}
+		},{
+			name: 'GHs av',
+			value: function(data) {return parseInt(data.mhs_av / 1000);}
+		},{
+			name: 'Found Blocks',
+			value: function(data) {return data.found_blocks;}
+		},{
+			name: 'Getworks',
+			value: function(data) {return data.getworks;}
+		},{
+			name: 'Accepted',
+			value: function(data) {return data.accepted;}
+		},{
+			name: 'Rejected',
+			value: function(data) {return data.rejected;}
+		},{
+			name: 'Hardware Errors',
+			value: function(data) {return data.hardware_errors;}
+		},{
+			name: 'Utility',
+			value: function(data) {return data.utility;}
+		},{
+			name: 'Discarded',
+			value: function(data) {return data.discarded;}
+		},{
+			name: 'Stale',
+			value: function(data) {return data.stale;}
+		},{
+			name: 'Get Failures',
+			value: function(data) {return data.get_failures;}
+		},{
+			name: 'Local Work',
+			value: function(data) {return data.local_work;}
+		},{
+			name: 'Remote Failures',
+			value: function(data) {return data.remote_failures;}
+		},{
+			name: 'Network Blocks',
+			value: function(data) {return data.network_blocks;}
+		},{
+			name: 'Total MHash',
+			value: function(data) {return data.total_mh;}
+		},{
+			name: 'Work Utility',
+			value: function(data) {return data.work_utility;}
+		},{
+			name: 'Diff Accepted',
+			value: function(data) {return data.difficulty_accepted;}
+		},{
+			name: 'Diff Rejected',
+			value: function(data) {return data.difficulty_rejected;}
+		},{
+			name: 'Diff Stale',
+			value: function(data) {return data.difficulty_stale;}
+		},{
+			name: 'Best Share',
+			value: function(data) {return data.best_share;}
+		},{
+			name: 'Device Hardware Error',
+			value: function(data) {return data.device_hardware + '%';}
+		},{
+			name: 'Device Rejected',
+			value: function(data) {return data.device_rejected + '%';}
+		},{
+			name: 'Pool Rejected',
+			value: function(data) {return data.pool_rejected + '%';}
+		},{
+			name: 'Pool Stale',
+			value: function(data) {return data.pool_stale + '%';}
+		},{
+			name: 'Last Getwork',
+			value: function(data) {
+				return $filter('date')(
+					data.last_getwork * 1000,
+					'yyyy-MM-dd HH:mm:ss'
+				);
+			}
+		}];
+
 		vm.poolTable = [{
 			name: 'URL',
 			value: function(data) {return data.url;}
@@ -257,6 +351,7 @@
 				time = share.status.main.time;
 			vm.status.tabLoaded = false;
 			vm.status.poolCardLoaded = false;
+			vm.status.summaryCardLoaded = false;
 			vm.status.tabName = name;
 			vm.sortIndex = undefined;
 			vm.sortReverse = false;
@@ -268,6 +363,11 @@
 					function() {
 						if (node == vm.status.node)
 							vm.status.poolCardLoaded = true;
+				});
+				api.getStatus('summary', time, node.ip, node.port).then(
+					function() {
+						if (node == vm.status.node)
+							vm.status.summaryCardLoaded = true;
 				});
 				if (share.status.main.time === 0)
 					share.getLastTime().then(getNodeHashrate);
