@@ -223,6 +223,10 @@
 			name: 'LastValiddata',
 			index: 9,
 			value: function(data) {return data.last_valid_work;}
+		},{
+			name: 'SmartSpeed',
+			index: 10,
+			value: function(data) {return data.smart_speed;}
 		}];
 
 		vm.moduleTable = [{
