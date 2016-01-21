@@ -65,13 +65,8 @@ md-list-item {
 	background-color: #1e88e5;
 }
 
-.ams-bold {
-	font-size: 10px;
+.md-body-2 {
 	font-weight: bold;
-}
-.ams-regular {
-	font-size: 10px;
-	font-weight: normal;
 }
 
 table[md-data-table]:not([md-row-select]) > thead:not([md-table-progress]) > tr > th:first-child,

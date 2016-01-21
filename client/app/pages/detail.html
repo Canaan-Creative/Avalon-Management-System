@@ -91,16 +91,16 @@
 												<div flex="50">
 													<md-list>
 														<md-list-item ng-repeat="item in vm.summaryTable | limitTo: vm.summaryTable.length / 2">
-															<span class="ams-bold">{{ item.name }}</span>
-															<span class="ams-regular">: {{ item.value(vm.data.summary[0]) }}</span>
+															<span class="md-body-2">{{ item.name }}</span>
+															<span class="md-body-1">: {{ item.value(vm.data.summary[0]) }}</span>
 														</md-list-item>
 													</md-list>
 												</div>
 												<div flex>
 													<md-list>
 														<md-list-item ng-repeat="item in vm.summaryTable | limitTo: vm.summaryTable.length : vm.summaryTable.length / 2">
-															<span class="ams-bold">{{ item.name }}</span>
-															<span class="ams-regular">: {{ item.value(vm.data.summary[0]) }}</span>
+															<span class="md-body-2">{{ item.name }}</span>
+															<span class="md-body-1">: {{ item.value(vm.data.summary[0]) }}</span>
 														</md-list-item>
 													</md-list>
 												</div>
