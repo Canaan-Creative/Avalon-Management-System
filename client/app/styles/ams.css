@@ -17,6 +17,7 @@
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 */
 .inset {
+	height: 40px;
 	cursor: pointer;
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -39,6 +40,16 @@ h3.logo {
 	color: #ffffff;
 	fill: #ffffff;
 	background-color: #1976d2;
+}
+
+md-card-header {
+	padding-bottom: 0 !important;
+}
+md-card-content {
+	padding-top: 0 !important;
+}
+md-list-item {
+	min-height: 24px !important;
 }
 
 .dark-true {
