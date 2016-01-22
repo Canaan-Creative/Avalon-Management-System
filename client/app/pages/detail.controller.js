@@ -232,11 +232,12 @@
 		vm.moduleTable = [{
 			name: 'ID',
 			index: 0,
-			value: function(data) {return data.device_id + ':' + data.module_id;}
+			value: function(data) {return data.device_id + ':' + data.module_id;},
+			sortValue: function(data) {return (data.device_id << 8) + data.module_id;}
 		},{
 			name: 'Elapesed',
 			index: 1,
-			value: function(data) {return data.elapsed;}
+			value: function(data) {return parseInt(data.elapsed);}
 		},{
 			name: 'Version',
 			index: 2,
@@ -436,7 +437,11 @@
 			if (vm.sortIndex === undefined)
 				return;
 			vm.sortReverse = (1 / vm.sortIndex > 0);
-			return vm.moduleTable[Math.abs(vm.sortIndex)].value;
+			var item = vm.moduleTable[Math.abs(vm.sortIndex)];
+			if (item.sortValue === undefined)
+				return item.value;
+			else
+				return item.sortValue;
 		}
 
 	}
