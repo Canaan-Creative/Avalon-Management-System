@@ -1,5 +1,11 @@
 Changelog
 =========
+Version 3.0.dev3 (2016.01.25)
+-----------------------------
+- Support and focus on AvalonMiner6.
+- New web client using AngularJS.
+- Add API for backend data.
+
 Version 3.0.dev2 (2015.11.02)
 -----------------------------
 - Use multiproccess.
