@@ -121,26 +121,27 @@
 								<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 							</md-card-content>
 							<md-card-content ng-if="vm.status.poolCardLoaded">
-								<md-data-table-container>
-									<table md-data-table md-progress="deferred">
-										<thead>
-											<tr>
-												<th ng-repeat="column in vm.poolTable" name="{{ column.name }}">
+								<md-table-container>
+									<table md-table md-progress="deferred">
+										<thead md-head>
+											<tr md-row>
+												<th md-column ng-repeat="column in vm.poolTable">
+													{{ column.name }}
 													<md-tooltip ng-if="column.tooltip !== undefined">
 														{{ column.tooltip }}
 													</md-tooltip>
 												</th>
 											</tr>
 										</thead>
-										<tbody>
-											<tr ng-repeat="pool in vm.data.pool">
-												<td ng-repeat="column in vm.poolTable">
+										<tbody md-body>
+											<tr md-row ng-repeat="pool in vm.data.pool">
+												<td md-cell ng-repeat="column in vm.poolTable">
 													{{ column.value(pool) }}
 												</td>
 											</tr>
 										</tbody>
 									</table>
-								</md-data-table-container>
+								</md-table-container>
 							</md-card-content>
 						</md-card>
 
@@ -156,26 +157,26 @@
 						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 					</md-content>
 					<md-content ng-if="vm.status.tabLoaded">
-						<md-data-table-container>
-							<table md-data-table>
-								<thead md-order="vm.sortIndex">
-									<tr>
-										<th
-											ng-repeat="column in vm.deviceTable"
-											name="{{ column.name }}"
-											order-by="{{ column.index }}">
+						<md-table-container>
+							<table md-table>
+								<thead md-head md-order="vm.sortIndex">
+									<tr md-row>
+										<th md-column md-desc
+												ng-repeat="column in vm.deviceTable"
+												md-order-by="{{ column.index }}">
+											{{ column.name }}
 										</th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr ng-repeat="device in vm.data.device | orderBy: vm.getDeviceTable() : vm.sortReverse">
-										<td ng-repeat="column in vm.deviceTable">
+								<tbody md-body>
+									<tr md-row ng-repeat="device in vm.data.device | orderBy: vm.getDeviceTable() : vm.sortReverse">
+										<td md-cell ng-repeat="column in vm.deviceTable">
 											{{ column.value(device) }}
 										</td>
 									</tr>
 								</tbody>
 							</table>
-						</md-data-table-container>
+						</md-table-container>
 					</md-content>
 				</md-tab-body>
 			</md-tab>
@@ -188,22 +189,22 @@
 						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 					</md-content>
 					<md-content ng-if="vm.status.tabLoaded">
-						<md-data-table-container>
-							<table md-data-table>
-								<thead md-order="vm.sortIndex">
-									<tr>
-										<th name="LED"></th>
-										<th
-											ng-repeat="column in vm.moduleTable"
-											name="{{ column.name }}"
-											order-by="{{ column.index }}">
+						<md-table-container>
+							<table md-table>
+								<thead md-head md-order="vm.sortIndex">
+									<tr md-row>
+										<th md-column>LED</th>
+										<th md-column md-desc
+												ng-repeat="column in vm.moduleTable"
+												md-order-by="{{ column.index }}">
+											{{ column.name }}
 										</th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr ng-repeat="module in vm.data.module | orderBy: vm.getModuleTable() : vm.sortReverse"
+								<tbody md-body>
+									<tr md-row ng-repeat="module in vm.data.module | orderBy: vm.getModuleTable() : vm.sortReverse"
 											class="highlight-{{ module.highlight }} dark-{{ module.theme }}">
-										<td>
+										<td md-cell>
 											<md-switch
 												ng-model="module.led"
 												ng-true-value="1"
@@ -212,13 +213,13 @@
 												aria-label="LED">
 											</md-switch>
 										</td>
-										<td ng-repeat="column in vm.moduleTable">
+										<td md-cell ng-repeat="column in vm.moduleTable">
 											{{ column.value(module) }}
 										</td>
 									</tr>
 								</tbody>
 							</table>
-						</md-data-table-container>
+						</md-table-container>
 					</md-content>
 				</md-tab-body>
 			</md-tab>

@@ -69,22 +69,26 @@
 					</div>
 				</md-card-content>
 				<md-card-content ng-if="vm.summaryLoaded">
-					<md-data-table-container>
-						<table md-data-table md-progress="deferred">
-							<thead>
-								<tr>
-									<th ng-repeat="column in vm.summaryTable" name="{{ column.name }}"></th>
+					<md-table-container>
+						<table md-table md-progress="deferred">
+							<thead md-head>
+								<tr md-row>
+									<th md-column ng-repeat="column in vm.summaryTable">
+										{{ column.name }}
+									</th>
 								</tr>
 							</thead>
-							<tbody>
-								<tr ng-repeat="node in vm.data.summary" ng-click="vm.gotoDetail(node.ip, node.port)">
-									<td ng-repeat="column in vm.summaryTable">
+							<tbody md-body>
+								<tr md-row
+										ng-repeat="node in vm.data.summary"
+										ng-click="vm.gotoDetail(node.ip, node.port)">
+									<td md-cell ng-repeat="column in vm.summaryTable">
 										{{ column.value(node) }}
 									</td>
 								</tr>
 							</tbody>
 						</table>
-					</md-data-table-container>
+					</md-table-container>
 				</md-card-content>
 			</md-card>
 		</md-content>
@@ -102,26 +106,30 @@
 					</div>
 				</md-card-content>
 				<md-card-content ng-if="vm.issueLoaded">
-					<md-data-table-container>
-						<table md-data-table md-progress="deferred">
-							<thead>
-								<tr>
-									<th name="ID"></th>
-									<th name="Issue"></th>
+					<md-table-container>
+						<table md-table md-progress="deferred">
+							<thead md-head>
+								<tr md-row>
+									<th md-column>ID</th>
+									<th md-column>Issue</th>
 								</tr>
 							</thead>
-							<tbody>
-								<tr ng-repeat="node in vm.data.issue.node" ng-click="vm.gotoDetail(node.ip, node.port)">
-									<td>{{ node.ip }}:{{ node.port }}</td>
-									<td>Connection failed</td>
+							<tbody md-body>
+								<tr md-row
+										ng-repeat="node in vm.data.issue.node"
+										ng-click="vm.gotoDetail(node.ip, node.port)">
+									<td md-cell>{{ node.ip }}:{{ node.port }}</td>
+									<td md-cell>Connection failed</td>
 								</tr>
-								<tr ng-repeat="module in vm.data.issue.ec" ng-click="vm.gotoDetail(module.ip, module.port, module.dna)">
-									<td>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
-									<td>{{ vm.ecDecode(module.ec) }}</td>
+								<tr md-row
+										ng-repeat="module in vm.data.issue.ec"
+										ng-click="vm.gotoDetail(module.ip, module.port, module.dna)">
+									<td md-cell>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
+									<td md-cell>{{ vm.ecDecode(module.ec) }}</td>
 								</tr>
 							</tbody>
 						</table>
-					</md-data-table-container>
+					</md-table-container>
 				</md-card-content>
 			</md-card>
 		</md-content>

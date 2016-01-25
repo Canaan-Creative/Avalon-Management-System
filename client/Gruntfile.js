@@ -160,10 +160,12 @@ grunt production'
 	grunt.loadNpmTasks('grunt-banner');
 
 	grunt.registerTask('prereq', [
+		'clean:temp',
 		'clean:lib',
 		'bower',
 		'exec:nvd3',
 		'copy',
+		'clean:temp',
 	]);
 	grunt.registerTask('build', [
 		'jshint',
