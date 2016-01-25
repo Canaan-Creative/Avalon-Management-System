@@ -31,8 +31,51 @@
 
 		vm.status = share.status.setting;
 		vm.data = api.data;
+		vm.nodeChanged = false;
+		vm.tempNodes = false;
+		vm.deletedNodes = [];
+
+		vm.deleteNode = deleteNode;
+		vm.addNode = addNode;
+		vm.cancelNode = cancelNode;
+		vm.saveNode = saveNode;
 
 		share.status.main.title = "Setting";
 		share.status.main.subTitle = false;
+
+		api.getNodes().then(cloneNodes);
+
+		function cloneNodes() {
+			var temp = [];
+			for (var i = 0; i < vm.data.nodes.length; i++)
+				temp.push({
+					ip: vm.data.nodes[i].ip,
+					port: vm.data.nodes[i].port,
+					modules: vm.data.nodes[i].modules,
+					password: vm.data.nodes[i].password,
+				});
+			vm.tempNodes = temp;
+		}
+
+		function saveNode() {
+
+		}
+
+		function cancelNode() {
+			vm.tempNodes = false;
+			api.getNodes().then(cloneNodes);
+		}
+
+		function deleteNode(node) {
+			vm.nodeChanged = true;
+			vm.tempNodes.splice(vm.tempNodes.indexOf(node), 1);
+		}
+
+		function addNode(ip, port) {
+			vm.nodeChanged = true;
+			vm.tempNodes.push({
+				ip: '', port: '', modules: '', password: ''
+			});
+		}
 	}
 })();
