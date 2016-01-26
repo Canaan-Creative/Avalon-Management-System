@@ -39,6 +39,7 @@
 		self.getFarmHashrate = getFarmHashrate;
 		self.getNodeHashrate = getNodeHashrate;
 		self.setLED = setLED;
+		self.updateNodes = updateNodes;
 
 		var getStatusLock = {
 			summary: {number: 0, id: 0},
@@ -175,6 +176,10 @@
 
 		function setLED(data) {
 			return $http.post('/api/led', data);
+		}
+
+		function updateNodes(nodes) {
+			return $http.post('/api/update_nodes', {nodes: nodes});
 		}
 	}
 })();

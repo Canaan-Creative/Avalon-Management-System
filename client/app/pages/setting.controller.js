@@ -51,14 +51,14 @@
 				temp.push({
 					ip: vm.data.nodes[i].ip,
 					port: vm.data.nodes[i].port,
-					modules: vm.data.nodes[i].modules,
+					mods: vm.data.nodes[i].mods,
 					password: vm.data.nodes[i].password,
 				});
 			vm.tempNodes = temp;
 		}
 
 		function saveNode() {
-
+			api.updateNodes(vm.tempNodes);
 		}
 
 		function cancelNode() {
@@ -74,7 +74,7 @@
 		function addNode(ip, port) {
 			vm.nodeChanged = true;
 			vm.tempNodes.push({
-				ip: '', port: '', modules: '', password: ''
+				ip: null, port: 4028, mods: 0, password: null
 			});
 		}
 	}

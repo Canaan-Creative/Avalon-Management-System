@@ -49,15 +49,40 @@ def before_request():
     g.database.connect()
 
 
+# miner.password need permission protection
 @app.route('/nodes', methods=['GET'])
 def get_nodes():
-    result = g.database.run('select', 'controller_config', ['ip', 'port'])
+    result = g.database.run(
+        'select',
+        'controller_config',
+        ['ip', 'port', 'mods', 'password'])
     nodes = []
     for r in result:
-        nodes.append({'ip': r[0], 'port': r[1]})
+        nodes.append({'ip': r[0], 'port': r[1], 'mods': r[2], 'password': r[3]})
     return json.dumps({'result': nodes})
 
 
+# Need permission protection
+@app.route('/update_nodes', methods=['POST'])
+def update_nodes():
+    nodes = request.json['nodes']
+    g.database.run('raw', 'DROP TABLES IF EXISTS controller_config')
+    g.database.run('create', 'controller_config', [
+        {"name": "ip", "type": "VARCHAR(40)"},
+        {"name": "port", "type": "SMALLINT UNSIGNED"},
+        {"name": "mods", "type": "SMALLINT UNSIGNED"},
+        {"name": "password", "type": "VARCHAR(32)"}
+    ])
+    for node in nodes:
+        g.database.run(
+            'insert', 'controller_config',
+            list(node.keys()), list(node.values())
+        )
+    g.database.commit()
+    return json.dumps({'success': True})
+
+
+@app.route('/lasttime', methods=['GET'])
 @app.route('/lasttime', methods=['GET'])
 def get_last_time():
     result = g.database.run('raw', 'SELECT MAX(time) FROM miner')
