@@ -1,4 +1,6 @@
 *.pyc
-ams.cfg
+ams.conf
 .ropeproject
 *.swp
+ams.egg-info/
+dist/

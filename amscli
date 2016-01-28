@@ -20,10 +20,12 @@
 
 import sys
 import json
+import os
+
 from ams.log import log
 
 
-cfgfile = '__AMS_CFG_PATH__'
+cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV'), '/etc/ams.cfg')
 
 
 def readCfg(filename):

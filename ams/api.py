@@ -1,10 +1,28 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8; -*-
+#
+# Copyright (C) 2015-2016  DING Changchang (of Canaan Creative)
+#
+# This file is part of Avalon Management System (AMS).
+#
+# AMS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# AMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with AMS. If not, see <http://www.gnu.org/licenses/>.
 
 import json
 import datetime
-import sys
 import importlib
 import decimal
+import os
 
 from flask import Flask, g, request
 
@@ -13,8 +31,7 @@ from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
 
 
 app = Flask(__name__)
-sys.path.append('__AMS_LIB_PATH__')
-cfgfile = '__AMS_CFG_PATH__'
+cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV'), '/etc/ams.cfg')
 
 
 def readCfg(filename):

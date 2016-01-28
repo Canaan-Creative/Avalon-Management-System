@@ -19,7 +19,7 @@
 [DataBase]
 host = localhost
 user = ams
-password = 
+password = ams
 database = ams
 thread_num = 50
 
