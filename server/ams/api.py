@@ -31,7 +31,7 @@ from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
 
 
 app = Flask(__name__)
-cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV'), '/etc/ams.cfg')
+cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV') or '/', 'etc/ams.conf')
 
 
 def readCfg(filename):

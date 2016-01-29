@@ -25,7 +25,7 @@ import os
 from ams.log import log
 
 
-cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV'), '/etc/ams.cfg')
+cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV') or '/', 'etc/ams.conf')
 
 
 def readCfg(filename):
