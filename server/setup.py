@@ -28,6 +28,17 @@ class install(_install):
         shutil.copyfile('ams.conf.example', dist)
         print('copying {} -> {}'.format('ams.conf.example', dist))
 
+        if virtual is not None:
+            script = os.path.join(virtual, 'ams_update')
+            with open(script, 'w') as f:
+                f.write("""\
+#!/bin/bash
+cd {}
+source bin/activate
+amscli update""".format(virtual))
+            os.chmod(script, 0o755)
+            print('creating {}'.format(script))
+
 
 if __name__ == '__main__':
     setup(
