@@ -327,6 +327,35 @@ def get_issue(time):
     )
     node_issue = [{'ip': r[0], 'port': r[1]} for r in result]
 
+    result = g.database.run(
+        'raw',
+        """\
+SELECT a.ip, a.port, a.device_id, a.module_id, a.dna
+  FROM (
+        SELECT ip, port, device_id, module_id, dna
+          FROM module
+         WHERE time = '{:%Y-%m-%d %H:%M:%S}'
+       )
+    AS a
+  JOIN (
+        SELECT ip, port, dna, ec
+          FROM module
+         WHERE ec & 2 = 2
+         GROUP BY dna
+       )
+    AS b
+    ON a.ip = b.ip AND a.port = b.port AND a.dna = b.dna""".format(
+            datetime.datetime.fromtimestamp(int(time)),
+        )
+    )
+    hot_issue = [{
+        'ip': r[0],
+        'port': r[1],
+        'device_id': r[2],
+        'module_id': r[3],
+        'dna': r[4],
+    } for r in result]
+
     def sort_order(x):
         order = []
         if 'ip' in x:
@@ -342,7 +371,8 @@ def get_issue(time):
     return json.dumps({
         'result': {
             'ec': sorted(ec_issue, key=sort_order),
-            'node': sorted(node_issue, key=sort_order)
+            'node': sorted(node_issue, key=sort_order),
+            'hot': sorted(hot_issue, key=sort_order)
         }
     }, default=json_serial)
 

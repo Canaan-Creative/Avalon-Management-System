@@ -127,6 +127,12 @@
 									<td md-cell>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
 									<td md-cell>{{ vm.ecDecode(module.ec) }}</td>
 								</tr>
+								<tr md-row
+										ng-repeat="module in vm.data.issue.hot"
+										ng-click="vm.gotoDetail(module.ip, module.port, module.dna)">
+									<td md-cell>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
+									<td md-cell>Hot Before</td>
+								</tr>
 							</tbody>
 						</table>
 					</md-table-container>
