@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8; -*-
 #
 # Copyright (C) 2015-2016  DING Changchang (of Canaan Creative)
 #
@@ -16,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with AMS. If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-sys.path.append('__AMS_LIB_PATH__')
-import ams.api
-application = ams.api.app
+from ams.api import app as application
+
+
+if __name__ == '__main__':
+    application.run()

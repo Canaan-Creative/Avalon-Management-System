@@ -28,6 +28,11 @@ class install(_install):
         shutil.copyfile('ams.conf.example', dist)
         print('copying {} -> {}'.format('ams.conf.example', dist))
 
+        if virtual is None:
+            dist = '/var/www/html/ams.wsgi'
+            shutil.copyfile('ams.wsgi', dist)
+            print('copying {} -> {}'.format('ams.wsgi', dist))
+
         if virtual is not None:
             script = os.path.join(virtual, 'ams_update')
             with open(script, 'w') as f:
@@ -35,7 +40,8 @@ class install(_install):
 #!/bin/bash
 cd {}
 source bin/activate
-amscli update""".format(virtual))
+amscli update
+""".format(virtual))
             os.chmod(script, 0o755)
             print('creating {}'.format(script))
 
@@ -49,8 +55,12 @@ if __name__ == '__main__':
         scripts=['amscli'],
         include_package_data=True,
         zip_safe=False,
-        install_requires=["mysql-connector-python >= 2.0"],
-        dependency_links=["http://cdn.mysql.com/Downloads/Connector-Python/"
-                          "mysql-connector-python-2.0.4.zip#"
-                          "md5=3df394d89300db95163f17c843ef49df"],
+        # install_requires=[
+        #    "mysql-connector-python >= 2.0",
+        #    'Flask >= 0.10.1',
+        #    'gunicorn >= 19.0.0'
+        # ],
+        # dependency_links=["http://cdn.mysql.com/Downloads/Connector-Python/"
+        #                   "mysql-connector-python-2.0.4.zip#"
+        #                   "md5=3df394d89300db95163f17c843ef49df"],
     )
