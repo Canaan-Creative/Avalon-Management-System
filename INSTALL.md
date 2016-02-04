@@ -1,4 +1,4 @@
-Requirement
+Requirements
 -----------
 ```
 sudo apt-get install apache2 mysql-server mysql-client \
@@ -6,31 +6,52 @@ libapache2-mod-wsgi-py3 python3 python3-pip
 sudo pip3 install Flask mysql-python-connector-rf
 ```
 
-MySQL
+MySQL Setup
 -----
-* login with root.
+* Login with root:
 
     ```
     mysql -u root -p
     ```
-* add new user `ams` and new database `ams`.
+* Add new user `ams` and new database `ams`:
 
     ```
     create database ams;
     grant all privileges on ams.* to ams@'%' identified by "PASSWD";
     grant FILE on *.* to ams@localhost;
     ```
+    
+**Note: replace PASSWD with the real password.**
+
+Install from tar.gz
+-------------------
+* Download the tar.gz files of ams-server and ams-client.
+* Install server:
+
+    ```
+    tar xzpvf ams-server-VERSION.tar.gz
+    cd ams-server-VERSION
+    sudo python3 setup.py install
+    ```
+* Install client:
+
+    ```
+    tar zxpvf ams-client-VERSION.tar.gz
+    sudo cp -r ams-client-VERSION /var/www/html/ams
+    ```
+
+**Note: replace VERSION with the real version number.**
 
 Configuration
 -------------
-* modify AMS config file `/etc/ams.conf`
-* copy Apache2 config file
+* Modify AMS config file `/etc/ams.conf`.
+* Copy Apache2 config file:
 
     ```
     sudo cp config/000-default.conf /etc/apache2/sites-available/000-default.conf
     sudo service apache2 restart
     ```
-* load crontab file
+* Load crontab file:
 
     ```
     crontab config/cron.tab
