@@ -60,7 +60,7 @@ grunt production'
 		uglify: {
 			build: {
 				files: {
-					'dist/ams.min.js': ['dist/ams.js']
+					'lib/js/ams.min.js': ['tmp/ams.js']
 				},
 				options:{
 					mangle: false
@@ -71,7 +71,7 @@ grunt production'
 		cssmin: {
 			build: {
 				files: {
-					'dist/ams.min.css': 'app/styles/ams.css'
+					'lib/css/ams.min.css': 'app/styles/ams.css'
 				}
 			}
 		},
@@ -88,7 +88,7 @@ grunt production'
 						'*/',
 				},
 				files: {
-					src: ['dist/ams.min.js', 'dist/ams.min.css']
+					src: ['lib/js/ams.min.js', 'lib/css/ams.min.css']
 				}
 			}
 		},
@@ -120,11 +120,11 @@ grunt production'
 			temp: {
 				src: ['tmp']
 			},
-			full: {
-				src: ['dist/ams.js']
-			},
 			lib: {
 				src: ['lib']
+			},
+			dist: {
+				src: ['dist']
 			}
 		},
 
@@ -140,12 +140,23 @@ grunt production'
 					'app/**/*.js',
 					'tmp/*.js'
 				],
-				dest: 'dist/ams.js'
+				dest: 'tmp/ams.js'
 			}
 		},
 
 		jshint: {
 			all: ['Gruntfile.js', 'app/*.js', 'app/**/*.js']
+		},
+
+		compress: {
+			main: {
+				options: {
+					archive: 'dist/ams-client-<%= pkg.version %>.tar.gz'
+				},
+				files: [
+					{src: ['./index.html', './lib/**', './asset/**'], dest: '/'}
+				],
+			}
 		}
 	});
 
@@ -155,6 +166,7 @@ grunt production'
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-html2js');
 	grunt.loadNpmTasks('grunt-bower-task');
 	grunt.loadNpmTasks('grunt-exec');
@@ -176,6 +188,7 @@ grunt production'
 		'cssmin:build',
 		'usebanner:build',
 		'clean:temp',
-		'clean:full'
+		'clean:dist',
+		'compress'
 	]);
 };

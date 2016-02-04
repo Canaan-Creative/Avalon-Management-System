@@ -49,7 +49,7 @@ amscli update
 if __name__ == '__main__':
     setup(
         cmdclass={'install': install},
-        name="ams",
+        name="ams-server",
         version=ams.__version__,
         packages=find_packages(),
         scripts=['amscli'],
