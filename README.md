@@ -7,7 +7,7 @@ Requirements
 ```
 sudo apt-get install apache2 mysql-server mysql-client \
 libapache2-mod-wsgi-py3 python3 python3-pip
-sudo pip3 install Flask mysql-python-connector-rf
+sudo pip3 install Flask mysql-python-connector-rf setuptools
 ```
 
 MySQL Setup
