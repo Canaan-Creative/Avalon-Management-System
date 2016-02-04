@@ -154,7 +154,7 @@ grunt production'
 					archive: 'dist/ams-client-<%= pkg.version %>.tar.gz'
 				},
 				files: [
-					{src: ['./index.html', './lib/**', './asset/**'], dest: '/'}
+					{src: ['./index.html', './lib/**', './asset/**'], dest: 'ams-client/'}
 				],
 			}
 		}
