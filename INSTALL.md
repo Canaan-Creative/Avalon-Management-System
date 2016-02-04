@@ -37,7 +37,8 @@ Install from tar.gz
 
     ```
     tar zxpvf ams-client-VERSION.tar.gz
-    sudo cp -r ams-client-VERSION /var/www/html/ams
+    sudo mkdir /var/www/html/ams
+    sudo cp -r ams-client/* /var/www/html/ams/
     ```
 
 **Note: replace VERSION with the real version number.**
