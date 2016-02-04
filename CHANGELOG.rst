@@ -1,5 +1,12 @@
 Changelog
 =========
+Version 3.0.dev4 (2016.02.04)
+-----------------------------
+- Enable modifying node list in the setting page of client.
+- Name the python part of ams 'ams-server'.
+- Easier distribution of ams-server and ams-client through tar.gz files.
+- Add installation guide.
+
 Version 3.0.dev3 (2016.01.25)
 -----------------------------
 - Support and focus on AvalonMiner6.
