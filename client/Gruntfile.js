@@ -21,6 +21,7 @@ mkdir -p tmp && \
 cd tmp && \
 git clone https://github.com/novus/nvd3 && \
 cd nvd3 && \
+git checkout v1.8.2 && \
 patch -p1 < ../../patches/nvd3-interactive-tooltip-valueFomatter.patch && \
 npm install && \
 grunt production'
