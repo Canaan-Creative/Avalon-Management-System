@@ -5,14 +5,14 @@ A toolset to manage BTC Farm
 Installation
 ------------
 
-### Requirements
+##### Requirements
 ```
 sudo apt-get install apache2 mysql-server mysql-client \
 libapache2-mod-wsgi-py3 python3 python3-pip
 sudo pip3 install Flask mysql-python-connector-rf setuptools
 ```
 
-### MySQL Setup
+##### MySQL Setup
 * Login with root:
 
     ```
@@ -26,9 +26,9 @@ sudo pip3 install Flask mysql-python-connector-rf setuptools
     grant FILE on *.* to ams@localhost;
     ```
 
-**Note: replace PASSWD with the real password.**
+**__Note: replace PASSWD with the real password.__**
 
-### Install from tar.gz
+##### Install from tar.gz
 * Download the tar.gz files of ams-server and ams-client.
 * Install server:
 
@@ -45,9 +45,9 @@ sudo pip3 install Flask mysql-python-connector-rf setuptools
     sudo cp -r ams-client/* /var/www/html/ams/
     ```
 
-**Note: replace VERSION with the real version number.**
+**__Note: replace VERSION with the real version number.__**
 
-### Configuration
+##### Configuration
 * Modify AMS config file `/etc/ams.conf`.
 * Copy Apache2 config file:
 
