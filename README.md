@@ -2,16 +2,17 @@ AMS - Avalon Management System
 ==============================
 A toolset to manage BTC Farm
 
-Requirements
+Installation
 ------------
+
+### Requirements
 ```
 sudo apt-get install apache2 mysql-server mysql-client \
 libapache2-mod-wsgi-py3 python3 python3-pip
 sudo pip3 install Flask mysql-python-connector-rf setuptools
 ```
 
-MySQL Setup
------------
+### MySQL Setup
 * Login with root:
 
     ```
@@ -27,8 +28,7 @@ MySQL Setup
 
 **Note: replace PASSWD with the real password.**
 
-Install from tar.gz
--------------------
+### Install from tar.gz
 * Download the tar.gz files of ams-server and ams-client.
 * Install server:
 
@@ -47,8 +47,7 @@ Install from tar.gz
 
 **Note: replace VERSION with the real version number.**
 
-Configuration
--------------
+### Configuration
 * Modify AMS config file `/etc/ams.conf`.
 * Copy Apache2 config file:
 
@@ -60,4 +59,20 @@ Configuration
 
     ```
     crontab config/cron.tab
+    ```
+
+Build
+-----
+* server:
+    ```
+    cd server
+    python3 setup.py sdist
+    ```
+* client:
+    ```
+    cd client
+    sudo npm install -g grunt-cli jshint
+    npm install
+    grunt prereq
+    grunt build
     ```

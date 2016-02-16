@@ -3,14 +3,6 @@
 ## Links ##
 * Style Guide: https://github.com/johnpapa/angular-styleguide
 
-## Build ##
-```
-sudo npm install -g grunt-cli jshint
-npm install
-grunt prereq
-grunt build
-```
-
 ## Third Party ##
 * AngularJs: https://angularjs.org/
 * Angular Material: https://material.angularjs.org/
