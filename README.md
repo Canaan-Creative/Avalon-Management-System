@@ -26,7 +26,7 @@ sudo pip3 install Flask mysql-python-connector-rf setuptools
     grant FILE on *.* to ams@localhost;
     ```
 
-**__Note: replace PASSWD with the real password.__**
+**_Note: replace PASSWD with the real password._**
 
 ##### Install from tar.gz
 * Download the tar.gz files of ams-server and ams-client.
@@ -45,7 +45,7 @@ sudo pip3 install Flask mysql-python-connector-rf setuptools
     sudo cp -r ams-client/* /var/www/html/ams/
     ```
 
-**__Note: replace VERSION with the real version number.__**
+**_Note: replace VERSION with the real version number._**
 
 ##### Configuration
 * Modify AMS config file `/etc/ams.conf`.
