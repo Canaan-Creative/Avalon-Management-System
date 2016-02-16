@@ -13,21 +13,6 @@ module.exports = function(grunt) {
 			}
 		},
 
-		exec: {
-			nvd3: {
-				/*jshint multistr: true */
-				cmd: '\
-mkdir -p tmp && \
-cd tmp && \
-git clone https://github.com/novus/nvd3 && \
-cd nvd3 && \
-git checkout v1.8.2 && \
-patch -p1 < ../../patches/nvd3-interactive-tooltip-valueFomatter.patch && \
-npm install && \
-grunt production'
-			}
-		},
-
 		copy: {
 			main: {
 				files: [{
@@ -35,8 +20,6 @@ grunt production'
 					flatten: true,
 					src: [
 						'bower_components/**/*.min.js',
-						'tmp/nvd3/build/nv.d3.min.js',
-						'!bower_components/nvd3/**/*.js',
 						'!bower_components/angular-material/angular-material.layouts.min.js',
 						'!bower_components/angular-messages/*.js',
 						'!bower_components/angular-material/modules/**/*.js'
@@ -47,8 +30,6 @@ grunt production'
 					flatten: true,
 					src: [
 						'bower_components/**/*.min.css',
-						'tmp/nvd3/build/nv.d3.min.css',
-						'!bower_components/nvd3/**/*.css',
 						'!bower_components/angular-material/angular-material.layouts.min.css',
 						'!bower_components/angular-material/modules/**/*.css'
 					],
@@ -169,14 +150,12 @@ grunt production'
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-html2js');
 	grunt.loadNpmTasks('grunt-bower-task');
-	grunt.loadNpmTasks('grunt-exec');
 	grunt.loadNpmTasks('grunt-banner');
 
 	grunt.registerTask('prereq', [
 		'clean:temp',
 		'clean:lib',
 		'bower',
-		'exec:nvd3',
 		'copy',
 		'clean:temp',
 	]);

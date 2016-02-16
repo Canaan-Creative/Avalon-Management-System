@@ -4,13 +4,10 @@
   "license": "GPL-3.0",
   "private": true,
   "dependencies": {
-    "angular-route": "~1.4.8",
+    "angular-route": "~1.5.0",
     "angular-material-icons": "~0.6.0",
-    "nvd3": "https://github.com/novus/nvd3.git#5992b889c6ce8e108d42b73c6382c8863980e34a",
+    "nvd3": "~1.8.2",
     "angular-nvd3": "~1.0.5",
     "angular-material-data-table": "~0.9.9"
-  },
-  "resolutions": {
-    "nvd3": "5992b889c6ce8e108d42b73c6382c8863980e34a"
   }
 }
