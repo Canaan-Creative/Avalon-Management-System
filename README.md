@@ -27,10 +27,10 @@ pip3 install Flask mysql-connector-python-rf setuptools
     grant FILE on *.* to ams@localhost;
     ```
 
-**_Note: replace PASSWD with the real password._**
+  **_Note: replace PASSWD with the real password._**
 
 ##### Install from tar.gz
-* Download the tar.gz files of ams-server and ams-client.
+* Download the tar.gz files of ams-server and ams-client from [releases]( https://github.com/Canaan-Creative/Avalon-Management-System/releases).
 * Install server:
 
     ```
@@ -46,26 +46,27 @@ pip3 install Flask mysql-connector-python-rf setuptools
     sudo cp -r ams-client/* /var/www/html/ams/
     ```
 
-**_Note: replace VERSION with the real version number._**
+  **_Note: replace VERSION with the real version number._**
 
 ##### Configuration
 * Modify AMS config file `/etc/ams.conf`.
+* ```git clone https://github.com/Canaan-Creative/Avalon-Management-System.git ams-git```
 * Copy Apache2 config file:
 
     ```
-    sudo cp config/000-default.conf /etc/apache2/sites-available/000-default.conf
+    sudo cp ams-git/config/000-default.conf /etc/apache2/sites-available/000-default.conf
     sudo service apache2 restart
     ```
 * Load crontab file:
 
     ```
-    crontab config/cron.tab
+    crontab ams-git/config/cron.tab
     ```
 
 
 
-Build
------
+Build (for Developer)
+---------------------
 * server:
 
     ```
@@ -85,7 +86,7 @@ Build
 
 Known Issues
 ------------
-####Apache Error: 'assert tlock is not None'####
+####Apache Error: 'assert tlock is not None'
 
 * Reason:
 
@@ -98,5 +99,6 @@ Known Issues
     pip3 install mod_wsgi
     rm /usr/lib/apache2/modules/mod_wsgi.so
     ln -s /usr/local/lib/python3.4/dist-packages/mod_wsgi/server/mod_wsgi-py34.cpython-34m.so /usr/lib/apache2/modules/mod_wsgi.so
+    service apache2 restart
     ```
-    __NOTE__: the version number in **_python3.4_** and **_mod_wsgi-py34.cpython-34m.so_** may vary.
+    **_NOTE: the version number in_** `python3.4` **_and_** `mod_wsgi-py34.cpython-34m.so` **_may vary._**
