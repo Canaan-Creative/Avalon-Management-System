@@ -82,3 +82,21 @@ Build
     grunt prereq
     grunt build
     ```
+
+Known Issues
+------------
+####Apache Error: 'assert tlock is not None'####
+
+* Reason:
+
+    mod_wsgi version is too low (<= 3.4).
+
+* Solution:
+
+    As root
+    ```
+    pip3 install mod_wsgi
+    rm /usr/lib/apache2/modules/mod_wsgi.so
+    ln -s /usr/local/lib/python3.4/dist-packages/mod_wsgi/server/mod_wsgi-py34.cpython-34m.so /usr/lib/apache2/modules/mod_wsgi.so
+    ```
+    __NOTE__: the version number in **_python3.4_** and **_mod_wsgi-py34.cpython-34m.so_** may vary.
