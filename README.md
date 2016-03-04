@@ -10,7 +10,7 @@ As root
 ```
 apt-get install apache2 mysql-server mysql-client \
 libapache2-mod-wsgi-py3 python3 python3-pip
-pip3 install Flask mysql-python-connector-rf setuptools
+pip3 install Flask mysql-connector-python-rf setuptools
 ```
 
 ##### MySQL Setup
