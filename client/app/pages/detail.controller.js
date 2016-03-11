@@ -343,7 +343,7 @@
 				vm.status.node.selected = false;
 			node.selected = true;
 			vm.status.node = node;
-			share.status.main.subTitle = node.ip + ':' + node.port;
+			share.status.main.subTitle = [node.ip + ':' + node.port];
 			vm.getTab(vm.status.tabName);
 		}
 

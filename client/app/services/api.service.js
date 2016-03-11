@@ -30,6 +30,7 @@
 		var self = this;
 
 		self.data = {};
+		self.getShortlog = getShortlog;
 		self.getNodes = getNodes;
 		self.getStatus = getStatus;
 		self.getSummary = getSummary;
@@ -52,7 +53,17 @@
 			id: 0
 		};
 
-		function getNodes(){
+		function getShortlog() {
+			return $http.get('/api/shortlog').then(
+				function(response) {
+					self.data.shortlog = response.data.result;
+				}, function(errResponse) {
+					self.data.shortlog = null;
+					console.error('Error fetching nodes');
+				});
+		}
+
+		function getNodes() {
 			return $http.get('/api/nodes').then(
 				function(response) {
 					self.data.nodes = response.data.result;

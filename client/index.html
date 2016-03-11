@@ -57,9 +57,9 @@
 				<h3 class="md-title">
 					{{ vm.status.title }}
 				</h3>
-				<span flex="5"></span>
-				<span ng-if="!!vm.status.subTitle" class="md-subhead">
-					{{ vm.status.subTitle }}
+				<span flex="5" ng-repeat-start="subTitle in vm.status.subTitle"></span>
+				<span class="md-subhead" ng-repeat-end>
+					{{ subTitle }}
 				</span>
 				<span flex="auto"></span>
 				<md-button ng-click="vm.chooseSnap()" aria-label="Snapshot">

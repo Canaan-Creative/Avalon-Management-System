@@ -66,7 +66,42 @@
 		else
 			getChart();
 
+		function updateSubTitle() {
+			function numberShorten(num) {
+				var prefix = [
+					{prefix: 'EHs', base: 1000000000000000000},
+					{prefix: 'PHs', base: 1000000000000000},
+					{prefix: 'THs', base: 1000000000000},
+					{prefix: 'GHs', base: 1000000000},
+					{prefix: 'MHs', base: 1000000},
+					{prefix: 'kHs', base: 1000},
+				];
+				for (var i = 0; i < prefix.length; i++) {
+					var p = prefix[i];
+					if (num >= p.base) {
+						if (num >= p.base * 100)
+							return (num / p.base).toFixed(1) + ' ' + p.prefix;
+						else if (num >= p.base * 10)
+							return (num / p.base).toFixed(2) + ' ' + p.prefix;
+						else
+							return (num / p.base).toFixed(3) + ' ' + p.prefix;
+					}
+				}
+				return num;
+			}
+
+			var shortlog = api.data.shortlog;
+			share.status.main.subTitle = [
+				'Time: ' + d3.time.format('%Y.%m.%d %H:%M')(new Date(shortlog.time * 1000)),
+				'Hashrate: ' + numberShorten(shortlog.hashrate),
+				'Nodes: ' + shortlog.node_num,
+				'Modules: ' + shortlog.module_num
+			];
+		}
+
 		function getChart() {
+			api.getShortlog().then(updateSubTitle);
+
 			api.getFarmHashrate(
 				share.status.main.time - 30 * 24 * 3600,
 				share.status.main.time
