@@ -53,11 +53,30 @@ COLUMNS = {
 }
 
 
-def json_serial(obj):
-    if isinstance(obj, decimal.Decimal):
-        return float(obj)
-    if isinstance(obj, datetime.datetime):
-        return int(obj.timestamp())
+def ams_dumps(data):
+    def json_serial(obj):
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
+        if isinstance(obj, datetime.datetime):
+            return int(obj.timestamp())
+    return json.dumps(data, default=json_serial)
+
+
+def ams_sort(data):
+    def sort_order(x):
+        order = []
+        if 'ip' in x:
+            order.extend([int(i) for i in x['ip'].split('.')])
+        if 'port' in x:
+            order.append(int(x['port']))
+        if 'device_id' in x:
+            order.append(int(x['device_id']))
+        if 'module_id' in x:
+            order.append(int(x['module_id']))
+        if 'pool_id' in x:
+            order.append(x['pool_id'])
+        return order
+    return sorted(data, key=sort_order)
 
 
 @app.before_request
@@ -76,7 +95,7 @@ def get_nodes():
     nodes = []
     for r in result:
         nodes.append({'ip': r[0], 'port': r[1], 'mods': r[2], 'password': r[3]})
-    return json.dumps({'result': nodes})
+    return ams_dumps({'result': nodes})
 
 
 # Need permission protection
@@ -96,14 +115,14 @@ def update_nodes():
             list(node.keys()), list(node.values())
         )
     g.database.commit()
-    return json.dumps({'success': True})
+    return ams_dumps({'success': True})
 
 
 @app.route('/lasttime', methods=['GET'])
 @app.route('/lasttime', methods=['GET'])
 def get_last_time():
     result = g.database.run('raw', 'SELECT MAX(time) FROM miner')
-    return json.dumps({'result': result[0][0]}, default=json_serial)
+    return ams_dumps({'result': result[0][0]})
 
 
 @app.route('/config/<ip>/<port>', methods=['GET'])
@@ -117,7 +136,7 @@ def get_config(ip, port):
     luci = ams.luci.LuCI(ip, 80, password)
     luci.auth()
     result = luci.put('uci', 'get_all', ['cgminer.default'])
-    return json.dumps(result)
+    return ams_dumps(result)
 
 
 @app.route('/info/<ip>/<port>', methods=['GET'])
@@ -133,7 +152,7 @@ def get_info(ip, port):
     result = luci.put('uci', 'exec', ['ubus call network.device status'])
     result = json.loads(result['result'])
     mac = result['eth0']['macaddr']
-    return json.dumps({'mac': mac})
+    return ams_dumps({'mac': mac})
 
 
 @app.route('/summary/<time>', methods=['GET'])
@@ -173,7 +192,7 @@ SELECT miner.ip, miner.port, miner.mhs,
         'temp1': r[6],
     } for r in result]
 
-    return json.dumps({'result': summary}, default=json_serial)
+    return ams_dumps({'result': ams_sort(summary)})
 
 
 @app.route('/aliverate', methods=['POST'])
@@ -222,7 +241,7 @@ SELECT pool.time, module.number
             'x': r[0],
             'y': r[-1] if r[-1] is not None else 0,
         })
-    return json.dumps({'result': aliverate}, default=json_serial)
+    return ams_dumps({'result': aliverate})
 
 
 @app.route('/hashrate', methods=['POST'])
@@ -270,7 +289,7 @@ SELECT pool.*, local.mhs
                     'y': r[i] * 1000000 if r[i] is not None else 0,
                 })
 
-        return json.dumps({'result': hashrate}, default=json_serial)
+        return ams_dumps({'result': hashrate})
     elif req['scope'] == 'node':
         hashrate = [{'values': [], 'key': 'node'}]
         result = g.database.run(
@@ -285,7 +304,7 @@ SELECT pool.*, local.mhs
                 'x': r[0],
                 'y': r[1] * 1000000 if r[1] is not None else 0,
             })
-        return json.dumps({'result': hashrate}, default=json_serial)
+        return ams_dumps({'result': hashrate})
     elif req['scope'] == 'module':
         # TODO
         pass
@@ -356,25 +375,12 @@ SELECT a.ip, a.port, a.device_id, a.module_id, a.dna
         'dna': r[4],
     } for r in result]
 
-    def sort_order(x):
-        order = []
-        if 'ip' in x:
-            order.extend([int(i) for i in x['ip'].split('.')])
-        if 'port' in x:
-            order.append(int(x['port']))
-        if 'device_id' in x:
-            order.append(int(x['device_id']))
-        if 'module_id' in x:
-            order.append(int(x['module_id']))
-        return order
-
-    return json.dumps({
+    return ams_dumps({
         'result': {
-            'ec': sorted(ec_issue, key=sort_order),
-            'node': sorted(node_issue, key=sort_order),
-            'hot': sorted(hot_issue, key=sort_order)
-        }
-    }, default=json_serial)
+            'ec': ams_sort(ec_issue),
+            'node': ams_sort(node_issue),
+            'hot': ams_sort(hot_issue)
+        }})
 
 
 @app.route('/status/<table>/<time>/<ip>/<port>', methods=['GET'])
@@ -406,20 +412,7 @@ def get_status(table, time, ip, port):
                 i += 1
             status.append(s)
 
-    def sort_order(x):
-        order = []
-        if 'device_id' in x:
-            order.append(x['device_id'])
-        if 'module_id' in x:
-            order.append(x['module_id'])
-        if 'pool_id' in x:
-            order.append(x['pool_id'])
-        return order
-
-    return json.dumps(
-        {'result': sorted(status, key=sort_order)},
-        default=json_serial
-    )
+    return ams_dumps({'result': ams_sort(status)})
 
 
 @app.route('/led', methods=['POST'])
