@@ -127,7 +127,7 @@ SELECT a.time, a.mhs, a.node, b.module
   FROM (
         SELECT time, SUM(mhs) AS mhs, COUNT(ip) AS node
           FROM miner
-         WHERE time = (SELECT MAX(time) FROM miner)
+         WHERE time = (SELECT MAX(time) FROM miner) AND dead IS FALSE
         )
     AS a
   JOIN (
@@ -239,6 +239,7 @@ SELECT pool.time, miner.number
   LEFT JOIN (
         SELECT time, count(ip) AS number
           FROM miner ''' + clause + '''\
+           AND dead IS FALSE
          GROUP BY time
        )
     AS miner
