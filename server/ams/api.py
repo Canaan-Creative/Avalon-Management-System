@@ -118,7 +118,32 @@ def update_nodes():
     return ams_dumps({'success': True})
 
 
-@app.route('/lasttime', methods=['GET'])
+@app.route('/shortlog', methods=['GET'])
+def get_shortlog():
+    result = g.database.run(
+        'raw',
+        '''\
+SELECT a.time, a.mhs, a.node, b.module
+  FROM (
+        SELECT time, SUM(mhs) AS mhs, COUNT(ip) AS node
+          FROM miner
+         WHERE time = (SELECT MAX(time) FROM miner)
+        )
+    AS a
+  JOIN (
+        SELECT time, COUNT(dna) AS module
+          FROM module
+         WHERE time = (SELECT MAX(time) FROM miner)
+        )
+    AS b''')
+    return ams_dumps({'result': {
+        'time': result[0][0],
+        'hashrate': result[0][1],
+        'node_num': result[0][2],
+        'module_num': result[0][3],
+    }})
+
+
 @app.route('/lasttime', methods=['GET'])
 def get_last_time():
     result = g.database.run('raw', 'SELECT MAX(time) FROM miner')
