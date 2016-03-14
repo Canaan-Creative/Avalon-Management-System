@@ -348,6 +348,8 @@ COLUMN_POOLS = [
      'type': 'DOUBLE'},
     {'name': 'last_share_difficulty',
      'type': 'DOUBLE'},
+    {'name': 'work_difficulty',
+     'type': 'DOUBLE'},
     {'name': 'has_stratum',
      'type': 'BOOL'},
     {'name': 'stratum_active',
