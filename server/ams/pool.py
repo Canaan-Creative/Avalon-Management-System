@@ -157,6 +157,26 @@ class kano(Pool):
         return mhs / 1000000.0
 
 
+# using bitcoin address as user on kano.is
+class kano_a(Pool):
+    name = "kano.is"
+
+    def _collect(self):
+        url = ('http://kano.is/address.php?a={}').format(self.username)
+        result = urllib.request.urlopen(url).read().decode()
+        data = json.loads('{' + result.split('{')[1].split('}')[0] + '}')
+        hs = data['hashrate5m']
+        if hs[-1] == 'P':
+            hs = float(hs[:-1]) * 1000000000
+        elif hs[-1] == 'T':
+            hs = float(hs[:-1]) * 1000000
+        elif hs[-1] == 'G':
+            hs = float(hs[:-1]) * 1000
+        else:
+            hs = float(hs)
+        return hs
+
+
 def update_poolrate(pool_list, run_time, db, retry):
     pool_queue = queue.Queue()
     hashrate_queue = queue.Queue()
