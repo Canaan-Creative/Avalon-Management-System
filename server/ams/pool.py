@@ -163,7 +163,7 @@ class kano_a(Pool):
     name = "kano.is"
 
     def _collect(self):
-        url = ('http://kano.is/address.php?a={}').format(self.username)
+        url = ('http://kano.is/address.php?a={}').format(self.user)
         result = urllib.request.urlopen(url).read().decode()
         data = json.loads('{' + result.split('{')[1].split('}')[0] + '}')
         hs = data['hashrate5m']
