@@ -38,10 +38,11 @@ class Pool():
         self.key = key
         self.seckey = seckey
         self.user = user
-        self.worker = worker
-        if isinstance(worker, list):
-            self.fullname = ['{}.{}'.format(user, w) for w in worker]
+        if worker[0] == '[' and worker[-1] == ']':
+            self.work = [x.strip() for x in worker[1:-1].split(',')]
+            self.fullname = ['{}.{}'.format(user, w) for w in self.worker]
         else:
+            self.worker = worker
             self.fullname = ['{}.{}'.format(user, worker)]
         self.log = logging.getLogger('AMS.Pool')
 
