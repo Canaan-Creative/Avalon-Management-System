@@ -183,7 +183,9 @@ def update_poolrate(pool_list, run_time, db, retry):
     hashrate_queue = queue.Queue()
 
     for p in pool_list:
-        if p['name'] in ['ghash', 'ozcoin', 'btcchina', 'kano', 'cksolo']:
+        if p['name'] in [
+                'ghash', 'ozcoin', 'btcchina',
+                'kano', 'kano_a' 'cksolo']:
             pool_queue.put(p)
 
     for i in range(len(pool_list)):
