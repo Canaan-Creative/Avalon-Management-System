@@ -39,7 +39,7 @@ class Pool():
         self.seckey = seckey
         self.user = user
         if worker[0] == '[' and worker[-1] == ']':
-            self.work = [x.strip() for x in worker[1:-1].split(',')]
+            self.worker = [x.strip() for x in worker[1:-1].split(',')]
             self.fullname = ['{}.{}'.format(user, w) for w in self.worker]
         else:
             self.worker = worker
