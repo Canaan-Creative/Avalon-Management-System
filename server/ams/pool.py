@@ -185,7 +185,7 @@ def update_poolrate(pool_list, run_time, db, retry):
     for p in pool_list:
         if p['name'] in [
                 'ghash', 'ozcoin', 'btcchina',
-                'kano', 'kano_a' 'cksolo']:
+                'kano', 'kano_a', 'cksolo']:
             pool_queue.put(p)
 
     for i in range(len(pool_list)):
