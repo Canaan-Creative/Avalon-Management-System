@@ -106,6 +106,12 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				src: ['dist']
+			},
+			bower: {
+				src: ['bower_components']
+			},
+			npm: {
+				src: ['node_modules']
 			}
 		},
 
@@ -168,6 +174,13 @@ module.exports = function(grunt) {
 		'usebanner:build',
 		'clean:temp',
 		'clean:dist',
-		'compress'
+		'compress',
+	]);
+	grunt.registerTask('distclean', [
+		'clean:npm',
+		'clean:bower',
+		'clean:lib',
+		'clean:temp',
+		'clean:dist',
 	]);
 };
