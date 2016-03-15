@@ -4,10 +4,18 @@
   "license": "GPL-3.0",
   "private": true,
   "dependencies": {
-    "angular-route": "~1.5.0",
-    "angular-material-icons": "~0.6.0",
-    "nvd3": "~1.8.2",
-    "angular-nvd3": "~1.0.5",
-    "angular-material-data-table": "~0.9.9"
+    "angular": "1.5.0",
+    "angular-animate": "1.5.0",
+    "angular-aria": "1.5.0",
+    "angular-route": "1.5.0",
+    "angular-messages": "1.5.0",
+    "angular-material": "1.0.6",
+    "angular-material-icons": "0.6.0",
+    "angular-material-data-table": "0.9.14",
+    "nvd3": "https://github.com/novus/nvd3.git#ca5d04805baed5f03a58971f61f953caa74f6ac2",
+    "angular-nvd3": "1.0.5"
+  },
+  "resolutions": {
+    "nvd3": "ca5d04805baed5f03a58971f61f953caa74f6ac2"
   }
 }
