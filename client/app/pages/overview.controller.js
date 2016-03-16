@@ -69,12 +69,11 @@
 		function updateSubTitle() {
 			function numberShorten(num) {
 				var prefix = [
-					{prefix: 'EHs', base: 1000000000000000000},
-					{prefix: 'PHs', base: 1000000000000000},
-					{prefix: 'THs', base: 1000000000000},
-					{prefix: 'GHs', base: 1000000000},
-					{prefix: 'MHs', base: 1000000},
-					{prefix: 'kHs', base: 1000},
+					{prefix: 'EHs', base: 1000000000000},
+					{prefix: 'PHs', base: 1000000000},
+					{prefix: 'THs', base: 1000000},
+					{prefix: 'GHs', base: 1000},
+					{prefix: 'MHs', base: 1}
 				];
 				for (var i = 0; i < prefix.length; i++) {
 					var p = prefix[i];
