@@ -25,8 +25,11 @@ class install(_install):
             directory = '/etc'
 
         dist = os.path.join(directory, 'ams.conf')
-        shutil.copyfile('ams.conf.example', dist)
-        print('copying {} -> {}'.format('ams.conf.example', dist))
+        if os.path.isfile(dist):
+            print('{} exists\nskip copying {}'.format(dist, 'ams.conf.example'))
+        else:
+            shutil.copyfile('ams.conf.example', dist)
+            print('copying {} -> {}'.format('ams.conf.example', dist))
 
         if virtual is None:
             dist = '/var/www/html/ams.wsgi'
