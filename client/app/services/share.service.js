@@ -57,7 +57,7 @@
 					left: 54
 				},
 				x: function(d, i) {return d.x * 1000;},
-				y: function(d) {
+				y: function(d, i) {
 					if (d.serie == 'node')
 						return d.y * 50;
 					else
@@ -66,11 +66,11 @@
 				useInteractiveGuideline: true,
 				interactiveLayer: {
 					tooltip: {
-						valueFormatter: function(d) {
-							if (d.serie == 'node')
-								return d.y * 50;
+						valueFormatter: function(d, i) {
+							if (i === 0)
+								return d / 50;
 							else
-								return d.y;
+								return d;
 						},
 						headerFormatter: function(d) {
 							return d3.time.format('%Y.%m.%d %H:%M')(new Date(d));
