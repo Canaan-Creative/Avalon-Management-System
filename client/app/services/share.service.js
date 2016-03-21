@@ -48,7 +48,7 @@
 		self.getLastTime = getLastTime;
 		self.aliverateChartOptions = {
 			chart: {
-				type: 'multiChart',
+				type: 'lineChart',
 				height: 350,
 				margin : {
 					top: 20,
@@ -56,19 +56,24 @@
 					bottom: 40,
 					left: 54
 				},
-				line1: {
-					x: function(d) {return d.x * 1000;},
-					y: function(d) {return d.y;},
-				},
-				line2: {
-					x: function(d) {return d.x * 1000;},
-					y: function(d) {return d.y;},
+				x: function(d, i) {return d.x * 1000;},
+				y: function(d) {
+					if (d.serie == 'node')
+						return d.y * 50;
+					else
+						return d.y;
 				},
 				useInteractiveGuideline: true,
 				interactiveLayer: {
 					tooltip: {
+						valueFormatter: function(d) {
+							if (d.serie == 'node')
+								return d.y * 50;
+							else
+								return d.y;
+						},
 						headerFormatter: function(d) {
-							return d3.time.format('%Y.%m.%d %H:%M')(new Date(d * 1000));
+							return d3.time.format('%Y.%m.%d %H:%M')(new Date(d));
 						},
 					},
 				},
@@ -85,17 +90,15 @@
 						return d3.time.days(start, stop, 7);
 					},
 					tickFormat: function(d) {
-						return d3.time.format('%m.%d')(new Date(d * 1000));
+						return d3.time.format('%m.%d')(new Date(d));
 					},
 				},
-				yAxis1: {
-					axisLabel: 'Nodes',
+				yAxis: {
+					axisLabel: 'Nodes/Modules',
 					showMaxMin: false,
-					axisLabelDistance: -10,
-				},
-				yAxis2: {
-					axisLabel: 'Modules',
-					showMaxMin: false,
+					tickFormat: function(d) {
+						return d / 50 + '/' + d;
+					},
 					axisLabelDistance: -10,
 				},
 				callback: function(chart) {},
