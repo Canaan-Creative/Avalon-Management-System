@@ -248,6 +248,7 @@ SELECT pool.time, miner.number
         aliverate[0]['values'].append({
             'x': r[0],
             'y': r[-1] if r[-1] is not None else 0,
+            'serie': 'node',
         })
 
     result = g.database.run(
@@ -266,6 +267,7 @@ SELECT pool.time, module.number
         aliverate[1]['values'].append({
             'x': r[0],
             'y': r[-1] if r[-1] is not None else 0,
+            'serie': 'module',
         })
     return ams_dumps({'result': aliverate})
 
