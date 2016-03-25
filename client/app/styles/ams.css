@@ -76,6 +76,11 @@ md-list-item {
 	height: 48px;
 }
 
+.md-tab {
+	padding-top: 8px !important;
+	padding-bottom: 4px !important;
+}
+
 md-switch {
 	margin-top: 0px;
 	margin-bottom: 0px;
