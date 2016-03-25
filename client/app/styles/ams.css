@@ -116,3 +116,8 @@ table[md-data-table] > tbody > tr > td:last-child,
 table[md-data-table] > tfoot > tr > td:last-child {
 	padding: 0 12px 0 14px;
 }
+
+table.md-table:not(.md-row-select) td.md-cell:nth-child(n+2):nth-last-child(n+2),
+table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+2) {
+	padding: 0;
+}
