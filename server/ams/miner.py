@@ -387,6 +387,9 @@ def db_init(sql_queue):
     sql_queue.put({
         'command': 'create',
         'name': 'hashrate',
-        'column_def': [{'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'}],
+        'column_def': [
+            {'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'},
+            {'name': 'local', 'type': 'DOUBLE'}
+        ],
         'additional': 'PRIMARY KEY (`time`)',
     })

@@ -517,7 +517,7 @@ def db_init(sql_queue):
         })
 
 
-def db_final(sql_queue):
+def db_final(sql_queue, run_time):
     sql_queue.put({
         'command': 'raw',
         'query': '''
@@ -547,4 +547,13 @@ UPDATE miner_temp AS a
     sql_queue.put({
         'command': 'raw',
         'query': 'DROP TABLES miner_temp, device_temp, module_temp, pool_temp',
+    })
+
+    sql_queue.put({
+        'command': 'raw',
+        'query': '''\
+INSERT INTO hashrate (time, local)
+VALUES ("{0}", (SELECT sum(mhs) FROM miner WHERE time="{0}"))
+    ON DUPLICATE KEY UPDATE
+       local=(SELECT sum(mhs) FROM miner WHERE time="{0}")'''.format(run_time)
     })

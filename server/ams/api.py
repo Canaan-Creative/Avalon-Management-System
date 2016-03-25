@@ -287,32 +287,16 @@ def get_hashrate():
         datetime.datetime.fromtimestamp(req['start']))
     end = '{:%Y-%m-%d %H:%M:%S}'.format(
         datetime.datetime.fromtimestamp(req['end']))
-    clause = "WHERE time > '{}' AND time < '{}'".format(start, end)
+    clause = "time > '{}' AND time < '{}'".format(start, end)
     if req['scope'] == 'farm':
-        hashrate = [{'values': [], 'key': 'local'}]
+        hashrate = []
         result = g.database.run('raw', 'DESCRIBE hashrate')
         for r in result[1:]:
             hashrate.append({'values': [], 'key': r[0]})
-        result = g.database.run(
-            'raw',
-            '''\
-SELECT pool.*, local.mhs
-  FROM hashrate AS pool
-  LEFT JOIN (
-        SELECT time, sum(mhs) AS mhs
-          FROM miner ''' + clause + '''\
-         GROUP BY time
-       )
-    AS local
-    ON local.time = pool.time ''' + clause.replace('time', 'pool.time')
-        )
+        result = g.database.run('select', 'hashrate', None, clause)
         for r in result:
-            hashrate[0]['values'].append({
-                'x': r[0],
-                'y': r[-1] * 1000000 if r[-1] is not None else 0,
-            })
-            for i in range(1, len(r) - 1):
-                hashrate[i]['values'].append({
+            for i in range(1, len(r)):
+                hashrate[i - 1]['values'].append({
                     'x': r[0],
                     'y': r[i] * 1000000 if r[i] is not None else 0,
                 })
@@ -324,7 +308,7 @@ SELECT pool.*, local.mhs
             'raw',
             "SELECT a.time, a.mhs FROM miner AS a RIGHT JOIN "
             "(SELECT time FROM hashrate) AS b ON a.time = b.time "
-            "{} AND a.ip = '{}' AND a.port = '{}'".format(
+            "WHERE {} AND a.ip = '{}' AND a.port = '{}'".format(
                 clause.replace('time', 'b.time'), req['ip'], req['port']
             ))
         for r in result:

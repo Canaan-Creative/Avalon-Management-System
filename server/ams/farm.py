@@ -60,7 +60,7 @@ class Farm():
         miner_queue.join()
         sql_queue.main.put("END")
 
-        self.miner_type.db_final(sql_queue.post)
+        self.miner_type.db_final(sql_queue.post, run_time)
         sql_queue.post.put("END")
 
 
