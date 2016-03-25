@@ -50,21 +50,23 @@
 			</md-list>
 		</md-sidenav>
 		<div layout="column" layout-fill>
-			<md-toolbar class="md-toolbar-tools">
-				<md-button ng-click="vm.toggleSidenav()" hide-gt-lg aria-label="Menu">
-					<ng-md-icon icon="menu" style="fill: white"></ng-md-icon>
-				</md-button>
-				<h3 class="md-title">
-					{{ vm.status.title }}
-				</h3>
-				<span flex="5" ng-repeat-start="subTitle in vm.status.subTitle"></span>
-				<span class="md-subhead" ng-repeat-end>
-					{{ subTitle }}
-				</span>
-				<span flex="auto"></span>
-				<md-button ng-click="vm.chooseSnap()" aria-label="Snapshot">
-					<ng-md-icon icon="assignment" style="fill: white"></ng-md-icon>
-				</md-button>
+			<md-toolbar class="ams-toolbar">
+				<div class="md-toolbar-tools">
+					<md-button ng-click="vm.toggleSidenav()" hide-gt-lg aria-label="Menu">
+						<ng-md-icon icon="menu" style="fill: white"></ng-md-icon>
+					</md-button>
+					<h3 class="md-title">
+						{{ vm.status.title }}
+					</h3>
+					<span flex="5" ng-repeat-start="subTitle in vm.status.subTitle"></span>
+					<span class="md-subhead" ng-repeat-end>
+						{{ subTitle }}
+					</span>
+					<span flex="auto"></span>
+					<md-button ng-click="vm.chooseSnap()" aria-label="Snapshot">
+						<ng-md-icon icon="assignment" style="fill: white"></ng-md-icon>
+					</md-button>
+				</div>
 			</md-toolbar>
 			<md-content layout="row" flex ng-view></md-content>
 		</div>

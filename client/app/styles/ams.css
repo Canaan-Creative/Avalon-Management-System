@@ -71,6 +71,11 @@ md-list-item {
 	font-weight: bold;
 }
 
+.ams-toolbar {
+	min-height: 48px;
+	height: 48px;
+}
+
 md-switch {
 	margin-top: 0px;
 	margin-bottom: 0px;
