@@ -220,6 +220,70 @@ SELECT miner.ip, miner.port, miner.mhs,
     return ams_dumps({'result': ams_sort(summary)})
 
 
+@app.route('/farmmap/<time>', methods=['GET'])
+def get_farmmap(time):
+    if time == 'latest':
+        result = g.database.run('raw', 'SELECT MAX(time) from hashrate')
+        time = result[0][0].timestamp()
+    time = datetime.datetime.fromtimestamp(int(time))
+    result = g.database.run(
+        'select', 'miner', ['ip', 'port', 'mhs', 'dead'],
+        "time = '{:%Y-%m-%d %H:%M:%S}'".format(time)
+    )
+    farmmap = {}
+    for r in result:
+        farmmap['{}:{}'.format(r[0], r[1])] = {
+            'ip': r[0],
+            'port': r[1],
+            'mhs': r[2],
+            'dead': r[3],
+            'avg_tempI': None,
+            'avg_tempB': None,
+            'max_tempI': None,
+            'max_tempB': None,
+            'mod_num': 0,
+            'modules': [],
+        }
+    result = g.database.run(
+        'select', 'module',
+        ['ip', 'port', 'device_id', 'module_id',
+         'dna', 'temp', 'temp0', 'temp1', 'ghsmm', 'ec'],
+        "time = '{:%Y-%m-%d %H:%M:%S}'".format(time)
+    )
+    for r in result:
+        (ip, port, did, mid, dna, temp, temp0, temp1, ghsmm, ec) = r
+        node = farmmap['{}:{}'.format(ip, port)]
+        if len(node['modules']) == 0:
+            node['avg_tempI'] = temp
+            node['avg_tempB'] = (temp0 + temp1) / 2
+            node['max_tempI'] = temp
+            node['max_tempB'] = max(temp0, temp1)
+        else:
+            node['avg_tempI'] += temp
+            node['avg_tempB'] += (temp0 + temp1) / 2
+            node['max_tempI'] = max(temp, node['max_tempI'])
+            node['max_tempB'] = max(temp0, temp1, node['max_tempB'])
+        node['mod_num'] += 1
+        node['modules'].append({
+            'id': '{}:{}'.format(did, mid),
+            'dna': dna,
+            'temp': temp,
+            'temp0': temp0,
+            'temp1': temp1,
+            'ghsmm': ghsmm,
+            'ec': ec,
+        })
+
+    nodes = []
+    for node in farmmap.values():
+        if node['mod_num'] != 0:
+            node['avg_tempI'] /= node['mod_num']
+            node['avg_tempB'] /= node['mod_num']
+        nodes.append(node)
+
+    return ams_dumps({'result': ams_sort(nodes)})
+
+
 @app.route('/aliverate', methods=['POST'])
 def get_aliverate():
     req = request.json
