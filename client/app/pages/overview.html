@@ -19,6 +19,7 @@
 <md-content layout="column" flex>
 	<div layout="row">
 		<div flex="50">
+			<!--BEGIN Hashrate-->
 			<md-card>
 				<md-card-header>
 					<md-card-header-text>
@@ -35,8 +36,11 @@
 					</nvd3>
 				</md-card-content>
 			</md-card>
+			<!--END Hashrate-->
 		</div>
+
 		<div flex>
+			<!--BEGIN Aliverate-->
 			<md-card>
 				<md-card-header>
 					<md-card-header-text>
@@ -53,47 +57,63 @@
 					</nvd3>
 				</md-card-content>
 			</md-card>
+			<!--END Aliverate-->
 		</div>
 	</div>
+
 	<md-content layout="row" flex>
 		<md-content flex="50">
+			<!--BEGIN Map-->
 			<md-card>
 				<md-card-header>
 					<md-card-header-text>
-						<div class="md-title">Summary</div>
+						<div class="md-title">Map</div>
 					</md-card-header-text>
 				</md-card-header>
-				<md-card-content ng-if="!vm.summaryLoaded" layout="row" layout-align="center center">
+				<md-card-content ng-if="!vm.farmMap.loaded" layout="row" layout-align="center center">
 					<div layout="column" layout-align="center center">
 						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 					</div>
 				</md-card-content>
-				<md-card-content ng-if="vm.summaryLoaded">
-					<md-table-container>
-						<table md-table md-progress="deferred">
-							<thead md-head>
-								<tr md-row>
-									<th md-column ng-repeat="column in vm.summaryTable">
-										{{ column.name }}
-									</th>
-								</tr>
-							</thead>
-							<tbody md-body>
-								<tr md-row
-										ng-repeat="node in vm.data.summary"
-										ng-click="vm.gotoDetail(node.ip, node.port)">
-									<td md-cell ng-repeat="column in vm.summaryTable">
-										{{ column.value(node) }}
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</md-table-container>
+				<md-card-content ng-if="vm.farmMap.loaded" layout="column" layout-align="center center">
+					<div layout="row" layout-align="right center" style="width: 100%">
+						<span flex="auto"></span>
+						<md-switch ng-model="vm.farmMap.tempSwitch" flex="20"
+								ng-true-value="'Intake'" ng-false-value="'Board'"
+								ng-change="vm.switchMap(0)">
+							{{ vm.farmMap.tempSwitch }}
+						</md-switch>
+						<md-switch ng-model="vm.farmMap.mathSwitch" flex="20"
+								ng-true-value="'Max'" ng-false-value="'Avg'"
+								ng-change="vm.switchMap(1)">
+							{{ vm.farmMap.mathSwitch }}
+						</md-switch>
+					</div>
+					<table>
+						<tr ng-repeat="row in vm.rearrangedMap">
+							<td class="ams-map" ng-repeat="cell in row"
+									ng-style="cell.currentStyle">
+								<p ng-if="cell.node.dead">N/A</p>
+								<p ng-if="!cell.node.dead">{{ cell.node.mod_num }} Mods</p>
+								<p ng-if="!cell.node.dead">{{ vm.numberShorten(cell.node.mhs) }}</p>
+								<p ng-if="!cell.node.dead && vm.farmMap.mathSwitch === 'Max'">
+									{{ cell.node.max_tempI | number: 1 }}
+									/ {{ cell.node.max_tempB | number: 1 }}
+								</p>
+								<p ng-if="!cell.node.dead && vm.farmMap.mathSwitch === 'Avg'">
+									{{ cell.node.avg_tempI | number: 1 }}
+									/ {{ cell.node.avg_tempB | number: 1 }}
+								</p>
+							</td>
+						</tr>
+					</table>
 				</md-card-content>
 			</md-card>
+			<!--END Map-->
 		</md-content>
 
 		<md-content flex>
+			<!--END Issue-->
 			<md-card>
 				<md-card-header>
 					<md-card-header-text>
@@ -138,6 +158,7 @@
 					</md-table-container>
 				</md-card-content>
 			</md-card>
+			<!--END Issue-->
 		</md-content>
 	</md-content>
 </md-content>

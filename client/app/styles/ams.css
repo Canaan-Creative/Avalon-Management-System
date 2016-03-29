@@ -121,3 +121,18 @@ table.md-table:not(.md-row-select) td.md-cell:nth-child(n+2):nth-last-child(n+2)
 table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+2) {
 	padding: 0;
 }
+
+.ams-map {
+	height: 70px;
+	min-height: 70px;
+	max-height: 70px;
+	width: 70px;
+	min-width: 70px;
+	max-width: 70px;
+	font-size: 14px;
+	text-align: center;
+}
+.ams-map p {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}

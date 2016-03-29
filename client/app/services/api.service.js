@@ -34,6 +34,7 @@
 		self.getNodes = getNodes;
 		self.getStatus = getStatus;
 		self.getSummary = getSummary;
+		self.getFarmMap = getFarmMap;
 		self.getIssue = getIssue;
 		self.getConfig = getConfig;
 		self.getAliverate = getAliverate;
@@ -128,6 +129,16 @@
 				}, function(errResponse) {
 					self.data.aliverate = null;
 					console.error('Error fetching hashrate');
+				});
+		}
+
+		function getFarmMap(time) {
+			return $http.get('/api/farmmap/' + time).then(
+				function(response) {
+					self.data.farmMap = response.data.result;
+				}, function(errResponse) {
+					self.data.farmMap = null;
+					console.error('Error fetching farmmap');
 				});
 		}
 

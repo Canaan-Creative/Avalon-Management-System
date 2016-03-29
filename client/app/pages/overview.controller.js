@@ -41,10 +41,20 @@
 		vm.aliverateChart.loaded = false;
 		vm.aliverateChart.options = share.aliverateChartOptions;
 		vm.summaryLoaded = false;
+		vm.farmMap = {
+			loaded: false,
+			switch: 0, // 00 max intake, 01 max board, 10 average intake, 11 average board
+			tempSwitch: 'Intake',
+			mathSwitch: 'Max',
+		};
+		vm.rearrangedMap = [];
 		vm.issueLoaded = false;
 		vm.data = api.data;
+
+		vm.switchMap = switchMap;
 		vm.gotoDetail = gotoDetail;
 		vm.ecDecode = ecDecode;
+		vm.numberShorten = numberShorten;
 
 		vm.summaryTable = [{
 			name: 'Node',
@@ -66,40 +76,115 @@
 		else
 			getChart();
 
-		function updateSubTitle() {
-			function numberShorten(num) {
-				var prefix = [
-					{prefix: 'EHs', base: 1000000000000},
-					{prefix: 'PHs', base: 1000000000},
-					{prefix: 'THs', base: 1000000},
-					{prefix: 'GHs', base: 1000},
-					{prefix: 'MHs', base: 1}
-				];
-				for (var i = 0; i < prefix.length; i++) {
-					var p = prefix[i];
-					if (num >= p.base) {
-						if (num >= p.base * 100)
-							return (num / p.base).toFixed(1) + ' ' + p.prefix;
-						else if (num >= p.base * 10)
-							return (num / p.base).toFixed(2) + ' ' + p.prefix;
-						else
-							return (num / p.base).toFixed(3) + ' ' + p.prefix;
-					}
-				}
-				return num;
+		function rainbow(x, xmin, xmax) {
+			var r, g, b;
+			if (!x) {
+				return {
+					color: 'red',
+					"background-color": "#eeeeee",
+				};
 			}
+			x = (x - xmin) / (xmax - xmin);
+			if (x < 0) {
+				r = 0;
+				g = 0;
+				b = 128;
+			}else if (x < 0.125) {
+				r = 0;
+				g = 0;
+				b = x / 0.125 * 128 + 128;
+			}else if (x < 0.375) {
+				r = 0;
+				g = Math.floor((x - 0.125) / 0.25 * 256);
+				b = 256;
+			} else if (x < 0.625) {
+				r = Math.floor((x - 0.375) / 0.25 * 256);
+				g = 256;
+				b = Math.floor(256 - (x - 0.375) / 0.25 * 256);
+			} else if (x < 0.875) {
+				r = 256;
+				g = Math.floor(256 - (x - 0.625) / 0.25 * 256);
+				b = 0;
+			} else if (x <= 1) {
+				r = Math.floor(256 - (x - 0.875) / 0.25 * 256);
+				g = 0;
+				b = 0;
+			} else {
+				r = 128;
+				g = 0;
+				b = 0;
+			}
+			if (r == 256) r = 255;
+			if (g == 256) g = 255;
+			if (b == 256) b = 255;
+			return {
+				color: '#' + (
+					("0" + (255 - r).toString(16)).substr(-2) +
+					("0" + (255 - g).toString(16)).substr(-2) +
+					("0" + (255 - b).toString(16)).substr(-2)
+				),
+				"background-color": '#' + (
+					("0" + r.toString(16)).substr(-2) +
+					("0" + g.toString(16)).substr(-2) +
+					("0" + b.toString(16)).substr(-2)
+				),
+			};
+		}
+
+		function updateSubTitle() {
 
 			var shortlog = api.data.shortlog;
 			share.status.main.subTitle = [
 				'Time: ' + d3.time.format('%Y.%m.%d %H:%M')(new Date(shortlog.time * 1000)),
-				'Hashrate: ' + numberShorten(shortlog.hashrate),
+				'Hashrate: ' + vm.numberShorten(shortlog.hashrate),
 				'Nodes: ' + shortlog.node_num,
 				'Modules: ' + shortlog.module_num
 			];
 		}
 
+		function splitFarmMap(size) {
+			var farmMap = vm.data.farmMap;
+			var splitted = [];
+			var j = 0;
+			for (var i = 0; i < farmMap.length; i++, j++) {
+				j %= size;
+				if (j === 0)
+					splitted.push([]);
+				var node = farmMap[i];
+				var style = [
+					rainbow(node.max_tempI, 25, 45), rainbow(node.max_tempB, 65, 75),
+					rainbow(node.avg_tempI, 25, 45), rainbow(node.avg_tempB, 65, 75),
+				];
+				splitted[parseInt(i / size)].push({
+					node: node,
+					style: style,
+					currentStyle: style[vm.farmMap.switch],
+					index: i,
+				});
+			}
+			return splitted;
+		}
+
+		function switchMap(bit) {
+			vm.farmMap.switch ^= (1 << bit);
+			console.log(vm.farmMap.switch);
+			for (var i = 0; i < vm.rearrangedMap.length; i++) {
+				var row = vm.rearrangedMap[i];
+				for (var j = 0; j < row.length; j++) {
+					var cell = row[j];
+					cell.currentStyle = cell.style[vm.farmMap.switch];
+				}
+			}
+		}
+
 		function getChart() {
 			api.getShortlog().then(updateSubTitle);
+
+			api.getFarmMap(share.status.main.time).then(
+				function() {
+					vm.rearrangedMap = splitFarmMap(8);
+					vm.farmMap.loaded = true;
+			});
 
 			api.getFarmHashrate(
 				share.status.main.time - 30 * 24 * 3600,
@@ -152,6 +237,28 @@
 				if (((ec >> i) & 1) && (errcode[i]))
 					msg += errcode[i] + ' ';
 			return msg;
+		}
+
+		function numberShorten(num) {
+			var prefix = [
+				{prefix: 'EHs', base: 1000000000000},
+				{prefix: 'PHs', base: 1000000000},
+				{prefix: 'THs', base: 1000000},
+				{prefix: 'GHs', base: 1000},
+				{prefix: 'MHs', base: 1}
+			];
+			for (var i = 0; i < prefix.length; i++) {
+				var p = prefix[i];
+				if (num >= p.base) {
+					if (num >= p.base * 100)
+						return (num / p.base).toFixed(1) + ' ' + p.prefix;
+					else if (num >= p.base * 10)
+						return (num / p.base).toFixed(2) + ' ' + p.prefix;
+					else
+						return (num / p.base).toFixed(3) + ' ' + p.prefix;
+				}
+			}
+			return num;
 		}
 	}
 })();
