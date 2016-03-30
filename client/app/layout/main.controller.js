@@ -23,9 +23,9 @@
 		.module('ams')
 		.controller('MainController', MainController);
 
-	MainController.$inject = ['$mdSidenav', '$mdDialog', '$location', 'ShareService'];
+	MainController.$inject = ['$mdSidenav', '$mdDialog', '$mdMedia', '$location', 'ShareService'];
 
-	function MainController($mdSidenav, $mdDialog, $location, share) {
+	function MainController($mdSidenav, $mdDialog, $mdMedia, $location, share) {
 		/* jshint validthis: true */
 		var vm = this;
 
@@ -49,19 +49,15 @@
 		vm.select = select;
 		vm.chooseSnap = chooseSnap;
 
-		var smallDevice = false;
-
-
 		function toggleSidnav() {
 			$mdSidenav('left').toggle();
-			smallDevice = true;
 		}
 		function select(menuItem) {
 			if (vm.status.title !== menuItem.name) {
 				vm.status.title = menuItem.name;
 				vm.status.subTitle = false;
 			}
-			if (smallDevice)
+			if (!$mdMedia('gt-lg'))
 				$mdSidenav('left').toggle();
 			$location.path(menuItem.link);
 		}

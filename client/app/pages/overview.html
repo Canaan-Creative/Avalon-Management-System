@@ -76,8 +76,12 @@
 					</div>
 				</md-card-content>
 				<md-card-content ng-if="vm.farmMap.loaded" layout="column" layout-align="center center">
-					<div layout="row" layout-align="right center" style="width: 100%">
+					<div layout="row" layout-align="center center" style="width: 100%">
 						<span flex="auto"></span>
+						<md-switch ng-model="vm.farmMap.viewSwitch" flex="20"
+								ng-true-value="'Node'" ng-false-value="'Mod'">
+							{{ vm.farmMap.viewSwitch }}
+						</md-switch>
 						<md-switch ng-model="vm.farmMap.tempSwitch" flex="20"
 								ng-true-value="'Intake'" ng-false-value="'Board'"
 								ng-change="vm.switchMap(0)">
@@ -89,10 +93,17 @@
 							{{ vm.farmMap.mathSwitch }}
 						</md-switch>
 					</div>
-					<table>
-						<tr ng-repeat="row in vm.rearrangedMap">
-							<td class="ams-map" ng-repeat="cell in row"
-									ng-style="cell.currentStyle">
+					<p ng-bind-html="vm.farmMap.info" style="text-align: left; width: 100%"></p>
+					<div layout="column" layout-align="start start">
+						<div class="ams-maprow" ng-repeat="row in vm.rearrangedMap track by $index" layout="row">
+							<div class="ams-mapcell" ng-repeat="cell in row track by $index"
+									ng-if="vm.farmMap.viewSwitch === 'Node'"
+									ng-style="cell.style[vm.farmMap.switch]"
+									layout="column" layout-align="center center"
+									ng-click="vm.gotoDetail(cell.node.ip, cell.node.port)"
+									ng-mouseenter="vm.farmMap.info = vm.$sce.trustAsHtml(
+										cell.node.ip + ':' + cell.node.port)"
+									ng-mouseleave="vm.farmMap.info = vm.$sce.trustAsHtml('&nbsp;')">
 								<p ng-if="cell.node.dead">N/A</p>
 								<p ng-if="!cell.node.dead">{{ cell.node.mod_num }} Mods</p>
 								<p ng-if="!cell.node.dead">{{ vm.numberShorten(cell.node.mhs) }}</p>
@@ -104,9 +115,32 @@
 									{{ cell.node.avg_tempI | number: 1 }}
 									/ {{ cell.node.avg_tempB | number: 1 }}
 								</p>
-							</td>
-						</tr>
-					</table>
+							</div>
+							<div class="ams-mapcell" ng-repeat="cell in row track by $index"
+									ng-if="vm.farmMap.viewSwitch === 'Mod'"
+									style="background-color: #eeeeee"
+									layout="column" layout-align="start start">
+								<div ng-repeat="mrow in cell.modules track by $index"
+										ng-if="!cell.node.dead && mrow" layout="row">
+									<div ng-repeat="mcell in mrow track by $index"
+											style="
+												width: {{ vm.farmMap.modWidth }}px;
+												height: {{ vm.farmMap.modHeight }}px;
+												background-color:
+													{{mcell.style[vm.farmMap.switch]['background-color']}}"
+											ng-click="vm.gotoDetail(cell.node.ip, cell.node.port, mcell.dna)"
+											ng-mouseenter="vm.farmMap.info = vm.$sce.trustAsHtml(
+												cell.node.ip + ':' + cell.node.port + ' ' + mcell.id +
+												'&nbsp;&nbsp;&nbsp;&nbsp;' + mcell.ghsmm + ' GHs' +
+												'&nbsp;&nbsp;&nbsp;&nbsp;' + mcell.temp + '&deg;C' +
+												'&nbsp;&nbsp;&nbsp;&nbsp;' + mcell.temp0 + '&deg;C' +
+												' / ' + mcell.temp1 + '&deg;C')"
+											ng-mouseleave="vm.farmMap.info = vm.$sce.trustAsHtml('&nbsp;')">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</md-card-content>
 			</md-card>
 			<!--END Map-->

@@ -122,17 +122,27 @@ table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+
 	padding: 0;
 }
 
-.ams-map {
-	height: 70px;
-	min-height: 70px;
-	max-height: 70px;
-	width: 70px;
-	min-width: 70px;
-	max-width: 70px;
+.ams-mapcell {
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+	padding: 0;
+	margin: 2px;
+	height: 72px;
+	width: 72px;
 	font-size: 14px;
 	text-align: center;
 }
-.ams-map p {
+.ams-mapcell p {
 	margin-top: 5px;
 	margin-bottom: 5px;
+}
+.ams-mapcell > div > div:hover {
+	border: 1px solid;
+	margin: -1px;
+	transform: scale(1.25, 1,25);
+	-moz-transform: scale(1.25, 1.25);
+	-ms-transform: scale(1.25, 1.25);
+	-webkit-transform: scale(1.25, 1.25);
+	-o-transform: scale(1.25, 1.25);
 }

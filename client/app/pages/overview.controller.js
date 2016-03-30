@@ -23,9 +23,9 @@
 		.module('ams')
 		.controller('OverviewController', OverviewController);
 
-	OverviewController.$inject = ['$location', 'ShareService', 'APIService'];
+	OverviewController.$inject = ['$mdMedia', '$location', '$sce', 'ShareService', 'APIService'];
 
-	function OverviewController($location, share, api) {
+	function OverviewController($mdMedia, $location, $sce, share, api) {
 		/* jshint validthis: true */
 		var vm = this;
 
@@ -34,6 +34,7 @@
 		share.status.main.title = "Overview";
 		share.status.main.subTitle = false;
 
+		vm.$sce = $sce;
 		vm.hashrateChart = {};
 		vm.hashrateChart.loaded = false;
 		vm.hashrateChart.options = share.hashrateChartOptions;
@@ -46,6 +47,12 @@
 			switch: 0, // 00 max intake, 01 max board, 10 average intake, 11 average board
 			tempSwitch: 'Intake',
 			mathSwitch: 'Max',
+			viewSwitch: 'Node',
+			maxDevice: 0,
+			maxModule: 0,
+			modWidth: 0,
+			modHeight: 0,
+			info: $sce.trustAsHtml("&nbsp;"),
 		};
 		vm.rearrangedMap = [];
 		vm.issueLoaded = false;
@@ -155,26 +162,44 @@
 					rainbow(node.max_tempI, 25, 45), rainbow(node.max_tempB, 65, 75),
 					rainbow(node.avg_tempI, 25, 45), rainbow(node.avg_tempB, 65, 75),
 				];
+				var modules = [];
+				var deviceNum = 0;
+				for (var k = 0; k < node.modules.length; k++) {
+					var did;
+					var mod = node.modules[k];
+					mod.style = [
+						rainbow(mod.temp, 25, 45),
+						rainbow(Math.max(mod.temp0, mod.temp1), 65, 75),
+						rainbow(mod.temp, 25, 45),
+						rainbow((mod.temp0 + mod.temp1) / 2, 65, 75),
+					];
+					did = mod.id.split(':')[0];
+					if (modules[did] === undefined) {
+						deviceNum++;
+						modules[did] = [];
+					}
+					modules[did].push(mod);
+				}
+				if (deviceNum > vm.farmMap.maxDevice)
+					vm.farmMap.maxDevice = deviceNum;
+				for (k = 0; k < modules.length; k++)
+					if (modules[k] !== undefined)
+						if (modules[k].length > vm.farmMap.maxModule)
+							vm.farmMap.maxModule = modules[k].length;
 				splitted[parseInt(i / size)].push({
 					node: node,
+					modules: modules,
 					style: style,
-					currentStyle: style[vm.farmMap.switch],
 					index: i,
 				});
 			}
+			vm.farmMap.modWidth = Math.floor(72 / vm.farmMap.maxModule);
+			vm.farmMap.modHeight = Math.floor(72 / vm.farmMap.maxDevice);
 			return splitted;
 		}
 
 		function switchMap(bit) {
 			vm.farmMap.switch ^= (1 << bit);
-			console.log(vm.farmMap.switch);
-			for (var i = 0; i < vm.rearrangedMap.length; i++) {
-				var row = vm.rearrangedMap[i];
-				for (var j = 0; j < row.length; j++) {
-					var cell = row[j];
-					cell.currentStyle = cell.style[vm.farmMap.switch];
-				}
-			}
 		}
 
 		function getChart() {
@@ -182,7 +207,10 @@
 
 			api.getFarmMap(share.status.main.time).then(
 				function() {
-					vm.rearrangedMap = splitFarmMap(8);
+					if ($mdMedia('gt-lg'))
+						vm.rearrangedMap = splitFarmMap(10);
+					else
+						vm.rearrangedMap = splitFarmMap(8);
 					vm.farmMap.loaded = true;
 			});
 
