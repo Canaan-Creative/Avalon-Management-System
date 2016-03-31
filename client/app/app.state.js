@@ -23,25 +23,39 @@
 		.module('ams')
 		.config(config);
 
-	config.$inject = ['$routeProvider'];
+	config.$inject = ['$stateProvider', '$urlRouterProvider'];
 
-	function config($routeProvider) {
-		$routeProvider
-			.when('/overview', {
+	function config($stateProvider, $urlRouterProvider) {
+		$urlRouterProvider.otherwise('/home/overview');
+		$stateProvider
+			.state('home', {
+				url: '/home',
+				templateUrl: 'app/layout/home.html',
+				controller: 'HomeController',
+				controllerAs: 'vm',
+			})
+			.state('home.overview', {
+				url: '/overview',
 				templateUrl: "app/pages/overview.html",
 				controller: 'OverviewController',
 				controllerAs: 'vm',
 			})
-			.when('/detail', {
+			.state('home.detail', {
+				url: '/detail',
+				params: {
+					ip: null,
+					port: null,
+					dna: null,
+				},
 				templateUrl: "app/pages/detail.html",
 				controller: 'DetailController',
 				controllerAs: 'vm',
 			})
-			.when('/setting', {
+			.state('home.setting', {
+				url: '/setting',
 				templateUrl: "app/pages/setting.html",
 				controller: 'SettingController',
 				controllerAs: 'vm',
-			})
-			.otherwise({redirectTo: '/overview'});
+			});
 	}
 })();

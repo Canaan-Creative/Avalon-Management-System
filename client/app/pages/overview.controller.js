@@ -23,9 +23,9 @@
 		.module('ams')
 		.controller('OverviewController', OverviewController);
 
-	OverviewController.$inject = ['$mdMedia', '$location', '$sce', 'ShareService', 'APIService'];
+	OverviewController.$inject = ['$mdMedia', '$state', '$sce', 'ShareService', 'APIService'];
 
-	function OverviewController($mdMedia, $location, $sce, share, api) {
+	function OverviewController($mdMedia, $state, $sce, share, api) {
 		/* jshint validthis: true */
 		var vm = this;
 
@@ -243,14 +243,16 @@
 
 		function gotoDetail(ip, port, dna) {
 			if (dna)
-				$location.path('/detail')
-					.search('ip', ip)
-					.search('port', port)
-					.search('dna', dna);
+				$state.go('home.detail', {
+					ip: ip,
+					port: port,
+					dna: dna,
+				});
 			else
-				$location.path('/detail')
-					.search('ip', ip)
-					.search('port', port);
+				$state.go('home.detail', {
+					ip: ip,
+					port: port,
+				});
 		}
 
 		function ecDecode(ec) {

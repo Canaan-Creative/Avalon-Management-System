@@ -23,9 +23,10 @@
 		.module('ams')
 		.controller('DetailController', DetailController);
 
-	DetailController.$inject = ['$filter', '$location', 'ShareService', 'APIService'];
+	DetailController.$inject = ['$filter', '$stateParams', 'ShareService', 'APIService'];
 
-	function DetailController($filter, $location, share, api) {
+	function DetailController($filter, $stateParams, share, api) {
+		console.log($stateParams);
 		/* jshint validthis: true */
 		var vm = this;
 
@@ -284,7 +285,7 @@
 		share.status.main.title = "Detail";
 		share.status.main.subTitle = false;
 
-		var params = $location.search();
+		var params = $stateParams;
 		if (params.ip && params.port) {
 			vm.status.tabIndex = 0;
 			vm.status.tabName = "summary";
@@ -297,10 +298,9 @@
 				vm.status.tabIndex = 2;
 				vm.status.highlightDNA = params.dna;
 			}
-			$location
-				.search('ip', null)
-				.search('port', null)
-				.search('dna', null);
+			$stateParams.ip = null;
+			$stateParams.port = null;
+			$stateParams.dna = null;
 		}
 		api.getNodes().then(previousSelect);
 
@@ -384,7 +384,7 @@
 				api.getStatus(name, time, node.ip, node.port).then(
 					function() {
 						if (node == vm.status.node) {
-							if (name == 'module' && vm.data.module.length > 0) {
+							if (name == 'module' && vm.data.module && vm.data.module.length > 0) {
 								var initID = vm.data.module[0].device_id;
 								var theme = true;
 								for (var i = 0; i < vm.data.module.length; i++) {

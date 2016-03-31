@@ -21,25 +21,25 @@
 
 	angular
 		.module('ams')
-		.controller('MainController', MainController);
+		.controller('HomeController', HomeController);
 
-	MainController.$inject = ['$mdSidenav', '$mdDialog', '$mdMedia', '$location', 'ShareService'];
+	HomeController.$inject = ['$mdSidenav', '$mdDialog', '$mdMedia', '$state', 'ShareService'];
 
-	function MainController($mdSidenav, $mdDialog, $mdMedia, $location, share) {
+	function HomeController($mdSidenav, $mdDialog, $mdMedia, $state, share) {
 		/* jshint validthis: true */
 		var vm = this;
 
 		vm.menu = [
 			{
-				link: '/overview',
+				link: 'home.overview',
 				name: 'Overview',
 				icon: 'home',
 			}, {
-				link: '/detail',
+				link: 'home.detail',
 				name: 'Detail',
 				icon: 'view_list',
 			}, {
-				link: '/setting',
+				link: 'home.setting',
 				name: 'Setting',
 				icon: 'settings',
 			}
@@ -59,7 +59,7 @@
 			}
 			if (!$mdMedia('gt-lg'))
 				$mdSidenav('left').toggle();
-			$location.path(menuItem.link);
+			$state.go(menuItem.link);
 		}
 		function chooseSnap() {
 			$mdDialog.show({

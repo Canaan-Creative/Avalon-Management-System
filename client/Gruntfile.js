@@ -35,6 +35,19 @@ module.exports = function(grunt) {
 					],
 					dest: 'lib/css/'
 				}]
+			},
+			debug: {
+				files: [{
+					expand: true,
+					flatten: true,
+					src: ['tmp/ams.js'],
+					dest: 'lib/js/'
+				}, {
+					expand: true,
+					flatten: true,
+					src: ['app/styles/ams.css'],
+					dest: 'lib/css/'
+				}]
 			}
 		},
 
@@ -112,6 +125,9 @@ module.exports = function(grunt) {
 			},
 			npm: {
 				src: ['node_modules']
+			},
+			ams: {
+				src: ['lib/js/ams.js', 'lib/js/ams.min.js', 'lib/css/ams.css', 'lib/css/ams.min.css']
 			}
 		},
 
@@ -123,7 +139,7 @@ module.exports = function(grunt) {
 				src: [
 					'app/app.module.js',
 					'app/app.config.js',
-					'app/app.route.js',
+					'app/app.state.js',
 					'app/**/*.js',
 					'tmp/*.js'
 				],
@@ -167,6 +183,7 @@ module.exports = function(grunt) {
 	]);
 	grunt.registerTask('build', [
 		'jshint',
+		'clean:ams',
 		'html2js:build',
 		'concat:build',
 		'uglify:build',
@@ -175,6 +192,15 @@ module.exports = function(grunt) {
 		'clean:temp',
 		'clean:dist',
 		'compress',
+	]);
+	grunt.registerTask('debug', [
+		'jshint',
+		'clean:ams',
+		'html2js:build',
+		'concat:build',
+		'copy:debug',
+		'clean:temp',
+		'clean:dist',
 	]);
 	grunt.registerTask('distclean', [
 		'clean:npm',

@@ -1,0 +1,65 @@
+<!--
+ Copyright (C) 2015-2016  DING Changchang (of Canaan Creative)
+
+ This file is part of Avalon Management System (AMS).
+
+ AMS is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ AMS is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with AMS. If not, see <http://www.gnu.org/licenses/>.
+-->
+<body layout="row">
+	<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-4dp"
+			md-component-id="left"
+			md-is-locked-open="$mdMedia('gt-lg')">
+		<md-toolbar class="md-tall md-hue-2" layout="column" layout-align="center center">
+			<img src="./asset/logo.svg" />
+			<h3 class="md-title logo">AMS</h3>
+		</md-toolbar>
+		<md-list>
+			<md-list-item ng-repeat="item in vm.menu">
+				<a ng-click="vm.select(item)">
+					<md-item-content md-ink-ripple layout="row" layout-align="center center">
+						<div class="inset">
+							<ng-md-icon icon="{{ item.icon }}">
+							</ng-md-icon>
+						</div>
+						<div class="inset md-subhead">
+							{{ item.name }}
+						</div>
+						<md-divider></md-divider>
+					</md-item-content>
+				</a>
+			</md-list-item>
+		</md-list>
+	</md-sidenav>
+	<div layout="column" layout-fill>
+		<md-toolbar class="ams-toolbar">
+			<div class="md-toolbar-tools">
+				<md-button ng-click="vm.toggleSidenav()" hide-gt-lg aria-label="Menu">
+					<ng-md-icon icon="menu" style="fill: white"></ng-md-icon>
+				</md-button>
+				<h3 class="md-title">
+					{{ vm.status.title }}
+				</h3>
+				<span flex="5" ng-repeat-start="subTitle in vm.status.subTitle"></span>
+				<span class="md-subhead" ng-repeat-end>
+					{{ subTitle }}
+				</span>
+				<span flex="auto"></span>
+				<md-button ng-click="vm.chooseSnap()" aria-label="Snapshot">
+					<ng-md-icon icon="assignment" style="fill: white"></ng-md-icon>
+				</md-button>
+			</div>
+		</md-toolbar>
+		<md-content layout="row" flex ui-view></md-content>
+	</div>
+</body>

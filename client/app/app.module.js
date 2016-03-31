@@ -24,7 +24,7 @@
 			'templates',
 			'ngMaterial',
 			'ngMdIcons',
-			'ngRoute',
+			'ui.router',
 			'md.data.table',
 			'nvd3',
 		]);
