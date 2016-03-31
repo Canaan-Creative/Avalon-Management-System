@@ -23,9 +23,9 @@
 		.module('ams')
 		.service('ShareService', ShareService);
 
-	ShareService.$inject = ['$http'];
+	ShareService.$inject = ['$http', '$state'];
 
-	function ShareService($http) {
+	function ShareService($http, $state) {
 		/* jshint validthis: true */
 		var self = this;
 
@@ -35,6 +35,7 @@
 				subTitle: false,
 				time: 0,
 				latest: true,
+				timePromise: getLastTime(),
 			},
 			detail: {
 				node: false,
@@ -44,8 +45,27 @@
 				tabIndex: 0,
 				highlightDNA: null,
 			},
+			farmMap: {
+				loaded: false,
+				switch: 0,
+				// 0b00 max intake, 0b01 max board,
+				// 0b10 avg intake, 0b11 avg board.
+				tempSwitch: 'Intake',
+				mathSwitch: 'Max',
+				viewSwitch: 'Node',
+				data: [],
+				maxDevice: 0,
+				maxModule: 0,
+				modWidth: 0,
+				modHeight: 0,
+			},
 		};
-		self.getLastTime = getLastTime;
+		self.utils = {
+			getLastTime: getLastTime,
+			numberShorten: numberShorten,
+			ecDecode: ecDecode,
+			gotoDetail: gotoDetail,
+		};
 		self.aliverateChartOptions = {
 			chart: {
 				type: 'lineChart',
@@ -126,7 +146,7 @@
 				interactiveLayer: {
 					tooltip: {
 						valueFormatter: function(d) {
-							return numberShorten(d, 4);
+							return tickShorten(d, 4);
 						},
 						headerFormatter: function(d) {
 							return d3.time.format('%Y.%m.%d %H:%M')(new Date(d));
@@ -153,7 +173,7 @@
 					axisLabel: 'Hashrate (Hash/s)',
 					showMaxMin: false,
 					tickFormat: function(d) {
-						return numberShorten(d, 2);
+						return tickShorten(d, 2);
 					},
 					axisLabelDistance: -10,
 				},
@@ -166,19 +186,17 @@
 			},
 		};
 
-
-		getLastTime();
-
 		function getLastTime() {
 			return $http.get('/api/lasttime')
 				.then(function(response) {
 					self.status.main.time = response.data.result;
+					console.log('Done');
 				}, function(errResponse) {
 					'Error fetching LastTime';
 				});
 		}
 
-		function numberShorten(num, precise) {
+		function tickShorten(num, precise) {
 			var prefix = [
 				{prefix: 'E', base: 100000000000000000},
 				{prefix: 'P', base: 100000000000000},
@@ -201,5 +219,55 @@
 			return num;
 		}
 
+		function gotoDetail(ip, port, dna) {
+			console.log($state);
+			if (dna)
+				$state.go('home.detail', {
+					ip: ip,
+					port: port,
+					dna: dna,
+				});
+			else
+				$state.go('home.detail', {
+					ip: ip,
+					port: port,
+				});
+		}
+
+		function ecDecode(ec) {
+			var errcode = [
+				null, 'TOOHOT', 'LOOP0FAILED', 'LOOP1FAILED',
+				'INVALIDMCU', null, null, null,
+				null, 'NOFAN', 'PG0FAILED', 'PG1FAILED',
+				'CORETESTFAILED', 'ADC0_ERR', 'ADC1_ERR', 'VOLTAGE_ERR'
+			];
+			var msg = '';
+			for (var i = 0; i < errcode.length; i++)
+				if (((ec >> i) & 1) && (errcode[i]))
+					msg += errcode[i] + ' ';
+			return msg;
+		}
+
+		function numberShorten(num) {
+			var prefix = [
+				{prefix: 'EHs', base: 1000000000000},
+				{prefix: 'PHs', base: 1000000000},
+				{prefix: 'THs', base: 1000000},
+				{prefix: 'GHs', base: 1000},
+				{prefix: 'MHs', base: 1}
+			];
+			for (var i = 0; i < prefix.length; i++) {
+				var p = prefix[i];
+				if (num >= p.base) {
+					if (num >= p.base * 100)
+						return (num / p.base).toFixed(1) + ' ' + p.prefix;
+					else if (num >= p.base * 10)
+						return (num / p.base).toFixed(2) + ' ' + p.prefix;
+					else
+						return (num / p.base).toFixed(3) + ' ' + p.prefix;
+				}
+			}
+			return num;
+		}
 	}
 })();

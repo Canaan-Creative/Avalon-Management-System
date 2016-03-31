@@ -36,9 +36,18 @@
 			})
 			.state('home.overview', {
 				url: '/overview',
-				templateUrl: "app/pages/overview.html",
-				controller: 'OverviewController',
-				controllerAs: 'vm',
+				views: {
+					'@home': {
+						templateUrl: 'app/pages/overview.html',
+						controller: 'OverviewController',
+						controllerAs: 'vm',
+					},
+					'farmmap@home.overview': {
+						templateUrl: 'app/widgets/farmmap.html',
+						controller: 'FarmMapController',
+						controllerAs: 'vm',
+					}
+				}
 			})
 			.state('home.detail', {
 				url: '/detail',
@@ -47,13 +56,13 @@
 					port: null,
 					dna: null,
 				},
-				templateUrl: "app/pages/detail.html",
+				templateUrl: 'app/pages/detail.html',
 				controller: 'DetailController',
 				controllerAs: 'vm',
 			})
 			.state('home.setting', {
 				url: '/setting',
-				templateUrl: "app/pages/setting.html",
+				templateUrl: 'app/pages/setting.html',
 				controller: 'SettingController',
 				controllerAs: 'vm',
 			});

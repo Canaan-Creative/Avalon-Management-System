@@ -1,0 +1,95 @@
+<!--
+ Copyright (C) 2015-2016  DING Changchang (of Canaan Creative)
+
+ This file is part of Avalon Management System (AMS).
+
+ AMS is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ AMS is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with AMS. If not, see <http://www.gnu.org/licenses/>.
+-->
+<md-card-header>
+	<md-card-header-text>
+		<div class="md-title">Map</div>
+	</md-card-header-text>
+</md-card-header>
+<md-card-content ng-if="!vm.status.loaded" layout="row" layout-align="center center">
+	<div layout="column" layout-align="center center">
+		<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+	</div>
+</md-card-content>
+<md-card-content ng-if="vm.status.loaded" layout="column" layout-align="center center">
+	<div layout="row" layout-align="center center" style="width: 100%">
+		<span flex="auto"></span>
+		<md-switch ng-model="vm.status.viewSwitch" flex="20"
+				ng-true-value="'Node'" ng-false-value="'Mod'">
+			{{ vm.status.viewSwitch }}
+		</md-switch>
+		<md-switch ng-model="vm.status.tempSwitch" flex="20"
+				ng-true-value="'Intake'" ng-false-value="'Board'"
+				ng-change="vm.switchMap(0)">
+			{{ vm.status.tempSwitch }}
+		</md-switch>
+		<md-switch ng-model="vm.status.mathSwitch" flex="20"
+				ng-true-value="'Max'" ng-false-value="'Avg'"
+				ng-change="vm.switchMap(1)">
+			{{ vm.status.mathSwitch }}
+		</md-switch>
+	</div>
+	<p ng-bind-html="vm.info" style="text-align: left; width: 100%"></p>
+	<div layout="column" layout-align="start start">
+		<div class="ams-maprow" ng-repeat="row in vm.status.data track by $index" layout="row">
+			<div class="ams-mapcell" ng-repeat="cell in row track by $index"
+					ng-if="vm.status.viewSwitch === 'Node'"
+					ng-style="cell.style[vm.status.switch]"
+					layout="column" layout-align="center center"
+					ng-click="vm.utils.gotoDetail(cell.node.ip, cell.node.port)"
+					ng-mouseenter="vm.info = vm.$sce.trustAsHtml(
+						cell.node.ip + ':' + cell.node.port)"
+					ng-mouseleave="vm.info = vm.$sce.trustAsHtml('&nbsp;')">
+				<p ng-if="cell.node.dead">N/A</p>
+				<p ng-if="!cell.node.dead">{{ cell.node.mod_num }} Mods</p>
+				<p ng-if="!cell.node.dead">{{ vm.utils.numberShorten(cell.node.mhs) }}</p>
+				<p ng-if="!cell.node.dead && vm.status.mathSwitch === 'Max'">
+					{{ cell.node.max_tempI | number: 1 }}
+					/ {{ cell.node.max_tempB | number: 1 }}
+				</p>
+				<p ng-if="!cell.node.dead && vm.status.mathSwitch === 'Avg'">
+					{{ cell.node.avg_tempI | number: 1 }}
+					/ {{ cell.node.avg_tempB | number: 1 }}
+				</p>
+			</div>
+			<div class="ams-mapcell" ng-repeat="cell in row track by $index"
+					ng-if="vm.status.viewSwitch === 'Mod'"
+					style="background-color: #eeeeee"
+					layout="column" layout-align="start start">
+				<div ng-repeat="mrow in cell.modules track by $index"
+						ng-if="!cell.node.dead && mrow" layout="row">
+					<div ng-repeat="mcell in mrow track by $index"
+							style="
+								width: {{ vm.status.modWidth }}px;
+								height: {{ vm.status.modHeight }}px;
+								background-color:
+									{{mcell.style[vm.status.switch]['background-color']}}"
+							ng-click="vm.utils.gotoDetail(cell.node.ip, cell.node.port, mcell.dna)"
+							ng-mouseenter="vm.info = vm.$sce.trustAsHtml(
+								cell.node.ip + ':' + cell.node.port + ' ' + mcell.id +
+								'&nbsp;&nbsp;&nbsp;&nbsp;' + mcell.ghsmm + ' GHs' +
+								'&nbsp;&nbsp;&nbsp;&nbsp;' + mcell.temp + '&deg;C' +
+								'&nbsp;&nbsp;&nbsp;&nbsp;' + mcell.temp0 + '&deg;C' +
+								' / ' + mcell.temp1 + '&deg;C')"
+							ng-mouseleave="vm.info = vm.$sce.trustAsHtml('&nbsp;')">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</md-card-content>

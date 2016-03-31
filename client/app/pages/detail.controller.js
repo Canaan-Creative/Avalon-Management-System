@@ -26,7 +26,6 @@
 	DetailController.$inject = ['$filter', '$stateParams', 'ShareService', 'APIService'];
 
 	function DetailController($filter, $stateParams, share, api) {
-		console.log($stateParams);
 		/* jshint validthis: true */
 		var vm = this;
 
@@ -374,10 +373,8 @@
 						if (node == vm.status.node)
 							vm.status.summaryCardLoaded = true;
 				});
-				if (share.status.main.time === 0)
-					share.getLastTime().then(getNodeHashrate);
-				else
-					getNodeHashrate();
+				share.status.main.timePromise =
+					share.status.main.timePromise.then(getNodeHashrate);
 				break;
 			case 'device':
 			case 'module':
