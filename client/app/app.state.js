@@ -65,6 +65,12 @@
 				templateUrl: 'app/pages/setting.html',
 				controller: 'SettingController',
 				controllerAs: 'vm',
+			})
+			.state('farmmap', {
+				url: '/farmmap',
+				templateUrl: 'app/widgets/farmmap.html',
+				controller: 'FarmMapController',
+				controllerAs: 'vm',
 			});
 	}
 })();

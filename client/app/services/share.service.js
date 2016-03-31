@@ -220,15 +220,19 @@
 		}
 
 		function gotoDetail(ip, port, dna) {
-			console.log($state);
+			var dest;
+			if ($state.current.name.slice(0, 5) === 'home.')
+				dest = 'home.detail';
+			else
+				dest = 'cgminer';
 			if (dna)
-				$state.go('home.detail', {
+				$state.go(dest, {
 					ip: ip,
 					port: port,
 					dna: dna,
 				});
 			else
-				$state.go('home.detail', {
+				$state.go(dest, {
 					ip: ip,
 					port: port,
 				});
