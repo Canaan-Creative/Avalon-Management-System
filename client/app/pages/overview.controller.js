@@ -41,11 +41,7 @@
 		vm.aliverateChart = {};
 		vm.aliverateChart.loaded = false;
 		vm.aliverateChart.options = share.aliverateChartOptions;
-		vm.issueLoaded = false;
 		vm.data = api.data;
-
-		vm.gotoDetail = gotoDetail;
-		vm.ecDecode = ecDecode;
 
 		share.status.main.timePromise = share.status.main.timePromise.then(getChart);
 
@@ -83,34 +79,5 @@
 					vm.aliverateChart.loaded = true;
 			});
 		}
-
-		function gotoDetail(ip, port, dna) {
-			if (dna)
-				$state.go('home.detail', {
-					ip: ip,
-					port: port,
-					dna: dna,
-				});
-			else
-				$state.go('home.detail', {
-					ip: ip,
-					port: port,
-				});
-		}
-
-		function ecDecode(ec) {
-			var errcode = [
-				null, 'TOOHOT', 'LOOP0FAILED', 'LOOP1FAILED',
-				'INVALIDMCU', null, null, null,
-				null, 'NOFAN', 'PG0FAILED', 'PG1FAILED',
-				'CORETESTFAILED', 'ADC0_ERR', 'ADC1_ERR', 'VOLTAGE_ERR'
-			];
-			var msg = '';
-			for (var i = 0; i < errcode.length; i++)
-				if (((ec >> i) & 1) && (errcode[i]))
-					msg += errcode[i] + ' ';
-			return msg;
-		}
-
 	}
 })();

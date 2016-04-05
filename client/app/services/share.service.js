@@ -59,6 +59,9 @@
 				modWidth: 0,
 				modHeight: 0,
 			},
+			issues: {
+				loaded: false,
+			},
 		};
 		self.utils = {
 			getLastTime: getLastTime,

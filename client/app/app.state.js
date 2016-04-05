@@ -46,6 +46,11 @@
 						templateUrl: 'app/widgets/farmmap.html',
 						controller: 'FarmMapController',
 						controllerAs: 'vm',
+					},
+					'issues@home.overview': {
+						templateUrl: 'app/widgets/issues.html',
+						controller: 'IssuesController',
+						controllerAs: 'vm',
 					}
 				}
 			})
@@ -70,6 +75,12 @@
 				url: '/farmmap',
 				templateUrl: 'app/widgets/farmmap.html',
 				controller: 'FarmMapController',
+				controllerAs: 'vm',
+			})
+			.state('issues', {
+				url: '/issues',
+				templateUrl: 'app/widgets/issues.html',
+				controller: 'IssuesController',
 				controllerAs: 'vm',
 			});
 	}

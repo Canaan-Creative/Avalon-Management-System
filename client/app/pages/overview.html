@@ -62,56 +62,7 @@
 	</div>
 
 	<md-content layout="row" flex>
-		<md-content flex="50" ui-view="farmmap">
-		</md-content>
-
-		<md-content flex>
-			<!--BEGIN Issue-->
-			<md-card>
-				<md-card-header>
-					<md-card-header-text>
-						<div class="md-title">Issues</div>
-					</md-card-header-text>
-				</md-card-header>
-				<md-card-content ng-if="!vm.issueLoaded" layout="row" layout-align="center center">
-					<div layout="column" layout-align="center center">
-						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
-					</div>
-				</md-card-content>
-				<md-card-content ng-if="vm.issueLoaded">
-					<md-table-container>
-						<table md-table md-progress="deferred">
-							<thead md-head>
-								<tr md-row>
-									<th md-column>ID</th>
-									<th md-column>Issue</th>
-								</tr>
-							</thead>
-							<tbody md-body>
-								<tr md-row
-										ng-repeat="node in vm.data.issue.node"
-										ng-click="vm.gotoDetail(node.ip, node.port)">
-									<td md-cell>{{ node.ip }}:{{ node.port }}</td>
-									<td md-cell>Connection failed</td>
-								</tr>
-								<tr md-row
-										ng-repeat="module in vm.data.issue.ec"
-										ng-click="vm.gotoDetail(module.ip, module.port, module.dna)">
-									<td md-cell>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
-									<td md-cell>{{ vm.ecDecode(module.ec) }}</td>
-								</tr>
-								<tr md-row
-										ng-repeat="module in vm.data.issue.hot"
-										ng-click="vm.gotoDetail(module.ip, module.port, module.dna)">
-									<td md-cell>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
-									<td md-cell>Hot Before</td>
-								</tr>
-							</tbody>
-						</table>
-					</md-table-container>
-				</md-card-content>
-			</md-card>
-			<!--END Issue-->
-		</md-content>
+		<md-content flex="50" ui-view="farmmap"></md-content>
+		<md-content flex ui-view="issues"></md-content>
 	</md-content>
 </md-content>
