@@ -51,7 +51,17 @@
 						templateUrl: 'app/widgets/issues.html',
 						controller: 'IssuesController',
 						controllerAs: 'vm',
-					}
+					},
+					'hashrate@home.overview': {
+						templateUrl: 'app/widgets/hashrate.html',
+						controller: 'HashrateController',
+						controllerAs: 'vm',
+					},
+					'aliverate@home.overview': {
+						templateUrl: 'app/widgets/aliverate.html',
+						controller: 'AliverateController',
+						controllerAs: 'vm',
+					},
 				}
 			})
 			.state('home.detail', {

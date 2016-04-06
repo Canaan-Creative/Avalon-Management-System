@@ -16,13 +16,19 @@
  You should have received a copy of the GNU General Public License
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 -->
-<md-content layout="column" flex>
-	<div layout="row">
-		<div flex="50" ui-view="hashrate"></div>
-		<div flex ui-view="aliverate"></div>
-	</div>
-	<md-content layout="row" flex>
-		<md-content flex="50" ui-view="farmmap"></md-content>
-		<md-content flex ui-view="issues"></md-content>
-	</md-content>
-</md-content>
+<md-card>
+	<md-card-header>
+		<md-card-header-text>
+			<div class="md-title">Aliverate Graph</div>
+		</md-card-header-text>
+	</md-card-header>
+	<md-card-content ng-if="!vm.status.loaded" layout="row" layout-align="center center">
+		<div style="height:{{ vm.status.options.chart.height }}px" layout="column" layout-align="center center">
+			<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+		</div>
+	</md-card-content>
+	<md-card-content ng-if="vm.status.loaded">
+		<nvd3 options="vm.status.options" data="vm.data.aliverate">
+		</nvd3>
+	</md-card-content>
+</md-card>

@@ -21,35 +21,28 @@
 
 	angular
 		.module('ams')
-		.controller('OverviewController', OverviewController);
+		.controller('AliverateController', AliverateController);
 
-	OverviewController.$inject = ['ShareService', 'APIService'];
+	AliverateController.$inject = ['ShareService', 'APIService'];
 
-	function OverviewController(share, api) {
+	function AliverateController(share, api) {
 		/* jshint validthis: true */
 		var vm = this;
-
-		vm.utils = share.utils;
+		vm.status = share.status.aliverate;
 		vm.data = api.data;
 
-		share.status.main.title = "Overview";
-		share.status.main.subTitle = false;
 
-		main();
-
-		function updateSubTitle() {
-			var shortlog = api.data.shortlog;
-			share.status.main.subTitle = [
-				'Time: ' + d3.time.format('%Y.%m.%d %H:%M')(
-					new Date(shortlog.time * 1000)),
-				'Hashrate: ' + vm.utils.numberShorten(shortlog.hashrate),
-				'Nodes: ' + shortlog.node_num,
-				'Modules: ' + shortlog.module_num
-			];
-		}
+		share.status.main.timePromise.then(main);
 
 		function main() {
-			api.getShortlog().then(updateSubTitle);
+			if (!vm.status.loaded)
+				api.getAliverate(
+					share.status.main.time - 30 * 24 * 3600,
+					share.status.main.time
+				).then(
+					function() {
+						vm.status.loaded = true;
+				});
 		}
 	}
 })();
