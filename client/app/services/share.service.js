@@ -36,6 +36,7 @@
 				time: 0,
 				latest: true,
 				timePromise: getLastTime(),
+				footer: "",
 			},
 			detail: {
 				node: false,

@@ -61,5 +61,6 @@
 			</div>
 		</md-toolbar>
 		<md-content layout="row" flex ui-view></md-content>
+		<div class="ams-footer" ng-if="vm.status.title === 'Overview'" ng-bind="vm.status.footer"></div>
 	</div>
 </body>

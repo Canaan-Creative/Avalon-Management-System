@@ -40,6 +40,8 @@
 		// vm.status.maxModule
 		// vm.status.modWidth
 		// vm.status.modHeight
+		vm.main = share.status.main;
+		// vm.overview.footer
 
 		vm.utils = share.utils;
 		// vm.utils.gotoDetail(ip, port, dna)
@@ -49,7 +51,6 @@
 		// vm.data.farmMap
 
 		vm.$sce = $sce;
-		vm.info = $sce.trustAsHtml("&nbsp;");
 
 		vm.switchMap = switchMap;
 

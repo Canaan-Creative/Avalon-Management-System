@@ -45,7 +45,6 @@
 				{{ vm.status.mathSwitch }}
 			</md-switch>
 		</div>
-		<p ng-bind-html="vm.info" style="text-align: left; width: 100%"></p>
 		<div layout="column" layout-align="start start">
 			<div class="ams-maprow" ng-repeat="row in vm.status.data track by $index" layout="row">
 				<div class="ams-mapcell" ng-repeat="cell in row track by $index"
@@ -53,9 +52,9 @@
 						ng-style="cell.style[vm.status.switch]"
 						layout="column" layout-align="center center"
 						ng-click="vm.utils.gotoDetail(cell.node.ip, cell.node.port)"
-						ng-mouseenter="vm.info = vm.$sce.trustAsHtml(
+						ng-mouseenter="vm.main.footer = vm.$sce.trustAsHtml(
 							cell.node.ip + ':' + cell.node.port)"
-						ng-mouseleave="vm.info = vm.$sce.trustAsHtml('&nbsp;')">
+						ng-mouseleave="vm.main.footer = ''">
 					<p ng-if="cell.node.dead">N/A</p>
 					<p ng-if="!cell.node.dead">{{ cell.node.mod_num }} Mods</p>
 					<p ng-if="!cell.node.dead">{{ vm.utils.numberShorten(cell.node.mhs) }}</p>
@@ -81,13 +80,13 @@
 									background-color:
 										{{mcell.style[vm.status.switch]['background-color']}}"
 								ng-click="vm.utils.gotoDetail(cell.node.ip, cell.node.port, mcell.dna)"
-								ng-mouseenter="vm.info = vm.$sce.trustAsHtml(
+								ng-mouseenter="vm.main.footer = vm.$sce.trustAsHtml(
 									cell.node.ip + ':' + cell.node.port + ' ' + mcell.id +
 									'&nbsp;&nbsp;&nbsp;&nbsp;' + mcell.ghsmm + ' GHs' +
 									'&nbsp;&nbsp;&nbsp;&nbsp;' + mcell.temp + '&deg;C' +
 									'&nbsp;&nbsp;&nbsp;&nbsp;' + mcell.temp0 + '&deg;C' +
 									' / ' + mcell.temp1 + '&deg;C')"
-								ng-mouseleave="vm.info = vm.$sce.trustAsHtml('&nbsp;')">
+								ng-mouseleave="vm.main.footer = ''">
 						</div>
 					</div>
 				</div>

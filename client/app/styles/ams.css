@@ -146,3 +146,11 @@ table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+
 	-webkit-transform: scale(1.25, 1.25);
 	-o-transform: scale(1.25, 1.25);
 }
+.ams-footer {
+	height: 16px;
+	background-color: grey;
+	color: white;
+	font-size: 8px;
+	text-align: left;
+	vertical-align: middle;
+}
