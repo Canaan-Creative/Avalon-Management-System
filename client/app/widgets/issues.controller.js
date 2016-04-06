@@ -39,7 +39,7 @@
 		vm.data = api.data;
 		// vm.data.issues
 
-		share.status.main.timePromise = share.status.main.timePromise.then(main);
+		share.status.main.timePromise.then(main);
 
 		function main() {
 			if (!vm.status.loaded)
