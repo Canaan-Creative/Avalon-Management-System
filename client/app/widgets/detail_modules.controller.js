@@ -40,39 +40,39 @@
 			index: 0,
 			value: function(data) {return data.device_id + ':' + data.module_id;},
 			sortValue: function(data) {return (data.device_id << 8) + data.module_id;}
-		},{
+		}, {
 			name: 'Elapesed',
 			index: 1,
 			value: function(data) {return parseInt(data.elapsed);}
-		},{
+		}, {
 			name: 'Version',
 			index: 2,
 			value: function(data) {return data.ver;}
-		},{
+		}, {
 			name: 'LW',
 			index: 3,
 			value: function(data) {return data.lw;}
-		},{
+		}, {
 			name: 'GHs',
 			index: 4,
 			value: function(data) {return parseInt(data.ghsmm);}
-		},{
+		}, {
 			name: 'T',
 			index: 5,
 			value: function(data) {return data.temp + '/' + data.temp0 + '/' + data.temp1;}
-		},{
+		}, {
 			name: 'Fan',
 			index: 6,
 			value: function(data) {return data.fan;}
-		},{
+		}, {
 			name: 'Volt',
 			index: 7,
 			value: function(data) {return data.vol;}
-		},{
+		}, {
 			name: 'PG',
 			index: 8,
 			value: function(data) {return data.pg;}
-		},{
+		}, {
 			name: 'EC',
 			index: 9,
 			value: function(data) {return data.ec;}
