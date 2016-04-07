@@ -78,32 +78,10 @@
 											<div class="md-title">Summary</div>
 										</md-card-header-text>
 									</md-card-header>
-									<md-card-content ng-if="!vm.status.summaryCardLoaded" layout="row" layout-align="center center">
+									<md-card-content>
 										<md-content>
-											<div style="height:{{ vm.hashrateChart.options.chart.height }}px" layout="column" layout-align="center center">
-												<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
-											</div>
-										</md-content>
-									</md-card-content>
-									<md-card-content ng-if="vm.status.summaryCardLoaded">
-										<md-content>
-											<div style="height:{{ vm.hashrateChart.options.chart.height }}px" layout="row">
-												<div flex="50">
-													<md-list>
-														<md-list-item ng-repeat="item in vm.summaryTable | limitTo: vm.summaryTable.length / 2">
-															<span class="md-body-2">{{ item.name }}</span>
-															<span class="md-body-1">: {{ item.value(vm.data.summary[0]) }}</span>
-														</md-list-item>
-													</md-list>
-												</div>
-												<div flex>
-													<md-list>
-														<md-list-item ng-repeat="item in vm.summaryTable | limitTo: vm.summaryTable.length : vm.summaryTable.length / 2">
-															<span class="md-body-2">{{ item.name }}</span>
-															<span class="md-body-1">: {{ item.value(vm.data.summary[0]) }}</span>
-														</md-list-item>
-													</md-list>
-												</div>
+											<div style="height:{{ vm.hashrateChart.options.chart.height }}px"
+												layout="row" ui-view="summary">
 											</div>
 										</md-content>
 									</md-card-content>

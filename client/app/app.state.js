@@ -77,6 +77,11 @@
 						controller: 'DetailController',
 						controllerAs: 'vm',
 					},
+					'summary@home.detail': {
+						templateUrl: 'app/widgets/detail_summary.html',
+						controller: 'DetailSummaryController',
+						controllerAs: 'vm',
+					},
 					'pools@home.detail': {
 						templateUrl: 'app/widgets/detail_pools.html',
 						controller: 'DetailPoolsController',
