@@ -21,14 +21,15 @@
 
 	angular
 		.module('ams')
-		.controller('DetailConfigController', DetailConfigController);
+		.controller('DetailHashrateController', DetailHashrateController);
 
-	DetailConfigController.$inject = ['ShareService', 'APIService'];
+	DetailHashrateController.$inject = ['ShareService', 'APIService'];
 
-	function DetailConfigController(share, api) {
+	function DetailHashrateController(share, api) {
 		/* jshint validthis: true */
 		var vm = this;
 		vm.status = share.status.detail;
+		vm.hashrate = share.status.hashrate;
 		vm.data = api.data;
 
 		vm.loaded = false;
@@ -36,13 +37,19 @@
 		main();
 
 		function main() {
-			var node = vm.status.node;
 			vm.loaded = false;
-			api.getConfig(node.ip, node.port).then(
+			share.status.main.timePromise.then(getNodeHashrate);
+		}
+
+		function getNodeHashrate() {
+			api.getNodeHashrate(
+				vm.status.node.ip,
+				vm.status.node.port,
+				share.status.main.time - 30 * 24 * 3600,
+				share.status.main.time
+			).then(
 				function() {
-					if (node.ip === vm.status.node.ip &&
-							node.port === vm.status.node.port)
-						vm.loaded = true;
+					vm.loaded = true;
 			});
 		}
 	}

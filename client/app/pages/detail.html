@@ -47,7 +47,7 @@
 				md-no-ink flex>
 
 			<!-- Summary -->
-			<md-tab md-on-select="vm.getTab('summary')">
+			<md-tab>
 				<md-tab-label>Summary</md-tab-label>
 				<md-tab-body>
 					<md-content layout="column" flex>
@@ -60,14 +60,7 @@
 											<div class="md-title">Hashrate Graph</div>
 										</md-card-header-text>
 									</md-card-header>
-									<md-card-content ng-if="!vm.hashrateChart.loaded" layout="row" layout-align="center center">
-										<div style="height:{{ vm.hashrateChart.options.chart.height }}px" layout="column" layout-align="center center">
-											<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
-										</div>
-									</md-card-content>
-									<md-card-content ng-if="vm.hashrateChart.loaded">
-										<nvd3 options="vm.hashrateChart.options" data="vm.data.nodeHashrate">
-										</nvd3>
+									<md-card-content ui-view="hashrate">
 									</md-card-content>
 								</md-card>
 							</div>
@@ -80,8 +73,8 @@
 									</md-card-header>
 									<md-card-content>
 										<md-content>
-											<div style="height:{{ vm.hashrateChart.options.chart.height }}px"
-												layout="row" ui-view="summary">
+											<div style="height:{{ vm.hashrate.options.chart.height }}px" layout="row" layout-align="center center">
+												<div ui-view="summary" layout="row" layout-align="center center" flex></div>
 											</div>
 										</md-content>
 									</md-card-content>
@@ -119,7 +112,7 @@
 			</md-tab>
 
 			<!-- Config -->
-			<md-tab md-on-select="vm.getTab('config')">
+			<md-tab>
 				<md-tab-label>Config</md-tab-label>
 				<md-tab-body>
 					<div ui-view="config"></div>

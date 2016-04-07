@@ -16,23 +16,10 @@
  You should have received a copy of the GNU General Public License
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 -->
-<div ng-if="!vm.loaded" layout="column" layout-align="center center" flex>
+<div ng-if="!vm.loaded"
+		style="height:{{ vm.hashrate.options.chart.height }}px"
+		layout="column" layout-align="center center">
 	<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 </div>
-<div ng-if="vm.loaded" layout="row" flex>
-	<div flex="50"> <md-list>
-			<md-list-item ng-repeat="item in vm.table | limitTo: vm.table.length / 2">
-				<span class="md-body-2">{{ item.name }}</span>
-				<span class="md-body-1">: {{ item.value(vm.data.summary[0]) }}</span>
-			</md-list-item>
-		</md-list>
-	</div>
-	<div flex>
-		<md-list>
-			<md-list-item ng-repeat="item in vm.table | limitTo: vm.table.length : vm.table.length / 2">
-				<span class="md-body-2">{{ item.name }}</span>
-				<span class="md-body-1">: {{ item.value(vm.data.summary[0]) }}</span>
-			</md-list-item>
-		</md-list>
-	</div>
-</div>
+<nvd3 ng-if="vm.loaded" options="vm.hashrate.options" data="vm.data.nodeHashrate">
+</nvd3>

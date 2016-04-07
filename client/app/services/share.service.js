@@ -40,9 +40,7 @@
 			},
 			detail: {
 				node: false,
-				tabLoaded: false,
-				poolCardLoaded: false,
-				tabName: "summary",
+				time: 'latest',
 				tabIndex: 0,
 				highlightDNA: null,
 				reloadListeners: [],
