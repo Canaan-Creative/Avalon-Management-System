@@ -134,55 +134,6 @@
 			}
 		}];
 
-		vm.poolTable = [{
-			name: 'URL',
-			value: function(data) {return data.url;}
-		},{
-			name: 'User',
-			value: function(data) {return data.user;}
-		},{
-			name: 'Status',
-			value: function(data) {
-				if (data.stratum_active && data.status === 'Alive')
-					return 'Active';
-				else if (data.status === 'Alive')
-					return 'Standby';
-				else
-					return 'Dead';
-			}
-		},{
-			name: 'W',
-			tooltip: 'GetWorks',
-			value: function(data) {return data.getworks;}
-		},{
-			name: 'A',
-			tooltip: 'Accepted',
-			value: function(data) {return data.accepted;}
-		},{
-			name: 'R',
-			tooltip: 'Rejected',
-			value: function(data) {return data.rejected;}
-		},{
-			name: 'D',
-			tooltip: 'Discarded',
-			value: function(data) {return data.discarded;}
-		},{
-			name: 'S',
-			tooltip: 'Stale',
-			value: function(data) {return data.stale;}
-		},{
-			name: 'LST',
-			value: function(data) {
-				return $filter('date')(
-					data.last_share_time * 1000,
-					'yyyy-MM-dd HH:mm:ss'
-				);
-			}
-		},{
-			name: 'LSD',
-			value: function(data) {return data.last_share_difficulty;}
-		}];
-
 		vm.select = select;
 		vm.reload = reload;
 		vm.getTab = getTab;
@@ -277,11 +228,6 @@
 
 			switch (name) {
 			case 'summary':
-				api.getStatus('pool', time, node.ip, node.port).then(
-					function() {
-						if (node == vm.status.node)
-							vm.status.poolCardLoaded = true;
-				});
 				api.getStatus('summary', time, node.ip, node.port).then(
 					function() {
 						if (node == vm.status.node)
