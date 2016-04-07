@@ -18,11 +18,50 @@
 -->
 <md-content layout="column" flex>
 	<div layout="row">
-		<div flex="50" ui-view="hashrate"></div>
-		<div flex ui-view="aliverate"></div>
+		<div flex="50">
+			<md-card>
+				<md-card-header>
+					<md-card-header-text>
+						<div class="md-title">Hashrate Graph</div>
+					</md-card-header-text>
+				</md-card-header>
+				<md-card-content ui-view="hashrate"></md-card-content>
+			</md-card>
+		</div>
+
+		<div flex>
+			<md-card>
+				<md-card-header>
+					<md-card-header-text>
+						<div class="md-title">Aliverate Graph</div>
+					</md-card-header-text>
+				</md-card-header>
+				<md-card-content ui-view="aliverate"></md-card-content>
+			</md-card>
+		</div>
 	</div>
+
 	<md-content layout="row" flex>
-		<md-content flex="50" ui-view="farmmap"></md-content>
-		<md-content flex ui-view="issues"></md-content>
+		<md-content flex="50">
+			<md-card>
+				<md-card-header>
+					<md-card-header-text>
+						<div class="md-title">Map</div>
+					</md-card-header-text>
+				</md-card-header>
+				<md-card-content ui-view="farmmap"></md-card-content>
+			</md-card>
+		</md-content>
+
+		<md-content flex>
+			<md-card>
+				<md-card-header>
+					<md-card-header-text>
+						<div class="md-title">Issues</div>
+					</md-card-header-text>
+				</md-card-header>
+				<md-card-content ui-view="issues"></md-card-content>
+			</md-card>
+		</md-content>
 	</md-content>
 </md-content>
