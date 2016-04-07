@@ -87,6 +87,11 @@
 						controller: 'DetailModulesController',
 						controllerAs: 'vm',
 					},
+					'config@home.detail': {
+						templateUrl: 'app/widgets/detail_config.html',
+						controller: 'DetailConfigController',
+						controllerAs: 'vm',
+					},
 				}
 			})
 			.state('home.setting', {

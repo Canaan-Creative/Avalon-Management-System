@@ -1,0 +1,110 @@
+<!--
+ Copyright (C) 2015-2016  DING Changchang (of Canaan Creative)
+
+ This file is part of Avalon Management System (AMS).
+
+ AMS is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ AMS is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with AMS. If not, see <http://www.gnu.org/licenses/>.
+-->
+<md-content layout="row" layout-fill ng-if="!vm.loaded" layout-align="center center">
+	<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+</md-content>
+<md-content ng-if="vm.loaded" layout-align="center center" layout="row" flex>
+	<div layout="column">
+		<h4>Node</h4>
+		<md-input-container>
+			<label>NTP</label>
+			<input ng-model="vm.data.config.ntp_enable" disabled="{{ vm.status.auth }}"/>
+		</md-input-container>
+		<md-input-container>
+			<label>API Allow</label>
+			<input ng-model="vm.data.config.api_allow" disabled="{{ vm.status.auth }}"/>
+		</md-input-container>
+		<md-input-container>
+			<label>More Options</label>
+			<input ng-model="vm.data.config.more_options" disabled="{{ vm.status.auth }}"/>
+		</md-input-container>
+
+		<md-divider></md-divider>
+
+		<h4>Module</h4>
+		<div layout="row">
+			<md-input-container>
+				<label>Fan</label>
+				<input ng-model="vm.data.config.fan" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+			<md-input-container>
+				<label>Voltage</label>
+				<input ng-model="vm.data.config.chip_voltage" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+			<md-checkbox
+					ng-model="vm.data.config.autoAdjust"
+					layout-align="center center"
+					layout="row"
+					disabled="{{ vm.status.auth }}">
+			<small class="md-caption">Auto Adjust</small>
+			</md-checkbox>
+		</div>
+
+		<md-divider></md-divider>
+
+		<h4>Pool</h4>
+		<md-input-container>
+			<label>Pool Balance</label>
+			<input ng-model="vm.data.config.pool_balance" disabled="{{ vm.status.auth }}"/>
+		</md-input-container>
+		<div layout="row">
+			<md-input-container flex="50">
+				<label>Address</label>
+				<input ng-model="vm.data.config.pool1url" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+			<md-input-container flex="25">
+				<label>Worker</label>
+				<input ng-model="vm.data.config.pool1user" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+			<md-input-container flex="25">
+				<label>Password</label>
+				<input ng-model="vm.data.config.pool1pw" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+		</div>
+		<div layout="row">
+			<md-input-container flex="50">
+				<label>Address</label>
+				<input ng-model="vm.data.config.pool2url" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+			<md-input-container flex="25">
+				<label>Worker</label>
+				<input ng-model="vm.data.config.pool2user" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+			<md-input-container flex="25">
+				<label>Password</label>
+				<input ng-model="vm.data.config.pool2pw" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+		</div>
+		<div layout="row">
+			<md-input-container flex="50">
+				<label>Address</label>
+				<input ng-model="vm.data.config.pool3url" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+			<md-input-container flex="25">
+				<label>Worker</label>
+				<input ng-model="vm.data.config.pool3user" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+			<md-input-container flex="25">
+				<label>Password</label>
+				<input ng-model="vm.data.config.pool3pw" disabled="{{ vm.status.auth }}"/>
+			</md-input-container>
+		</div>
+
+	</div>
+</md-content>

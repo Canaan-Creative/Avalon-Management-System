@@ -289,13 +289,6 @@
 				});
 				share.status.main.timePromise.then(getNodeHashrate);
 				break;
-			case 'config':
-				api.getConfig(node.ip, node.port).then(
-					function() {
-						if (node == vm.status.node)
-							vm.status.tabLoaded = true;
-				});
-				break;
 			}
 		}
 	}
