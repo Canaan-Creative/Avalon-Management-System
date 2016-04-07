@@ -229,60 +229,22 @@
 			value: function(data) {return data.smart_speed;}
 		}];
 
-		vm.moduleTable = [{
-			name: 'ID',
-			index: 0,
-			value: function(data) {return data.device_id + ':' + data.module_id;},
-			sortValue: function(data) {return (data.device_id << 8) + data.module_id;}
-		},{
-			name: 'Elapesed',
-			index: 1,
-			value: function(data) {return parseInt(data.elapsed);}
-		},{
-			name: 'Version',
-			index: 2,
-			value: function(data) {return data.ver;}
-		},{
-			name: 'LW',
-			index: 3,
-			value: function(data) {return data.lw;}
-		},{
-			name: 'GHs',
-			index: 4,
-			value: function(data) {return parseInt(data.ghsmm);}
-		},{
-			name: 'T',
-			index: 5,
-			value: function(data) {return data.temp + '/' + data.temp0 + '/' + data.temp1;}
-		},{
-			name: 'Fan',
-			index: 6,
-			value: function(data) {return data.fan;}
-		},{
-			name: 'Volt',
-			index: 7,
-			value: function(data) {return data.vol;}
-		},{
-			name: 'PG',
-			index: 8,
-			value: function(data) {return data.pg;}
-		},{
-			name: 'EC',
-			index: 9,
-			value: function(data) {return data.ec;}
-		}];
-
 		vm.getDeviceTable = getDeviceTable;
-		vm.getModuleTable = getModuleTable;
 		vm.sortIndex = undefined;
 		vm.sortReverse = false;
 
 		vm.select = select;
+		vm.reload = reload;
 		vm.getTab = getTab;
-		vm.setSingleLED = setSingleLED;
 
 		share.status.main.title = "Detail";
 		share.status.main.subTitle = false;
+
+		if (share.status.main.latest)
+			vm.status.time = 'latest';
+		else
+			vm.status.time = share.status.main.time;
+		vm.status.reloadListeners = [];
 
 		var params = $stateParams;
 		if (params.ip && params.port) {
@@ -302,7 +264,6 @@
 			$stateParams.dna = null;
 		}
 		api.getNodes().then(previousSelect);
-
 
 		vm.hashrateChart = {};
 		vm.hashrateChart.loaded = false;
@@ -346,13 +307,17 @@
 			vm.getTab(vm.status.tabName);
 		}
 
+		function reload() {
+			for (var i = 0; i < vm.status.reloadListeners.length; i++) {
+				var listener = vm.status.reloadListeners[i];
+				if (listener !== undefined)
+					listener();
+			}
+		}
+
 		function getTab(name) {
-			var time;
 			var node = vm.status.node;
-			if (share.status.main.latest)
-				time = 'latest';
-			else
-				time = share.status.main.time;
+			var time = vm.status.time;
 			vm.status.tabLoaded = false;
 			vm.status.poolCardLoaded = false;
 			vm.status.summaryCardLoaded = false;
@@ -373,11 +338,9 @@
 						if (node == vm.status.node)
 							vm.status.summaryCardLoaded = true;
 				});
-				share.status.main.timePromise =
-					share.status.main.timePromise.then(getNodeHashrate);
+				share.status.main.timePromise.then(getNodeHashrate);
 				break;
 			case 'device':
-			case 'module':
 				api.getStatus(name, time, node.ip, node.port).then(
 					function() {
 						if (node == vm.status.node) {
@@ -409,36 +372,11 @@
 			}
 		}
 
-		function setSingleLED(module) {
-			api.setLED({
-				modules: [{
-					ip: module.ip,
-					port: module.port,
-					device_id: module.device_id,
-					module_id: module.module_id,
-					led: module.led,
-				}]
-			}).then(function() {
-				vm.getTab(vm.status.tabName);
-			});
-		}
-
 		function getDeviceTable() {
 			if (vm.sortIndex === undefined)
 				return;
 			vm.sortReverse = (1 / vm.sortIndex > 0);
 			return vm.deviceTable[Math.abs(vm.sortIndex)].value;
-		}
-
-		function getModuleTable() {
-			if (vm.sortIndex === undefined)
-				return;
-			vm.sortReverse = (1 / vm.sortIndex > 0);
-			var item = vm.moduleTable[Math.abs(vm.sortIndex)];
-			if (item.sortValue === undefined)
-				return item.value;
-			else
-				return item.sortValue;
 		}
 
 	}

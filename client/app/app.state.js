@@ -71,9 +71,18 @@
 					port: null,
 					dna: null,
 				},
-				templateUrl: 'app/pages/detail.html',
-				controller: 'DetailController',
-				controllerAs: 'vm',
+				views: {
+					'@home': {
+						templateUrl: 'app/pages/detail.html',
+						controller: 'DetailController',
+						controllerAs: 'vm',
+					},
+					'modules@home.detail': {
+						templateUrl: 'app/widgets/detail_modules.html',
+						controller: 'DetailModulesController',
+						controllerAs: 'vm',
+					},
+				}
 			})
 			.state('home.setting', {
 				url: '/setting',

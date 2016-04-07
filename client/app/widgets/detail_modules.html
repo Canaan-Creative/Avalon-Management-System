@@ -1,0 +1,54 @@
+<!--
+ Copyright (C) 2015-2016  DING Changchang (of Canaan Creative)
+
+ This file is part of Avalon Management System (AMS).
+
+ AMS is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ AMS is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with AMS. If not, see <http://www.gnu.org/licenses/>.
+-->
+<md-content ng-if="!vm.loaded" layout="row" layout-fill layout-align="center center">
+	<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+</md-content>
+<md-content ng-if="vm.loaded">
+	<md-table-container>
+		<table md-table>
+			<thead md-head md-order="vm.sortIndex">
+				<tr md-row>
+					<th md-column>LED</th>
+					<th md-column md-desc
+							ng-repeat="column in vm.table"
+							md-order-by="{{ column.index }}">
+						{{ column.name }}
+					</th>
+				</tr>
+			</thead>
+			<tbody md-body>
+				<tr md-row ng-repeat="module in vm.data.module | orderBy: vm.getTable() : vm.sortReverse"
+						class="highlight-{{ module.highlight }} dark-{{ module.theme }}">
+					<td md-cell>
+						<md-switch
+							ng-model="module.led"
+							ng-true-value="1"
+							ng-false-value="0"
+							ng-change="vm.setLED(module)"
+							aria-label="LED">
+						</md-switch>
+					</td>
+					<td md-cell ng-repeat="column in vm.table">
+						{{ column.value(module) }}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</md-table-container>
+</md-content>

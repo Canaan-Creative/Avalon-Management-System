@@ -27,7 +27,7 @@
 			<md-list-item
 					ng-repeat="node in vm.data.nodes"
 					class="node-selected-{{ node.selected }}">
-				<a ng-click="vm.select(node)">
+				<a ng-click="vm.select(node); vm.reload()">
 					<md-item-content md-ink-ripple layout="row" layout-align="start center">
 						<div class="inset">
 							{{ node.ip + ':' + node.port }}
@@ -185,42 +185,7 @@
 			<md-tab md-on-select="vm.getTab('module')">
 				<md-tab-label>Modules</md-tab-label>
 				<md-tab-body>
-					<md-content ng-if="!vm.status.tabLoaded" layout="row" layout-fill layout-align="center center">
-						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
-					</md-content>
-					<md-content ng-if="vm.status.tabLoaded">
-						<md-table-container>
-							<table md-table>
-								<thead md-head md-order="vm.sortIndex">
-									<tr md-row>
-										<th md-column>LED</th>
-										<th md-column md-desc
-												ng-repeat="column in vm.moduleTable"
-												md-order-by="{{ column.index }}">
-											{{ column.name }}
-										</th>
-									</tr>
-								</thead>
-								<tbody md-body>
-									<tr md-row ng-repeat="module in vm.data.module | orderBy: vm.getModuleTable() : vm.sortReverse"
-											class="highlight-{{ module.highlight }} dark-{{ module.theme }}">
-										<td md-cell>
-											<md-switch
-												ng-model="module.led"
-												ng-true-value="1"
-												ng-false-value="0"
-												ng-change="vm.setSingleLED(module)"
-												aria-label="LED">
-											</md-switch>
-										</td>
-										<td md-cell ng-repeat="column in vm.moduleTable">
-											{{ column.value(module) }}
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</md-table-container>
-					</md-content>
+					<div ui-view="modules"></div>
 				</md-tab-body>
 			</md-tab>
 

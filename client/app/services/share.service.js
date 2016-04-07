@@ -45,6 +45,7 @@
 				tabName: "summary",
 				tabIndex: 0,
 				highlightDNA: null,
+				reloadListeners: [],
 			},
 			farmMap: {
 				loaded: false,
@@ -188,7 +189,6 @@
 			return $http.get('/api/lasttime')
 				.then(function(response) {
 					self.status.main.time = response.data.result;
-					console.log('Done');
 				}, function(errResponse) {
 					'Error fetching LastTime';
 				});
