@@ -150,39 +150,15 @@
 			</md-tab>
 
 			<!-- Devices -->
-			<md-tab md-on-select="vm.getTab('device')">
+			<md-tab>
 				<md-tab-label>Devices</md-tab-label>
 				<md-tab-body>
-					<md-content ng-if="!vm.status.tabLoaded" layout="row" layout-fill layout-align="center center">
-						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
-					</md-content>
-					<md-content ng-if="vm.status.tabLoaded">
-						<md-table-container>
-							<table md-table>
-								<thead md-head md-order="vm.sortIndex">
-									<tr md-row>
-										<th md-column md-desc
-												ng-repeat="column in vm.deviceTable"
-												md-order-by="{{ column.index }}">
-											{{ column.name }}
-										</th>
-									</tr>
-								</thead>
-								<tbody md-body>
-									<tr md-row ng-repeat="device in vm.data.device | orderBy: vm.getDeviceTable() : vm.sortReverse">
-										<td md-cell ng-repeat="column in vm.deviceTable">
-											{{ column.value(device) }}
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</md-table-container>
-					</md-content>
+					<div ui-view="devices"></div>
 				</md-tab-body>
 			</md-tab>
 
 			<!-- Modules -->
-			<md-tab md-on-select="vm.getTab('module')">
+			<md-tab>
 				<md-tab-label>Modules</md-tab-label>
 				<md-tab-body>
 					<div ui-view="modules"></div>

@@ -77,6 +77,11 @@
 						controller: 'DetailController',
 						controllerAs: 'vm',
 					},
+					'devices@home.detail': {
+						templateUrl: 'app/widgets/detail_devices.html',
+						controller: 'DetailDevicesController',
+						controllerAs: 'vm',
+					},
 					'modules@home.detail': {
 						templateUrl: 'app/widgets/detail_modules.html',
 						controller: 'DetailModulesController',

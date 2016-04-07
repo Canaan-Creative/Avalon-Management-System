@@ -183,56 +183,6 @@
 			value: function(data) {return data.last_share_difficulty;}
 		}];
 
-		vm.deviceTable = [{
-			name: 'ID',
-			index: 0,
-			value: function(data) {return data.device_id;}
-		},{
-			name: 'Enabled',
-			index: 1,
-			value: function(data) {return data.enabled;}
-		},{
-			name: 'Status',
-			index: 2,
-			value: function(data) {return data.status;}
-		},{
-			name: 'Temp',
-			index: 3,
-			value: function(data) {return data.temperature;}
-		},{
-			name: 'GHsav',
-			index: 4,
-			value: function(data) {return parseInt(data.mhs_av / 1000);}
-		},{
-			name: 'GHs5s',
-			index: 5,
-			value: function(data) {return parseInt(data.mhs_5s / 1000);}
-		},{
-			name: 'GHs1m',
-			index: 6,
-			value: function(data) {return parseInt(data.mhs_1m / 1000);}
-		},{
-			name: 'GHs5m',
-			index: 7,
-			value: function(data) {return parseInt(data.mhs_5m / 1000);}
-		},{
-			name: 'GHs15m',
-			index: 8,
-			value: function(data) {return parseInt(data.mhs_15m / 1000);}
-		},{
-			name: 'LastValiddata',
-			index: 9,
-			value: function(data) {return data.last_valid_work;}
-		},{
-			name: 'SmartSpeed',
-			index: 10,
-			value: function(data) {return data.smart_speed;}
-		}];
-
-		vm.getDeviceTable = getDeviceTable;
-		vm.sortIndex = undefined;
-		vm.sortReverse = false;
-
 		vm.select = select;
 		vm.reload = reload;
 		vm.getTab = getTab;
@@ -282,7 +232,6 @@
 					vm.hashrateChart.loaded = true;
 			});
 		}
-
 
 		function previousSelect() {
 			if (vm.status.node) {
@@ -340,28 +289,6 @@
 				});
 				share.status.main.timePromise.then(getNodeHashrate);
 				break;
-			case 'device':
-				api.getStatus(name, time, node.ip, node.port).then(
-					function() {
-						if (node == vm.status.node) {
-							if (name == 'module' && vm.data.module && vm.data.module.length > 0) {
-								var initID = vm.data.module[0].device_id;
-								var theme = true;
-								for (var i = 0; i < vm.data.module.length; i++) {
-									var module = vm.data.module[i];
-									module.highlight = (module.dna === vm.status.highlightDNA);
-									if (module.device_id != initID) {
-										initID = module.device_id;
-										theme = !theme;
-									}
-									module.theme = theme;
-									module.led = parseInt(module.led);
-								}
-							}
-							vm.status.tabLoaded = true;
-						}
-				});
-				break;
 			case 'config':
 				api.getConfig(node.ip, node.port).then(
 					function() {
@@ -371,13 +298,5 @@
 				break;
 			}
 		}
-
-		function getDeviceTable() {
-			if (vm.sortIndex === undefined)
-				return;
-			vm.sortReverse = (1 / vm.sortIndex > 0);
-			return vm.deviceTable[Math.abs(vm.sortIndex)].value;
-		}
-
 	}
 })();
