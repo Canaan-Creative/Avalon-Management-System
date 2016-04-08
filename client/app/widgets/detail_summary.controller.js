@@ -23,16 +23,16 @@
 		.module('ams')
 		.controller('DetailSummaryController', DetailSummaryController);
 
-	DetailSummaryController.$inject = ['$filter', 'ShareService', 'APIService'];
+	DetailSummaryController.$inject = ['$filter', '$state', 'ShareService', 'APIService'];
 
-	function DetailSummaryController($filter, share, api) {
+	function DetailSummaryController($filter, $state, share, api) {
 		/* jshint validthis: true */
 		var vm = this;
 
 		vm.status = share.status.detail;
 		vm.data = api.data;
 
-		vm.table = [{
+		var table = [{
 			name: 'Elapsed',
 			value: function(data) {return data && data.elapsed;}
 		}, {
@@ -88,7 +88,7 @@
 			value: function(data) {return data && data.network_blocks;}
 		}, {
 			name: 'Total MHash',
-			value: function(data) {return data && data.total_mh;}
+			value: function(data) {return data && parseInt(data.total_mh);}
 		}, {
 			name: 'Work Utility',
 			value: function(data) {return data && data.work_utility;}
@@ -105,7 +105,7 @@
 			name: 'Best Share',
 			value: function(data) {return data && data.best_share;}
 		}, {
-			name: 'Device Hardware Error',
+			name: 'Device Error',
 			value: function(data) {return data && (data.device_hardware + '%');}
 		}, {
 			name: 'Device Rejected',
@@ -125,6 +125,24 @@
 				);
 			}
 		}];
+
+		vm.table = [];
+
+		vm.section = 1;
+		if ($state.current.name.slice(0, 5) === 'home.')
+			vm.section = 2;
+		else
+			vm.section = 5;
+		var j = 0;
+		for (var i = 0; i < vm.section; i++) {
+			vm.table.push([]);
+			while (j < Math.ceil(table.length / vm.section) * (i + 1) &&
+					j < table.length) {
+				vm.table[i].push(table[j]);
+				j++;
+			}
+		}
+
 
 		vm.loaded = false;
 
