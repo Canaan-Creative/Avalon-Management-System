@@ -126,6 +126,36 @@
 				templateUrl: 'app/widgets/issues.html',
 				controller: 'IssuesController',
 				controllerAs: 'vm',
+			})
+			.state('node', {
+				url: '/node?ip&port&dna',
+				views: {
+					'@': {
+						templateUrl: 'app/layout/node.html',
+						controller: 'NodeController',
+						controllerAs: 'vm',
+					},
+					'summary@node': {
+						templateUrl: 'app/widgets/detail_summary.html',
+						controller: 'DetailSummaryController',
+						controllerAs: 'vm',
+					},
+					'pools@node': {
+						templateUrl: 'app/widgets/detail_pools.html',
+						controller: 'DetailPoolsController',
+						controllerAs: 'vm',
+					},
+					'devices@node': {
+						templateUrl: 'app/widgets/detail_devices.html',
+						controller: 'DetailDevicesController',
+						controllerAs: 'vm',
+					},
+					'modules@node': {
+						templateUrl: 'app/widgets/detail_modules.html',
+						controller: 'DetailModulesController',
+						controllerAs: 'vm',
+					},
+				}
 			});
 	}
 })();
