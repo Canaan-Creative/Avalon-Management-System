@@ -23,9 +23,9 @@
 		.module('ams')
 		.controller('DetailController', DetailController);
 
-	DetailController.$inject = ['$filter', '$stateParams', 'ShareService', 'APIService'];
+	DetailController.$inject = ['$stateParams', 'ShareService', 'APIService'];
 
-	function DetailController($filter, $stateParams, share, api) {
+	function DetailController($stateParams, share, api) {
 		/* jshint validthis: true */
 		var vm = this;
 

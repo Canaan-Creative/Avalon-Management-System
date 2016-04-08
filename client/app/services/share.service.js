@@ -220,7 +220,7 @@
 			if ($state.current.name.slice(0, 5) === 'home.')
 				dest = 'home.detail';
 			else
-				dest = 'cgminer';
+				dest = 'node';
 			if (dna)
 				$state.go(dest, {
 					ip: ip,
