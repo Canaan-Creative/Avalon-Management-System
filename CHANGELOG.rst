@@ -1,5 +1,13 @@
 Changelog
 =========
+Version 3.0.0.dev5 (2016.04.12)
+-------------------------------
+- Add map view.
+- Switch to ui-router.
+- Add stand-alone pages.
+- Add shortlog to subtitle.
+- Split pages into widgets.
+
 Version 3.0.dev4 (2016.02.04)
 -----------------------------
 - Enable modifying node list in the setting page of client.
