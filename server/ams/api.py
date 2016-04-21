@@ -110,9 +110,15 @@ def update_nodes():
         {"name": "password", "type": "VARCHAR(32)"}
     ])
     for node in nodes:
+        safe_node = {
+           'ip': node['ip'],
+           'port': node['port'],
+           'password': node['password'],
+           'mods': node['mods']
+        }
         g.database.run(
             'insert', 'controller_config',
-            list(node.keys()), list(node.values())
+            list(safe_node.keys()), list(safe_node.values())
         )
     g.database.commit()
     return ams_dumps({'success': True})
@@ -153,8 +159,9 @@ def get_last_time():
 @app.route('/config/<ip>/<port>', methods=['GET'])
 def get_config(ip, port):
     import ams.luci
-    clause = "`ip` = '{}'".format(ip)
-    nodes = g.database.run('select', 'controller_config', ['password'], clause)
+    clause = "`ip` = %s"
+    nodes = g.database.run(
+        'select', 'controller_config', ['password'], clause, [ip])
     if not nodes:
         return '{"result": "wrong node"}'
     password = nodes[0][0] if nodes[0][0] is not None else ''
@@ -167,8 +174,9 @@ def get_config(ip, port):
 @app.route('/info/<ip>/<port>', methods=['GET'])
 def get_info(ip, port):
     import ams.luci
-    clause = "`ip` = '{}'".format(ip)
-    nodes = g.database.run('select', 'controller_config', ['password'], clause)
+    clause = "`ip` = %s"
+    nodes = g.database.run(
+        'select', 'controller_config', ['password'], clause, [ip])
     if not nodes:
         return '{"result": "wrong node"}'
     password = nodes[0][0] if nodes[0][0] is not None else ''
@@ -372,9 +380,11 @@ def get_hashrate():
             'raw',
             "SELECT a.time, a.mhs FROM miner AS a RIGHT JOIN "
             "(SELECT time FROM hashrate) AS b ON a.time = b.time "
-            "WHERE {} AND a.ip = '{}' AND a.port = '{}'".format(
-                clause.replace('time', 'b.time'), req['ip'], req['port']
-            ))
+            "WHERE {} AND a.ip = %s AND a.port = %s".format(
+                clause.replace('time', 'b.time')
+            ),
+            [req['ip'], req['port']]
+        )
         for r in result:
             hashrate[0]['values'].append({
                 'x': r[0],
@@ -461,7 +471,6 @@ SELECT a.ip, a.port, a.device_id, a.module_id, a.dna
 
 @app.route('/status/<table>/<time>/<ip>/<port>', methods=['GET'])
 def get_status(table, time, ip, port):
-    # TODO: prevent injection by checking args validation
 
     if time == 'latest':
         node = miner_type.Miner(ip, port, 0, log=False)
@@ -475,10 +484,10 @@ def get_status(table, time, ip, port):
             table if table != 'summary' else 'miner',
             None,
             "time = '{:%Y-%m-%d %H:%M:%S}' "
-            "AND ip = '{}' AND port = {}".format(
+            "AND ip = %s AND port = %s".format(
                 datetime.datetime.fromtimestamp(int(time)),
-                ip, port
-            )
+            ),
+            [ip, port]
         )
         for r in result:
             s = {}

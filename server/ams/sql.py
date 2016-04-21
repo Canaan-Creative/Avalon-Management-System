@@ -99,13 +99,13 @@ class DataBase():
         )
         self.value = value
 
-    def _select(self, name, column=None, clause=None):
+    def _select(self, name, column=None, clause=None, value=None):
         self.query = 'SELECT {} FROM `{}`{}'.format(
             '`{}`'.format('`, `'.join(column)) if column else '*',
             name,
             ' WHERE {}'.format(clause) if clause else ''
         )
-        self.value = None
+        self.value = value
 
     def _raw(self, query, value=None):
         self.query = query
