@@ -20,11 +20,14 @@
 
 import json
 import datetime
+import time
 import importlib
 import decimal
 import os
+import hashlib
 
 from flask import Flask, g, request
+import jose
 
 from ams.sql import DataBase
 from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
@@ -42,6 +45,7 @@ def readCfg(filename):
 
 
 cfg = readCfg(cfgfile)
+jwt_password = cfg['JWT']['password']
 db = cfg['DataBase']
 farm_type = cfg['Farm']['type']
 miner_type = importlib.import_module('ams.{}'.format(farm_type))
@@ -79,6 +83,14 @@ def ams_sort(data):
     return sorted(data, key=sort_order)
 
 
+def ams_auth(token):
+    try:
+        jose.jwt.decode(token, jwt_password, argorithms=['HS256'])
+        return True
+    except:
+        return False
+
+
 @app.before_request
 def before_request():
     g.database = DataBase(db)
@@ -101,6 +113,9 @@ def get_nodes():
 # Need permission protection
 @app.route('/update_nodes', methods=['POST'])
 def update_nodes():
+    token = request.json['token']
+    if not ams_auth(token):
+        return ams_dumps({'auth': False})
     nodes = request.json['nodes']
     g.database.run('raw', 'DROP TABLES IF EXISTS controller_config')
     g.database.run('create', 'controller_config', [
@@ -532,6 +547,28 @@ def set_led():
         t.start()
     modules.join()
     return '{"result": "success"}'
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.json['username']
+    password = request.json['password']
+    hash_password = hashlib.sha256(password.encode()).hexdigest()
+    result = g.database.run(
+        'select',
+        'user',
+        ['password'],
+        'username = %s',
+        [username]
+    )
+    if len(result) == 0 or hash_password != result[0][0]:
+        return '{"auth": false}'
+    claims = {
+        'exp': int(time.time()) + 3600,
+        'name': username,
+    }
+    token = jose.jwt.encode(claims, jwt_password, algorithm='HS256')
+    return ams_dumps({"auth": True, "token": token})
 
 
 @app.teardown_request
