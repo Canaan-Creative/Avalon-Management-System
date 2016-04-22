@@ -42,6 +42,10 @@
 				link: 'home.setting',
 				name: 'Setting',
 				icon: 'settings',
+			}, {
+				link: 'home.rtac',
+				name: 'RTAC',
+				icon: 'build',
 			}
 		];
 		vm.status = share.status.main;

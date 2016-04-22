@@ -115,6 +115,12 @@
 				controller: 'SettingController',
 				controllerAs: 'vm',
 			})
+			.state('home.rtac', {
+				url: '/rtac',
+				templateUrl: 'app/pages/rtac.html',
+				controller: 'RTACController',
+				controllerAs: 'vm',
+			})
 			.state('farmmap', {
 				url: '/farmmap',
 				templateUrl: 'app/widgets/farmmap.html',
