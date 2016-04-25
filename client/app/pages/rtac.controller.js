@@ -35,5 +35,35 @@
 		share.status.main.title = "RTAC";
 		share.status.main.subTitle = false;
 
+		vm.actions = {
+			poolSwitch: false,
+			pool: [
+				{url: '', worker: '', password: ''},
+				{url: '', worker: '', password: ''},
+				{url: '', worker: '', password: ''},
+			],
+			apiSwitch: false,
+			api: '',
+			customSwitch: false,
+			custom: '',
+		};
+
+		vm.selectAll = selectAll;
+		vm.selectInvert = selectInvert;
+
+		api.getNodes().then(function() {
+			vm.tempNodes = true;
+		});
+
+
+		function selectAll() {
+			for (var i = 0; i < vm.data.nodes.length; i++)
+				vm.data.nodes[i].selected = true;
+		}
+
+		function selectInvert() {
+			for (var i = 0; i < vm.data.nodes.length; i++)
+				vm.data.nodes[i].selected = ! vm.data.nodes[i].selected;
+		}
 	}
 })();

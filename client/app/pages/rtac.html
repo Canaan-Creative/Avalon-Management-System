@@ -19,5 +19,63 @@
 <md-content layout="row" layout-align="center center" flex ng-if="!vm.tempNodes">
 	<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 </md-content>
-<md-content ng-if="!!vm.tempNodes" flex>
+<md-content ng-if="!!vm.tempNodes" flex layout="row">
+	<md-card flex="50">
+		<md-card-header>
+			<md-card-header-text>
+				<div class="md-title">Targets</div>
+			</md-card-header-text>
+		</md-card-header>
+		<md-card-content flex layout="column">
+			<div flex="5"></div>
+			<md-content flex="90">
+				<md-checkbox ng-model="node.selected" ng-repeat="node in vm.data.nodes">
+					{{ node.ip + ":" + node.port}}
+				</md-checkbox>
+			</md-content>
+			<md-card-actions layout="row" flex="5">
+				<md-button class="md-raised md-primary" ng-click="vm.selectAll()">Select All</md-button>
+				<md-button class="md-raised md-primary" ng-click="vm.selectInvert()">Invert Selection</md-button>
+			</md-card-actions>
+		</md-card-content>
+	</md-card>
+	<md-card flex>
+		<md-card-header layout="row">
+			<md-card-header-text>
+				<div class="md-title">Actions</div>
+			</md-card-header-text>
+			<span flex="auto"></span>
+			<md-button class="md-raised md-primary" ng-click="vm.run()">Run</md-button>
+		</md-card-header>
+		<md-card-content flex layout="row">
+			<md-content flex layout="column">
+				<md-checkbox ng-model="vm.actions.poolSwitch">Pool</md-checkbox>
+				<div style="min-height: 80px" layout="row" ng-repeat="pool in vm.actions.pool">
+					<md-input-container flex="50">
+						<label>Address</label>
+						<input ng-model="pool.url" ng-disabled="!(vm.actions.poolSwitch)"/>
+					</md-input-container>
+					<md-input-container flex="25">
+						<label>Worker</label>
+						<input ng-model="pool.worker" ng-disabled="!(vm.actions.poolSwitch)"/>
+					</md-input-container>
+					<md-input-container flex="25">
+						<label>Password</label>
+						<input ng-model="pool.password" ng-disabled="!(vm.actions.poolSwitch)"/>
+					</md-input-container>
+				</div>
+				<md-checkbox ng-model="vm.actions.apiSwitch">API Allow</md-checkbox>
+				<md-input-container style="min-height: 80px">
+					<label>API Allow</label>
+					<input ng-model="vm.actions.api" ng-disabled="!(vm.actions.apiSwitch)"/>
+				</md-input-container>
+				<md-checkbox ng-model="vm.actions.customSwitch">Custom</md-checkbox>
+				<md-input-container>
+					<label>Custom Commands</label>
+					<textarea flex ng-model="vm.actions.custom" ng-disabled="!(vm.actions.customSwitch)">
+					</textarea>
+				</md-input-container>
+			</md-content>
+		</md-card-content>
+	</md-card>
 </md-content>
