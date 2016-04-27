@@ -42,6 +42,7 @@
 		self.getNodeHashrate = getNodeHashrate;
 		self.setLED = setLED;
 		self.updateNodes = updateNodes;
+		self.rtac = rtac;
 
 		var getStatusLock = {
 			summary: {number: 0, id: 0},
@@ -200,8 +201,12 @@
 			return $http.post('/api/led', data);
 		}
 
-		function updateNodes(nodes) {
-			return $http.post('/api/update_nodes', {nodes: nodes});
+		function updateNodes(nodes, token) {
+			return $http.post('/api/update_nodes', {nodes: nodes, token: token});
+		}
+
+		function rtac(nodes, commands, token) {
+			return $http.post('/api/rtac', {nodes: nodes, commands: commands, token: token});
 		}
 	}
 })();

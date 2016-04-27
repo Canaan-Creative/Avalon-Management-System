@@ -35,25 +35,31 @@
 		share.status.main.title = "RTAC";
 		share.status.main.subTitle = false;
 
+		vm.level = 'Advance';
 		vm.actions = {
 			poolSwitch: false,
 			pool: [
-				{url: '', worker: '', password: ''},
-				{url: '', worker: '', password: ''},
-				{url: '', worker: '', password: ''},
+				{address: '', worker: '', password: ''},
+				{address: '', worker: '', password: ''},
+				{address: '', worker: '', password: ''},
 			],
 			apiSwitch: false,
 			api: '',
 			customSwitch: false,
 			custom: '',
+			ntpSwitch: false,
+			ntp: '',
+			restartMiner: false,
+			restartNode: false,
 		};
+		vm.targetLock = false;
 
 		vm.selectAll = selectAll;
 		vm.selectInvert = selectInvert;
+		vm.switchLevel = switchLevel;
+		vm.run = run;
 
-		api.getNodes().then(function() {
-			vm.tempNodes = true;
-		});
+		api.getNodes();
 
 
 		function selectAll() {
@@ -64,6 +70,50 @@
 		function selectInvert() {
 			for (var i = 0; i < vm.data.nodes.length; i++)
 				vm.data.nodes[i].selected = ! vm.data.nodes[i].selected;
+		}
+
+		function switchLevel() {
+			if (vm.level === 'Advance')
+				vm.level = 'Basic';
+			else
+				vm.level = 'Advance';
+		}
+
+		function run() {
+			vm.targetLock = true;
+
+			var i;
+			var targets = [];
+			for (i = 0; i < vm.data.nodes.length; i++)
+				if (vm.data.nodes[i].selected)
+					targets.push(vm.data.nodes[i]);
+
+			var commands = [];
+			if (vm.actions.poolSwitch) {
+				for (i = 0; i < 3; i++) {
+					commands.push('uci set cgminer.default.pool' + (i + 1) + 'url=' + vm.actions.pool[i].address);
+					commands.push('uci set cgminer.default.pool' + (i + 1) + 'user=' + vm.actions.pool[i].worker);
+					commands.push('uci set cgminer.default.pool' + (i + 1) + 'pw=' + vm.actions.pool[i].password);
+				}
+				commands.push('uci commit');
+			}
+			if (vm.actions.apiSwitch) {
+				commands.push('uci set cgminer.default.api_allow=' + vm.actions.api);
+				commands.push('uci commit');
+			}
+			if (vm.actions.ntpSwitch) {
+				commands.push('uci set cgminer.default.ntp=' + vm.actions.ntp);
+				commands.push('uci commit');
+			}
+			if (vm.actions.restartMiner)
+				commands.push('/etc/init.d/cgminer restart');
+			if (vm.actions.restartNode)
+				commands.push('reboot');
+
+			if (targets.length !== 0 && commands.length !== 0)
+				api.rtac(targets, commands);
+
+			vm.targetLock = false;
 		}
 	}
 })();
