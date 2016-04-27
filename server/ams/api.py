@@ -25,10 +25,12 @@ import importlib
 import decimal
 import os
 import hashlib
+import configparser
 
 from flask import Flask, g, request
 import jose
 
+import ams.luci
 from ams.sql import DataBase
 from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
 
@@ -38,7 +40,6 @@ cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV') or '/', 'etc/ams.conf')
 
 
 def readCfg(filename):
-    import configparser
     config = configparser.ConfigParser()
     config.read(filename)
     return config
@@ -173,7 +174,6 @@ def get_last_time():
 
 @app.route('/config/<ip>/<port>', methods=['GET'])
 def get_config(ip, port):
-    import ams.luci
     clause = "`ip` = %s"
     nodes = g.database.run(
         'select', 'controller_config', ['password'], clause, [ip])
@@ -188,7 +188,6 @@ def get_config(ip, port):
 
 @app.route('/info/<ip>/<port>', methods=['GET'])
 def get_info(ip, port):
-    import ams.luci
     clause = "`ip` = %s"
     nodes = g.database.run(
         'select', 'controller_config', ['password'], clause, [ip])
@@ -569,6 +568,18 @@ def login():
     }
     token = jose.jwt.encode(claims, jwt_password, algorithm='HS256')
     return ams_dumps({"auth": True, "token": token})
+
+
+@app.route('/rtac', methods=['POST'])
+def rtac():
+    nodes = request.json['nodes']
+    commands = request.json['commands']
+    token = request.json['token']
+    if not ams_auth(token):
+        return '{"auth": false}'
+
+    result = ams.rtac.rtac(nodes, commands, 'luci', g.database)
+    return ams_dumps({"result": result})
 
 
 @app.teardown_request
