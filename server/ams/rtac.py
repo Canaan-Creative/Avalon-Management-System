@@ -19,12 +19,8 @@
 # along with AMS. If not, see <http://www.gnu.org/licenses/>.
 
 
-import telnetlib
-import time
 import threading
 import queue
-
-import paramiko
 
 import ams.luci
 
@@ -41,30 +37,35 @@ def luciThread(node_queue, msg_queue, commands, db):
             'controller_config',
             ['password'],
             "`ip` = %s and `port` = %s",
-            [node.ip, node.port]
+            [node['ip'], node['port']]
         )
         password = result[0][0] if result[0][0] is not None else ''
 
-        try:
-            luci = ams.luci.LuCI(node.ip, 80, password)
-            luci.auth()
-            result = []
-            for c in commands:
-                c.replace('`ip4`', node.ip.split('.')[3])
-                result.append(luci.put('uci', 'exec', [c]))
-        except:
+        success = False
+        for i in range(3):
+            try:
+                luci = ams.luci.LuCI(node['ip'], 80, password)
+                luci.auth()
+                result = []
+                for c in commands:
+                    c.replace('`ip4`', node['ip'].split('.')[3])
+                    result.append(luci.put('uci', 'exec', [c]))
+                success = True
+                break
+            except:
+                continue
+        if success:
+            node_queue.task_done()
+            msg_queue.push({
+                'node': node,
+                'msg': result,
+            })
+        else:
             node_queue.task_done()
             msg_queue.push({
                 'node': node,
                 'msg': ['Error'],
             })
-            continue
-
-        node_queue.task_done()
-        msg_queue.push({
-            'node': node,
-            'msg': result,
-        })
 
 
 def sshThread(node_queue, msg_queue, commands, db):

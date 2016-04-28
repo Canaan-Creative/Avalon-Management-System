@@ -31,6 +31,7 @@ from flask import Flask, g, request
 import jose
 
 import ams.luci
+import ams.rtac
 from ams.sql import DataBase
 from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
 
@@ -114,10 +115,10 @@ def get_nodes():
 # Need permission protection
 @app.route('/update_nodes', methods=['POST'])
 def update_nodes():
-    token = request.json['token']
+    token = request.json.get('token')
     if not ams_auth(token):
         return ams_dumps({'auth': False})
-    nodes = request.json['nodes']
+    nodes = request.json.get('nodes')
     g.database.run('raw', 'DROP TABLES IF EXISTS controller_config')
     g.database.run('create', 'controller_config', [
         {"name": "ip", "type": "VARCHAR(40)"},
@@ -308,11 +309,10 @@ def get_farmmap(time):
 
 @app.route('/aliverate', methods=['POST'])
 def get_aliverate():
-    req = request.json
     start = '{:%Y-%m-%d %H:%M:%S}'.format(
-        datetime.datetime.fromtimestamp(req['start']))
+        datetime.datetime.fromtimestamp(request.json.get('start')))
     end = '{:%Y-%m-%d %H:%M:%S}'.format(
-        datetime.datetime.fromtimestamp(req['end']))
+        datetime.datetime.fromtimestamp(request.json.get('end')))
     clause = "WHERE time > '{}' AND time < '{}'".format(start, end)
     aliverate = [{'values': [], 'key': 'nodes'},
                  {'values': [], 'key': 'modules'}]
@@ -572,9 +572,9 @@ def login():
 
 @app.route('/rtac', methods=['POST'])
 def rtac():
-    nodes = request.json['nodes']
-    commands = request.json['commands']
-    token = request.json['token']
+    nodes = request.json.get('nodes')
+    commands = request.json.get('commands')
+    token = request.json.get('token')
     if not ams_auth(token):
         return '{"auth": false}'
 
