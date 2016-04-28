@@ -41,29 +41,24 @@ def luciThread(node_queue, msg_queue, commands, db):
         )
         password = result[0][0] if result[0][0] is not None else ''
 
-        success = False
         for i in range(3):
             try:
                 luci = ams.luci.LuCI(node['ip'], 80, password)
-                luci.auth()
+                if not luci.auth():
+                    result = ['Login failed.']
+                    continue
                 result = []
                 for c in commands:
                     c.replace('`ip4`', node['ip'].split('.')[3])
                     result.append(luci.put('sys', 'exec', [c], i + 3))
-                success = True
                 break
             except:
+                result = ['Error']
                 continue
-        if success:
-            msg_queue.put({
-                'node': node,
-                'msg': result,
-            })
-        else:
-            msg_queue.put({
-                'node': node,
-                'msg': ['Error'],
-            })
+        msg_queue.put({
+            'node': node,
+            'msg': result,
+        })
         node_queue.task_done()
 
 

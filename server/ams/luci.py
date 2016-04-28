@@ -38,8 +38,14 @@ class LuCI():
         return '[{}:{}]'.format(ip, self.port)
 
     def auth(self, timeout=3):
-        response = self.put('auth', 'login', ['root', self.password])
+        response = self.put('auth', 'login', ['root', self.password], timeout)
+        if not response:
+            return False
         self.token = response['result']
+        if self.token is None:
+            return False
+        else:
+            return True
 
     def put(self, lib, method, params=None, timeout=60):
         url = 'http://{}:{}/cgi-bin/luci/rpc/{}{}'.format(
