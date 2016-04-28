@@ -55,17 +55,16 @@ def luciThread(node_queue, msg_queue, commands, db):
             except:
                 continue
         if success:
-            node_queue.task_done()
             msg_queue.put({
                 'node': node,
                 'msg': result,
             })
         else:
-            node_queue.task_done()
             msg_queue.put({
                 'node': node,
                 'msg': ['Error'],
             })
+        node_queue.task_done()
 
 
 def sshThread(node_queue, msg_queue, commands, db):
