@@ -45,12 +45,10 @@
 			],
 			apiSwitch: false,
 			api: '',
-			customSwitch: false,
 			custom: '',
 			ntpSwitch: false,
 			ntp: '',
 			restartMiner: false,
-			restartNode: false,
 		};
 		vm.targetLock = false;
 
@@ -89,26 +87,31 @@
 					targets.push(vm.data.nodes[i]);
 
 			var commands = [];
-			if (vm.actions.poolSwitch) {
-				for (i = 0; i < 3; i++) {
-					commands.push('uci set cgminer.default.pool' + (i + 1) + 'url=' + vm.actions.pool[i].address);
-					commands.push('uci set cgminer.default.pool' + (i + 1) + 'user=' + vm.actions.pool[i].worker);
-					commands.push('uci set cgminer.default.pool' + (i + 1) + 'pw=' + vm.actions.pool[i].password);
+			switch (vm.level) {
+			case 'Advance':
+				if (vm.actions.poolSwitch) {
+					for (i = 0; i < 3; i++) {
+						commands.push('uci set cgminer.default.pool' + (i + 1) + 'url=' + vm.actions.pool[i].address);
+						commands.push('uci set cgminer.default.pool' + (i + 1) + 'user=' + vm.actions.pool[i].worker);
+						commands.push('uci set cgminer.default.pool' + (i + 1) + 'pw=' + vm.actions.pool[i].password);
+					}
+					commands.push('uci commit');
 				}
-				commands.push('uci commit');
+				if (vm.actions.apiSwitch) {
+					commands.push('uci set cgminer.default.api_allow=' + vm.actions.api);
+					commands.push('uci commit');
+				}
+				if (vm.actions.ntpSwitch) {
+					commands.push('uci set cgminer.default.ntp=' + vm.actions.ntp);
+					commands.push('uci commit');
+				}
+				if (vm.actions.restartMiner)
+					commands.push('/etc/init.d/cgminer restart');
+				break;
+			case 'Basic':
+				commands = vm.actions.custom.split('\n');
+				break;
 			}
-			if (vm.actions.apiSwitch) {
-				commands.push('uci set cgminer.default.api_allow=' + vm.actions.api);
-				commands.push('uci commit');
-			}
-			if (vm.actions.ntpSwitch) {
-				commands.push('uci set cgminer.default.ntp=' + vm.actions.ntp);
-				commands.push('uci commit');
-			}
-			if (vm.actions.restartMiner)
-				commands.push('/etc/init.d/cgminer restart');
-			if (vm.actions.restartNode)
-				commands.push('reboot');
 
 			if (targets.length !== 0 && commands.length !== 0)
 				api.rtac(targets, commands);

@@ -53,7 +53,7 @@
 			<div layout="row" ng-repeat="pool in vm.actions.pool">
 				<md-input-container flex="50">
 					<label>Address</label>
-					<input ng-model="pool.url" ng-disabled="vm.targetLock || !(vm.actions.poolSwitch)"/>
+					<input ng-model="pool.address" ng-disabled="vm.targetLock || !(vm.actions.poolSwitch)"/>
 				</md-input-container>
 				<md-input-container flex="25">
 					<label>Worker</label>
@@ -75,13 +75,11 @@
 				<input ng-model="vm.actions.ntp" ng-disabled="vm.targetLock || !(vm.actions.ntpSwitch)"/>
 			</md-input-container>
 			<md-checkbox ng-model="vm.actions.restartMiner" ng-disabled="vm.targetLock">Restart CGMiner</md-checkbox>
-			<md-checkbox ng-model="vm.actions.restartNode" ng-disabled="vm.targetLock">Restart Node</md-checkbox>
 		</md-content>
 		<md-content ng-if="vm.level === 'Basic'" flex layout="column">
-			<md-checkbox ng-model="vm.actions.customSwitch" ng-disabled="vm.targetLock">Custom</md-checkbox>
 			<md-input-container>
 				<label>Custom</label>
-				<textarea rows="15" ng-model="vm.actions.custom" ng-disabled="vm.targetLock || !(vm.actions.customSwitch)"/>
+				<textarea rows="15" ng-model="vm.actions.custom" ng-disabled="vm.targetLock"/>
 			</md-input-container>
 		</md-content>
 	</md-card-content>
