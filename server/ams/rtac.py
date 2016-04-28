@@ -84,7 +84,7 @@ def rtac(nodes, commands, method, db):
     elif method == 'luci':
         target = luciThread
 
-    for i in range(10):
+    for i in min(len(nodes), 50):
         t = threading.Thread(
             target=target,
             args=(node_queue, msg_queue, commands, db)
