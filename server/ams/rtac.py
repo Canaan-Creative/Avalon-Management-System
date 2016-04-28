@@ -49,7 +49,7 @@ def luciThread(node_queue, msg_queue, commands, db):
                 result = []
                 for c in commands:
                     c.replace('`ip4`', node['ip'].split('.')[3])
-                    result.append(luci.put('sys', 'exec', [c]))
+                    result.append(luci.put('sys', 'exec', [c], i + 3))
                 success = True
                 break
             except:
