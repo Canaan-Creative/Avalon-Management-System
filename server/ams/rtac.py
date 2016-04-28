@@ -49,20 +49,20 @@ def luciThread(node_queue, msg_queue, commands, db):
                 result = []
                 for c in commands:
                     c.replace('`ip4`', node['ip'].split('.')[3])
-                    result.append(luci.put('uci', 'exec', [c]))
+                    result.append(luci.put('sys', 'exec', [c]))
                 success = True
                 break
             except:
                 continue
         if success:
             node_queue.task_done()
-            msg_queue.push({
+            msg_queue.put({
                 'node': node,
                 'msg': result,
             })
         else:
             node_queue.task_done()
-            msg_queue.push({
+            msg_queue.put({
                 'node': node,
                 'msg': ['Error'],
             })
