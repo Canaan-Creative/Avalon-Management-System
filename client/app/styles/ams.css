@@ -30,6 +30,10 @@
 	background-color: #64b5f6;
 }
 
+.node > md-list > md-list-item {
+	width: 180px;
+}
+
 h3.logo {
 	margin-top: 0;
 }

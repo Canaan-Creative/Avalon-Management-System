@@ -67,7 +67,7 @@
 				options: {
 					chart: {
 						type: 'lineChart',
-						height: 350,
+						height: 380,
 						margin : {
 							top: 20,
 							right: 20,
@@ -119,7 +119,7 @@
 				options: {
 					chart: {
 						type: 'lineChart',
-						height: 350,
+						height: 380,
 						margin : {
 							top: 20,
 							right: 54,
