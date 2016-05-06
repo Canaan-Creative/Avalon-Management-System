@@ -25,3 +25,6 @@ thread_num = 50
 
 [Farm]
 type = avalon6
+
+[JWT]
+password = JWT_PASSWORD
