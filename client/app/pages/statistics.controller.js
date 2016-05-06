@@ -1,4 +1,4 @@
-<!--
+/*
  Copyright (C) 2015-2016  DING Changchang (of Canaan Creative)
 
  This file is part of Avalon Management System (AMS).
@@ -15,29 +15,18 @@
 
  You should have received a copy of the GNU General Public License
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
--->
-<md-content layout="row" flex>
+*/
+(function() {
+	'use strict';
 
-	<md-content flex="50">
-		<md-card>
-			<md-card-header>
-				<md-card-header-text>
-					<div class="md-title">Map</div>
-				</md-card-header-text>
-			</md-card-header>
-			<md-card-content ui-view="farmmap"></md-card-content>
-		</md-card>
-	</md-content>
+	angular
+		.module('ams')
+		.controller('StatisticsController', StatisticsController);
 
-	<md-content flex>
-		<md-card>
-			<md-card-header>
-				<md-card-header-text>
-					<div class="md-title">Issues</div>
-				</md-card-header-text>
-			</md-card-header>
-			<md-card-content ui-view="issues"></md-card-content>
-		</md-card>
-	</md-content>
+	StatisticsController.$inject = ['ShareService', 'APIService'];
 
-</md-content>
+	function StatisticsController(share, api) {
+		share.status.main.title = "Statistics";
+		share.status.main.subTitle = false;
+	}
+})();

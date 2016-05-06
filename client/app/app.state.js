@@ -52,12 +52,22 @@
 						controller: 'IssuesController',
 						controllerAs: 'vm',
 					},
-					'hashrate@home.overview': {
+				}
+			})
+			.state('home.statistics', {
+				url: '/statistics',
+				views: {
+					'@home': {
+						templateUrl: 'app/pages/statistics.html',
+						controller: 'StatisticsController',
+						controllerAs: 'vm',
+					},
+					'hashrate@home.statistics': {
 						templateUrl: 'app/widgets/hashrate.html',
 						controller: 'HashrateController',
 						controllerAs: 'vm',
 					},
-					'aliverate@home.overview': {
+					'aliverate@home.statistics': {
 						templateUrl: 'app/widgets/aliverate.html',
 						controller: 'AliverateController',
 						controllerAs: 'vm',

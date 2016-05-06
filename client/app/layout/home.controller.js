@@ -35,6 +35,10 @@
 				name: 'Overview',
 				icon: 'home',
 			}, {
+				link: 'home.statistics',
+				name: 'Statistics',
+				icon: 'equalizer',
+			}, {
 				link: 'home.detail',
 				name: 'Detail',
 				icon: 'view_list',
