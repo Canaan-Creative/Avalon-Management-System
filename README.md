@@ -23,9 +23,10 @@ pip3 install --egg mysql-connector-python-rf
 * Add new user `ams` and new database `ams`:
 
     ```
-    create database ams;
-    grant all privileges on ams.* to ams@'%' identified by "PASSWD";
-    grant FILE on *.* to ams@localhost;
+    CREATE database ams;
+    GRANT ALL PRIVILEGES ON ams.* TO ams@'%' IDENTIFIED BY "PASSWD";
+    GRANT FILE ON *.* TO ams@localhost;
+	FLUSH PRIVILEGES;
     ```
 
   **_Note: replace PASSWD with the real password._**
