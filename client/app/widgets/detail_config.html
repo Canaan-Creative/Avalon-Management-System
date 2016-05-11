@@ -19,8 +19,9 @@
 <md-content layout="row" layout-fill ng-if="!vm.loaded" layout-align="center center">
 	<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 </md-content>
-<md-content ng-if="vm.loaded" layout-align="center center" layout="row" flex>
-	<div layout="column">
+<md-content ng-if="vm.loaded" layout-align="start start" layout="row" flex>
+	<div flex="10"></div>
+	<div flex="35" layout="column" layout-align="start start">
 		<h4>Node</h4>
 		<md-input-container>
 			<label>NTP</label>
@@ -55,56 +56,65 @@
 			<small class="md-caption">Auto Adjust</small>
 			</md-checkbox>
 		</div>
+	</div>
 
-		<md-divider></md-divider>
+	<div flex="10"></div>
 
+	<div flex="35" layout="column" layout-align="start start" >
 		<h4>Pool</h4>
 		<md-input-container>
 			<label>Pool Balance</label>
 			<input ng-model="vm.data.config.pool_balance" disabled="{{ vm.status.auth }}"/>
 		</md-input-container>
+
+		<md-divider style="width: 100%"></md-divider>
+		<md-input-container style="width: 100%">
+			<label>Address1</label>
+			<input ng-model="vm.data.config.pool1url" disabled="{{ vm.status.auth }}"/>
+		</md-input-container>
 		<div layout="row">
 			<md-input-container flex="50">
-				<label>Address</label>
-				<input ng-model="vm.data.config.pool1url" disabled="{{ vm.status.auth }}"/>
-			</md-input-container>
-			<md-input-container flex="25">
 				<label>Worker</label>
 				<input ng-model="vm.data.config.pool1user" disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
-			<md-input-container flex="25">
+			<md-input-container flex>
 				<label>Password</label>
 				<input ng-model="vm.data.config.pool1pw" disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
 		</div>
+
+		<md-divider style="width: 100%"></md-divider>
+		<md-input-container style="width: 100%">
+			<label>Address2</label>
+			<input ng-model="vm.data.config.pool2url" disabled="{{ vm.status.auth }}"/>
+		</md-input-container>
 		<div layout="row">
 			<md-input-container flex="50">
-				<label>Address</label>
-				<input ng-model="vm.data.config.pool2url" disabled="{{ vm.status.auth }}"/>
-			</md-input-container>
-			<md-input-container flex="25">
 				<label>Worker</label>
 				<input ng-model="vm.data.config.pool2user" disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
-			<md-input-container flex="25">
+			<md-input-container flex>
 				<label>Password</label>
 				<input ng-model="vm.data.config.pool2pw" disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
 		</div>
+
+		<md-divider style="width: 100%"></md-divider>
+		<md-input-container style="width: 100%">
+			<label>Address3</label>
+			<input ng-model="vm.data.config.pool3url" disabled="{{ vm.status.auth }}"/>
+		</md-input-container>
 		<div layout="row">
 			<md-input-container flex="50">
-				<label>Address</label>
-				<input ng-model="vm.data.config.pool3url" disabled="{{ vm.status.auth }}"/>
-			</md-input-container>
-			<md-input-container flex="25">
 				<label>Worker</label>
 				<input ng-model="vm.data.config.pool3user" disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
-			<md-input-container flex="25">
+			<md-input-container flex>
 				<label>Password</label>
 				<input ng-model="vm.data.config.pool3pw" disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
 		</div>
-
 	</div>
+	<div flex="10"></div>
+
 </md-content>
