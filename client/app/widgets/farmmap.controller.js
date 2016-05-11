@@ -51,6 +51,7 @@
 		// vm.data.farmMap
 
 		vm.$sce = $sce;
+		vm.footer = '';
 
 		vm.switchMap = switchMap;
 

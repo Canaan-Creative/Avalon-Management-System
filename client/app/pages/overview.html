@@ -17,17 +17,7 @@
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 -->
 <md-content layout="row" flex>
-
-	<md-content flex="50">
-		<md-card>
-			<md-card-header>
-				<md-card-header-text>
-					<div class="md-title">Map</div>
-				</md-card-header-text>
-			</md-card-header>
-			<md-card-content ui-view="farmmap"></md-card-content>
-		</md-card>
-	</md-content>
+	<div flex="50" layout=column ui-view="farmmap"></div>
 
 	<md-content flex>
 		<md-card>
