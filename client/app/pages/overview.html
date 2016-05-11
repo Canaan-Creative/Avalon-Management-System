@@ -18,16 +18,5 @@
 -->
 <md-content layout="row" flex>
 	<div flex="50" layout=column ui-view="farmmap"></div>
-
-	<md-content flex>
-		<md-card>
-			<md-card-header>
-				<md-card-header-text>
-					<div class="md-title">Issues</div>
-				</md-card-header-text>
-			</md-card-header>
-			<md-card-content ui-view="issues"></md-card-content>
-		</md-card>
-	</md-content>
-
+	<div flex layout=column ui-view="issues"></div>
 </md-content>
