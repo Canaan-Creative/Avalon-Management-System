@@ -110,11 +110,11 @@ class ozcoin(Pool):
         return mhs
 
 
-class btcchina(Pool):
-    name = "btcchina.com"
+class btcc(Pool):
+    name = "btcc.com"
 
     def _collect(self):
-        url = 'https://pool.btcchina.com/api?api_key={}'.format(self.key)
+        url = 'https://pool.btcc.com/api?api_key={}'.format(self.key)
         data = json.loads(urllib.request.urlopen(url).read().decode())
 
         mhs = 0
@@ -184,7 +184,7 @@ def update_poolrate(pool_list, run_time, db, retry):
 
     for p in pool_list:
         if p['name'] in [
-                'ghash', 'ozcoin', 'btcchina',
+                'ghash', 'ozcoin', 'btcc',
                 'kano', 'kano_a', 'cksolo']:
             pool_queue.put(p)
 
