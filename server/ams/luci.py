@@ -48,6 +48,12 @@ class LuCI():
             return True
 
     def put(self, lib, method, params=None, timeout=60):
+        # examples :
+        # put('sys', 'exec', ['/bin/bash'])
+        # put('sys', 'user.setpasswd', ['root', 'PASSWORD'])
+        # put('uci', 'set', ['cgminer', 'default', 'pool1user', 'canaan'])
+        # put('uci', 'save', ['cgminer'])
+        # put('uci', 'commit', ['cgminer'])
         url = 'http://{}:{}/cgi-bin/luci/rpc/{}{}'.format(
             self.ip, self.port, lib,
             '?auth={}'.format(self.token) if self.token is not None else ''

@@ -91,25 +91,80 @@
 			case 'Advance':
 				if (vm.actions.poolSwitch) {
 					for (i = 0; i < 3; i++) {
-						commands.push('uci set cgminer.default.pool' + (i + 1) + 'url=' + vm.actions.pool[i].address);
-						commands.push('uci set cgminer.default.pool' + (i + 1) + 'user=' + vm.actions.pool[i].worker);
-						commands.push('uci set cgminer.default.pool' + (i + 1) + 'pw=' + vm.actions.pool[i].password);
+						commands.push({
+							lib: 'uci',
+							method: 'set',
+							params: [
+								'cgminer',
+								'default',
+								'pool' + (i + 1) + 'url',
+								vm.actions.pool[i].address,
+							],
+						});
+						commands.push({
+							lib: 'uci',
+							method: 'set',
+							params: [
+								'cgminer',
+								'default',
+								'pool' + (i + 1) + 'user',
+								vm.actions.pool[i].worker,
+							],
+						});
+						commands.push({
+							lib: 'uci',
+							method: 'set',
+							params: [
+								'cgminer',
+								'default',
+								'pool' + (i + 1) + 'pw',
+								vm.actions.pool[i].password,
+							],
+						});
 					}
-					commands.push('uci commit');
+					commands.push({lib: 'uci', method: 'save', params: ['cgminer']});
+					commands.push({lib: 'uci', method: 'commit', params: ['cgminer']});
 				}
 				if (vm.actions.apiSwitch) {
-					commands.push('uci set cgminer.default.api_allow=' + vm.actions.api);
-					commands.push('uci commit');
+					commands.push({
+						lib: 'uci',
+						method: 'set',
+						params: [
+							'cgminer',
+							'default',
+							'api_allow',
+							vm.actions.api,
+						],
+					});
+					commands.push({lib: 'uci', method: 'save', params: ['cgminer']});
+					commands.push({lib: 'uci', method: 'commit', params: ['cgminer']});
 				}
 				if (vm.actions.ntpSwitch) {
-					commands.push('uci set cgminer.default.ntp=' + vm.actions.ntp);
-					commands.push('uci commit');
+					commands.push({
+						lib: 'uci',
+						method: 'set',
+						params: [
+							'cgminer',
+							'default',
+							'ntp_enable',
+							vm.actions.ntp,
+						],
+					});
+					commands.push({lib: 'uci', method: 'save', params: ['cgminer']});
+					commands.push({lib: 'uci', method: 'commit', params: ['cgminer']});
 				}
 				if (vm.actions.restartMiner)
-					commands.push('/etc/init.d/cgminer restart');
+					commands.push({
+						lib: 'sys',
+						method: 'exec',
+						params: ['/etc/init.d/cgminer restart'],
+					});
 				break;
 			case 'Basic':
-				commands = vm.actions.custom.split('\n');
+				var raw = vm.actions.custom.split('\n');
+				for (i = 0; i < raw.length; i++) {
+					commands.push({lib: 'sys', method: 'exec', params: [raw[i]]});
+				}
 				break;
 			}
 

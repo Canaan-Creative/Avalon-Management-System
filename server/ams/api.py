@@ -26,9 +26,12 @@ import decimal
 import os
 import hashlib
 import configparser
+import multiprocessing
+import copy
 
 from flask import Flask, g, request
-import jose
+from jose import jwt
+import redis
 
 import ams.luci
 import ams.rtac
@@ -87,8 +90,8 @@ def ams_sort(data):
 
 def ams_auth(token):
     try:
-        jose.jwt.decode(token, jwt_password, argorithms=['HS256'])
-        return True
+        claims = jwt.decode(token, jwt_password, ['HS256'])
+        return claims
     except:
         return False
 
@@ -566,7 +569,7 @@ def login():
         'exp': int(time.time()) + 3600,
         'name': username,
     }
-    token = jose.jwt.encode(claims, jwt_password, algorithm='HS256')
+    token = jwt.encode(claims, jwt_password, algorithm='HS256')
     return ams_dumps({"auth": True, "token": token})
 
 
@@ -574,12 +577,43 @@ def login():
 def rtac():
     nodes = request.json.get('nodes')
     commands = request.json.get('commands')
-    token = request.json.get('token')
-    if not ams_auth(token):
-        return '{"auth": false}'
+    # token = request.json.get('token')
+    # claims = ams_auth(token)
+    # if not claims:
+    #     return '{"auth": false}'
 
-    result = ams.rtac.rtac(nodes, commands, 'luci', g.database)
-    return ams_dumps({"result": result})
+    # name = claims['name']
+    name = "admin"
+    session_id = "{}:{}".format(name, time.time())
+
+    result_queue = multiprocessing.Queue()
+
+    rtac_process = multiprocessing.Process(
+        target=ams.rtac.rtac,
+        args=(copy.deepcopy(nodes),
+              copy.deepcopy(commands),
+              'luci', db, result_queue)
+    )
+    rtac_process.daemon = False
+    rtac_process.start()
+
+    def storeResults(queue, key):
+        server = redis.StrictRedis()
+        while True:
+            result = queue.get()
+            if result == 'END':
+                server.rpush(key, 'END')
+                break
+            server.rpush(key, json.dumps(result))
+
+    result_process = multiprocessing.Process(
+        target=storeResults,
+        args=(result_queue, session_id)
+    )
+    result_process.daemon = False
+    result_process.start()
+
+    return ams_dumps({"session": session_id})
 
 
 @app.teardown_request

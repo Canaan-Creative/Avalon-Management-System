@@ -21,55 +21,81 @@
 
 import threading
 import queue
+import copy
 
 import ams.luci
+from ams.sql import DataBase
 
 
-def luciThread(node_queue, msg_queue, commands, db):
+def luciThread(node_queue, result_queue, commands, db):
+    database = DataBase(db)
+    database.connect()
     while True:
         try:
             node = node_queue.get(False)
         except:
             break
 
-        result = db.run(
+        result = database.run(
             'select',
-            'controller_config',
-            ['password'],
-            "`ip` = %s and `port` = %s",
-            [node['ip'], node['port']]
+            'controller_security',
+            ['password', 'new_password'],
+            "`ip` = %s",
+            [node['ip']]
         )
-        password = result[0][0] if result[0][0] is not None else ''
+        if not result or not result[0]:
+            password = ''
+            new_password = ''
+        else:
+            password = result[0][0] if result[0][0] is not None else ''
+            new_password = (result[0][1] if result[0][1] is not None
+                            else password)
 
+        error = False
         for i in range(3):
             try:
                 luci = ams.luci.LuCI(node['ip'], 80, password)
                 if not luci.auth():
                     result = ['Login failed.']
+                    error = True
                     continue
                 result = []
                 for c in commands:
-                    c.replace('`ip4`', node['ip'].split('.')[3])
-                    result.append(luci.put('sys', 'exec', [c], i + 3))
+                    if c['params'] is not None:
+                        for i, param in enumerate(c['params']):
+                            c['params'][i] = param.replace(
+                                '`ip4`', node['ip'].split('.')[3]
+                            )
+                            c['params'][i] = param.replace(
+                                '`password`', password
+                            )
+                            c['params'][i] = param.replace(
+                                '`new_password`', new_password
+                            )
+                    result.append(luci.put(
+                        c['lib'], c['method'], c['params'], i + 3
+                    ))
                 break
             except:
+                error = True
                 result = ['Error']
                 continue
-        msg_queue.put({
+        result_queue.put({
             'node': node,
-            'msg': result,
+            'result': result,
+            'error': error,
         })
         node_queue.task_done()
+    database.disconnect()
 
 
-def sshThread(node_queue, msg_queue, commands, db):
+def sshThread(node_queue, result_queue, commands, db):
     pass
 
 
-def rtac(nodes, commands, method, db):
+def rtac(nodes, commands, method, db, result_queue):
 
     node_queue = queue.Queue()
-    msg_queue = queue.Queue()
 
     for node in nodes:
         node_queue.put(node)
@@ -82,9 +108,9 @@ def rtac(nodes, commands, method, db):
     for i in range(min(len(nodes), 50)):
         t = threading.Thread(
             target=target,
-            args=(node_queue, msg_queue, commands, db)
+            args=(node_queue, result_queue, copy.deepcopy(commands), db)
         )
         t.start()
     node_queue.join()
 
-    return [msg for msg in msg_queue.queue]
+    result_queue.put("END")
