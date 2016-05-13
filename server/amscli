@@ -380,6 +380,45 @@ def alert(argv):
     pass
 
 
+def init(argv):
+    from ams.sql import DataBase
+    db = readCfg(cfgfile)['DataBase']
+    database = DataBase(db)
+    database.connect()
+    database.run('create', 'controller_security', [
+        {'name': 'ip', 'type': 'VARCHAR(40)'},
+        {'name': 'old_password', 'type': 'VARCHAR(64) DEFAULT NULL'},
+        {'name': 'password', 'type': 'VARCHAR(64) DEFAULT NULL'},
+        {'name': 'new_password', 'type': 'VARCHAR(64) DEFAULT NULL'},
+    ], 'PRIMARY KEY(`ip`)')
+    database.run('create', 'user', [
+        {'name': 'username', 'type': 'VARCHAR(64)'},
+        {'name': 'password', 'type': 'CHAR(64)'},
+    ], 'PRIMARY KEY(`username`)')
+    database.commit()
+    database.disconnect()
+
+
+def adduser(argv):
+    import hashlib
+    from ams.sql import DataBase
+
+    db = readCfg(cfgfile)['DataBase']
+    database = DataBase(db)
+    database.connect()
+
+    username = argv[0]
+    password = argv[1]
+
+    database.run(
+        'insert', 'user',
+        ['username', 'password'],
+        [username, hashlib.sha256(password.encode()).hexdigest()]
+    )
+    database.commit()
+    database.disconnect()
+
+
 if __name__ == '__main__':
     doc = '''\
 THIS IS THE DOC.'''
@@ -389,7 +428,11 @@ THIS IS THE DOC.'''
         exit()
 
     log()
-    if (sys.argv[1] == 'controller'):
+    if (sys.argv[1] == 'init'):
+        init(sys.argv[2:])
+    elif (sys.argv[1] == 'adduser'):
+        adduser(sys.argv[2:])
+    elif (sys.argv[1] == 'controller'):
         controller(sys.argv[2:])
     elif (sys.argv[1] == 'pool'):
         pool(sys.argv[2:])
