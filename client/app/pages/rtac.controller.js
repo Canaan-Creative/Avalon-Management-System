@@ -80,7 +80,9 @@
 		function polling(session_id) {
 			var session = vm.status[session_id];
 			var promise = session.promise;
-			promise.then(function() {
+			promise.then(function(response) {
+				if (response && response.data && response.data.auth === false)
+					return;
 				promise = api.rtaclog(session_id).then(function(response) {
 					console.log(vm.status);
 					if (response.data.result !== 'timeout')
