@@ -279,9 +279,9 @@
 			var url;
 			var controller;
 			switch (name) {
-			case 'rtacresult':
-				url = 'app/dialogs/rtacresult.html';
-				controller = 'RTACResultController';
+			case 'rtaclog':
+				url = 'app/dialogs/rtaclog.html';
+				controller = 'RTACLogController';
 				break;
 			case 'login':
 				url = 'app/dialogs/login.html';

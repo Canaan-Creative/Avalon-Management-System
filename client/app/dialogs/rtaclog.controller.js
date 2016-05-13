@@ -21,11 +21,11 @@
 
 	angular
 		.module('ams')
-		.controller('RTACResultController', RTACResultController);
+		.controller('RTACLogController', RTACLogController);
 
-	RTACResultController.$inject = ['ShareService', 'APIService', 'session_id'];
+	RTACLogController.$inject = ['ShareService', 'APIService', 'session_id'];
 
-	function RTACResultController(share, api, session_id) {
+	function RTACLogController(share, api, session_id) {
 		/* jshint validthis: true */
 		var vm = this;
 	}

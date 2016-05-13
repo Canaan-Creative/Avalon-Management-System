@@ -616,8 +616,8 @@ def rtac():
     return ams_dumps({"session": session_id})
 
 
-@app.route('/rtac_result', methods=['POST'])
-def rtac_result():
+@app.route('/rtaclog', methods=['POST'])
+def rtaclog():
     session_id = request.json.get('session_id')
 
     token = request.json.get('token')

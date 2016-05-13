@@ -43,7 +43,7 @@
 		self.setLED = setLED;
 		self.updateNodes = updateNodes;
 		self.rtac = rtac;
-		self.rtacResult = rtacResult;
+		self.rtaclog = rtaclog;
 
 		var getStatusLock = {
 			summary: {number: 0, id: 0},
@@ -214,9 +214,9 @@
 			);
 		}
 
-		function rtacResult(session_id, token) {
+		function rtaclog(session_id, token) {
 			return $http.post(
-				'/api/rtac_result',
+				'/api/rtaclog',
 				{session_id: session_id, token: token}
 			);
 		}

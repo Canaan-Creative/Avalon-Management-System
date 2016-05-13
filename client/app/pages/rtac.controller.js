@@ -81,7 +81,7 @@
 			var session = vm.status[session_id];
 			var promise = session.promise;
 			promise.then(function() {
-				promise = api.rtacResult(session_id).then(function(response) {
+				promise = api.rtaclog(session_id).then(function(response) {
 					console.log(vm.status);
 					if (response.data.result !== 'timeout')
 						session.results.push(response.data);
