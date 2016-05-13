@@ -61,7 +61,7 @@
 		}
 
 		function saveNode() {
-			api.updateNodes(vm.tempNodes);
+			api.updateNodes(vm.tempNodes, vm.auth.token);
 		}
 
 		function cancelNode() {

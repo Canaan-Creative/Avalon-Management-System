@@ -188,7 +188,7 @@
 
 			if (targets.length !== 0 && commands.length !== 0) {
 				var session_id = Date.now();
-				var promise = api.rtac(targets, commands, session_id);
+				var promise = api.rtac(targets, commands, session_id, vm.auth.token);
 				vm.status[session_id] = {
 					promise: promise,
 					results: [],
