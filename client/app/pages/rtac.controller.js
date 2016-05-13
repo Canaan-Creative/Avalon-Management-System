@@ -86,15 +86,16 @@
 			promise.then(function(response) {
 				if (response && response.data && response.data.auth === false)
 					return;
-				promise = api.rtaclog(session_id).then(function(response) {
-					console.log(vm.status);
-					if (response.data.result !== 'timeout')
-						session.results.push(response.data);
-					if (session.results.length < session.targets.length) {
-						session.promise = promise;
-						polling(session_id);
-					}
-				});
+				promise = api.rtaclog(session_id, vm.auth.token).then(
+					function(response) {
+						console.log(vm.status);
+						if (response.data.result !== 'timeout')
+							session.results.push(response.data);
+						if (session.results.length < session.targets.length) {
+							session.promise = promise;
+							polling(session_id);
+						}
+					});
 			});
 		}
 
