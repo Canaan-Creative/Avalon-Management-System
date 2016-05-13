@@ -23,13 +23,17 @@
 		.module('ams')
 		.service('ShareService', ShareService);
 
-	ShareService.$inject = ['$http', '$state'];
+	ShareService.$inject = ['$http', '$state', '$mdDialog'];
 
-	function ShareService($http, $state) {
+	function ShareService($http, $state, $mdDialog) {
 		/* jshint validthis: true */
 		var self = this;
 
 		self.status = {
+			auth: {
+				name: '',
+				token: '',
+			},
 			main: {
 				title: "Overview",
 				subTitle: false,
@@ -180,6 +184,7 @@
 			numberShorten: numberShorten,
 			ecDecode: ecDecode,
 			gotoDetail: gotoDetail,
+			showDialog: showDialog,
 		};
 
 
@@ -268,6 +273,28 @@
 				}
 			}
 			return num;
+		}
+
+		function showDialog(name, params) {
+			var url;
+			var controller;
+			switch (name) {
+			case 'rtacresult':
+				url = 'app/dialogs/rtacresult.html';
+				controller = 'RTACResultController';
+				break;
+			case 'login':
+				url = 'app/dialogs/login.html';
+				controller = 'LoginController';
+				break;
+			}
+			$mdDialog.show({
+				parent: angular.element(document.body),
+				templateUrl: url,
+				controller: controller,
+				controllerAs: 'vm',
+				locals: params,
+			});
 		}
 	}
 })();

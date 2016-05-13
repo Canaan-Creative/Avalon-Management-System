@@ -23,9 +23,9 @@
 		.module('ams')
 		.controller('HomeController', HomeController);
 
-	HomeController.$inject = ['$mdSidenav', '$mdDialog', '$mdMedia', '$state', 'ShareService'];
+	HomeController.$inject = ['$mdSidenav', '$mdMedia', '$state', 'ShareService'];
 
-	function HomeController($mdSidenav, $mdDialog, $mdMedia, $state, share) {
+	function HomeController($mdSidenav, $mdMedia, $state, share) {
 		/* jshint validthis: true */
 		var vm = this;
 
@@ -60,6 +60,7 @@
 		function toggleSidnav() {
 			$mdSidenav('left').toggle();
 		}
+
 		function select(menuItem) {
 			if (vm.status.title !== menuItem.name) {
 				vm.status.title = menuItem.name;
@@ -69,13 +70,9 @@
 				$mdSidenav('left').toggle();
 			$state.go(menuItem.link);
 		}
+
 		function chooseSnap() {
-			$mdDialog.show({
-				parent: angular.element(document.body),
-				templateUrl: 'app/layout/snapshot.html',
-				controller: 'SnapshotController',
-				controllerAs: 'ctrl',
-			});
+			share.utils.showDialog('snapshot');
 		}
 	}
 })();
