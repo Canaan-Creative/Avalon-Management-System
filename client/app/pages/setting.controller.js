@@ -29,11 +29,14 @@
 		/* jshint validthis: true */
 		var vm = this;
 
+		vm.auth = share.status.auth;
 		vm.status = share.status.setting;
 		vm.data = api.data;
 		vm.nodeChanged = false;
 		vm.tempNodes = false;
 		vm.deletedNodes = [];
+
+		vm.showDialog = share.utils.showDialog;
 
 		vm.deleteNode = deleteNode;
 		vm.addNode = addNode;

@@ -23,16 +23,18 @@
 		.module('ams')
 		.service('ShareService', ShareService);
 
-	ShareService.$inject = ['$http', '$state', '$mdDialog'];
+	ShareService.$inject = ['$http', '$state', '$mdDialog', 'APIService'];
 
-	function ShareService($http, $state, $mdDialog) {
+	function ShareService($http, $state, $mdDialog, api) {
 		/* jshint validthis: true */
 		var self = this;
 
 		self.status = {
 			auth: {
+				success: false,
 				name: '',
 				token: '',
+				autologin: false,
 			},
 			main: {
 				title: "Overview",
@@ -185,6 +187,7 @@
 			ecDecode: ecDecode,
 			gotoDetail: gotoDetail,
 			showDialog: showDialog,
+			autologin: autologin,
 		};
 
 
@@ -295,6 +298,9 @@
 				controllerAs: 'vm',
 				locals: params,
 			});
+		}
+
+		function autologin() {
 		}
 	}
 })();

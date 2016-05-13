@@ -16,10 +16,14 @@
  You should have received a copy of the GNU General Public License
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 -->
-<md-content layout="row" layout-align="center center" flex ng-if="!vm.tempNodes">
+<md-content layout="column" layout-align="center center" flex ng-if="!vm.auth.success">
+	<div>Login Required</div>
+	<md-button class="md-raised md-primary" ng-click="vm.showDialog('login')">Login</md-button>
+</md-content>
+<md-content layout="row" layout-align="center center" flex ng-if="!vm.tempNodes && vm.auth.success">
 	<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 </md-content>
-<md-content ng-if="!!vm.tempNodes" flex>
+<md-content ng-if="!!vm.tempNodes && vm.auth.success" flex>
 	<md-table-container flex>
 		<table md-table md-progress="deferred">
 			<thead md-head>

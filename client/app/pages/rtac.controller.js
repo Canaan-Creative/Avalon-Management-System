@@ -29,6 +29,7 @@
 		/* jshint validthis: true */
 		var vm = this;
 
+		vm.auth = share.status.auth;
 		vm.status = share.status.rtac;
 		vm.data = api.data;
 
@@ -51,6 +52,8 @@
 			restartMiner: false,
 		};
 		vm.targetLock = false;
+
+		vm.showDialog = share.utils.showDialog;
 
 		vm.selectAll = selectAll;
 		vm.selectInvert = selectInvert;

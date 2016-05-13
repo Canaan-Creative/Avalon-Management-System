@@ -16,5 +16,24 @@
  You should have received a copy of the GNU General Public License
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 -->
-<md-dialog ng-cloak>
+<md-dialog>
+	<md-dialog-content layout="row" layout="center end">
+		<div flex="10"></div>
+		<div layout="column" flex="80">
+			<div flex="5"></div>
+			<md-input-container>
+				<label>Username</label>
+				<input ng-model="vm.username" />
+			</md-input-container>
+			<md-input-container>
+				<label>Password</label>
+				<input ng-model="vm.password" type="password"/>
+			</md-input-container>
+			<div ng-if="vm.failed">Failed</div>
+		</div>
+	</md-dialog-content>
+	<md-dialog-actions layout="row">
+		<md-button class="md-raised md-primary" ng-click="vm.login()">Login</md-button>
+		<md-button class="md-raised md-primary" ng-click="vm.close()">Cancel</md-button>
+	</md-dialog-actions>
 </md-dialog>

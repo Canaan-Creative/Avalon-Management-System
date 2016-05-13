@@ -23,10 +23,39 @@
 		.module('ams')
 		.controller('LoginController', LoginController);
 
-	LoginController.$inject = ['ShareService', 'APIService'];
+	LoginController.$inject = ['ShareService', 'APIService', '$mdDialog'];
 
-	function LoginController(share, api) {
+	function LoginController(share, api, $mdDialog) {
 		/* jshint validthis: true */
 		var vm = this;
+		vm.failed = false;
+		vm.username = '';
+		vm.password = '';
+		vm.status = share.status.auth;
+
+		vm.login = login;
+		vm.close = close;
+
+		function login() {
+			api.login(vm.username, vm.password).then(function(response) {
+				if (response.data.auth === false)
+					vm.failed = true;
+				else {
+					vm.failed = false;
+					vm.status.success = true;
+					vm.status.name = vm.username;
+					vm.status.token = response.data.token;
+					if (! vm.status.autologin) {
+						vm.status.autologin = true;
+						share.utils.autologin();
+					}
+					cancel();
+				}
+			});
+		}
+
+		function close() {
+			$mdDialog.hide();
+		}
 	}
 })();

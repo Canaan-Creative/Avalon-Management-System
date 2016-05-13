@@ -44,6 +44,7 @@
 		self.updateNodes = updateNodes;
 		self.rtac = rtac;
 		self.rtaclog = rtaclog;
+		self.login = login;
 
 		var getStatusLock = {
 			summary: {number: 0, id: 0},
@@ -219,6 +220,10 @@
 				'/api/rtaclog',
 				{session_id: session_id, token: token}
 			);
+		}
+
+		function login(username, password) {
+			return $http.post('/api/login', {username: username, password: password});
 		}
 	}
 })();

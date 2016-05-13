@@ -16,7 +16,11 @@
  You should have received a copy of the GNU General Public License
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 -->
-<md-card flex="50">
+<md-content layout="column" layout-align="center center" flex ng-if="!vm.auth.success">
+	<div>Login Required</div>
+	<md-button class="md-raised md-primary" ng-click="vm.showDialog('login')">Login</md-button>
+</md-content>
+<md-card ng-if="vm.auth.success" flex="50">
 	<md-card-header>
 		<md-card-header-text>
 			<div class="md-title">Targets</div>
@@ -36,7 +40,7 @@
 		</md-content>
 	</md-card-content>
 </md-card>
-<md-card flex>
+<md-card ng-if="vm.auth.success" flex>
 	<md-card-header layout="row">
 		<md-card-header-text>
 			<div class="md-title">Actions</div>
