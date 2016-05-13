@@ -577,14 +577,15 @@ def login():
 def rtac():
     nodes = request.json.get('nodes')
     commands = request.json.get('commands')
-    # token = request.json.get('token')
-    # claims = ams_auth(token)
-    # if not claims:
-    #     return '{"auth": false}'
+    session_id = request.json.get('session_id')
 
-    # name = claims['name']
-    name = "admin"
-    session_id = "{}:{}".format(name, time.time())
+    token = request.json.get('token')
+    claims = ams_auth(token)
+    if not claims:
+        return '{"auth": false}'
+    name = claims['name']
+
+    key = "{}:{}".format(name, session_id)
 
     result_queue = multiprocessing.Queue()
 
@@ -602,18 +603,37 @@ def rtac():
         while True:
             result = queue.get()
             if result == 'END':
-                server.rpush(key, 'END')
                 break
             server.rpush(key, json.dumps(result))
 
     result_process = multiprocessing.Process(
         target=storeResults,
-        args=(result_queue, session_id)
+        args=(result_queue, key)
     )
     result_process.daemon = False
     result_process.start()
 
     return ams_dumps({"session": session_id})
+
+
+@app.route('/rtac_result', methods=['POST'])
+def rtac_result():
+    session_id = request.json.get('session_id')
+
+    token = request.json.get('token')
+    claims = ams_auth(token)
+    if not claims:
+        return '{"auth": false}'
+    name = claims['name']
+
+    key = "{}:{}".format(name, session_id)
+
+    server = redis.StrictRedis()
+    result = server.blpop(key, 3)
+    if result is None:
+        return '{"result": "timeout"}'
+    else:
+        return result[1]
 
 
 @app.teardown_request
