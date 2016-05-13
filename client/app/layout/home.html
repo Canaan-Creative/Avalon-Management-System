@@ -29,10 +29,10 @@
 				<a ng-click="vm.select(item)">
 					<md-item-content md-ink-ripple layout="row" layout-align="center center">
 						<div class="inset">
-							<ng-md-icon icon="{{ item.icon }}">
+							<ng-md-icon icon="{{ item.icon }}" ng-cloak>
 							</ng-md-icon>
 						</div>
-						<div class="inset md-subhead">
+						<div class="inset md-subhead" ng-cloak>
 							{{ item.name }}
 						</div>
 						<md-divider></md-divider>
@@ -47,11 +47,11 @@
 				<md-button ng-click="vm.toggleSidenav()" hide-gt-lg aria-label="Menu">
 					<ng-md-icon icon="menu" style="fill: white"></ng-md-icon>
 				</md-button>
-				<h3 class="md-title">
+				<h3 class="md-title" ng-cloak>
 					{{ vm.status.title }}
 				</h3>
 				<span flex="5" ng-repeat-start="subTitle in vm.status.subTitle"></span>
-				<span class="md-subhead" ng-repeat-end>
+				<span class="md-subhead" ng-repeat-end ng-cloak>
 					{{ subTitle }}
 				</span>
 				<span flex="auto"></span>

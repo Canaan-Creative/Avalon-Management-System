@@ -23,9 +23,9 @@
 	<table md-table md-progress="deferred">
 		<thead md-head>
 			<tr md-row>
-				<th md-column ng-repeat="column in vm.table">
+				<th md-column ng-repeat="column in vm.table" ng-cloak>
 					{{ column.name }}
-					<md-tooltip ng-if="column.tooltip !== undefined">
+					<md-tooltip ng-if="column.tooltip !== undefined" ng-cloak>
 						{{ column.tooltip }}
 					</md-tooltip>
 				</th>
@@ -33,7 +33,7 @@
 		</thead>
 		<tbody md-body>
 			<tr md-row ng-repeat="pool in vm.data.pool">
-				<td md-cell ng-repeat="column in vm.table">
+				<td md-cell ng-repeat="column in vm.table" ng-cloak>
 					{{ column.value(pool) }}
 				</td>
 			</tr>

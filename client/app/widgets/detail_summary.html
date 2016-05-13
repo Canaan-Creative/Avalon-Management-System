@@ -20,11 +20,11 @@
 	<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 </div>
 <div ng-if="vm.loaded" layout="row" flex>
-	<div ng-repeat="row in vm.table" flex="{{ parseInt(100/vm.section) }}">
+	<div ng-repeat="row in vm.table" ng-cloak flex="{{ parseInt(100/vm.section) }}">
 		<md-list>
 			<md-list-item ng-repeat="item in row">
-				<span class="md-body-2">{{ item.name }}</span>
-				<span class="md-body-1">: {{ item.value(vm.data.summary[0]) }}</span>
+				<span class="md-body-2" ng-cloak>{{ item.name }}</span>
+				<span class="md-body-1" ng-cloak>: {{ item.value(vm.data.summary[0]) }}</span>
 			</md-list-item>
 		</md-list>
 	</div>

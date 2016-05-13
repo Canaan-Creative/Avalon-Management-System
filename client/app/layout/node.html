@@ -17,7 +17,7 @@
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 -->
 <md-content layout="column" style="width: 100%">
-	<h3>{{ vm.status.node.ip }}:{{ vm.status.node.port }}</h3>
+	<h3 ng-cloak>{{ vm.status.node.ip }}:{{ vm.status.node.port }}</h3>
 	<div style="width: 100%">
 		<h4>Summary</h4>
 		<div ui-view="summary"></div>

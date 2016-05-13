@@ -24,7 +24,7 @@
 		<table md-table>
 			<thead md-head md-order="vm.sortIndex">
 				<tr md-row>
-					<th md-column md-desc
+					<th md-column md-desc ng-cloak
 							ng-repeat="column in vm.table"
 							md-order-by="{{ column.index }}">
 						{{ column.name }}
@@ -33,7 +33,7 @@
 			</thead>
 			<tbody md-body>
 				<tr md-row ng-repeat="device in vm.data.device | orderBy: vm.getTable() : vm.sortReverse">
-					<td md-cell ng-repeat="column in vm.table">
+					<td md-cell ng-repeat="column in vm.table" ng-cloak>
 						{{ column.value(device) }}
 					</td>
 				</tr>

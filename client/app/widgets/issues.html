@@ -21,19 +21,19 @@
 						<tr md-row
 								ng-repeat="node in vm.data.issue.node"
 								ng-click="vm.utils.gotoDetail(node.ip, node.port)">
-							<td md-cell>{{ node.ip }}:{{ node.port }}</td>
+							<td md-cell ng-cloak>{{ node.ip }}:{{ node.port }}</td>
 							<td md-cell>Connection failed</td>
 						</tr>
 						<tr md-row
 								ng-repeat="module in vm.data.issue.ec"
 								ng-click="vm.utils.gotoDetail(module.ip, module.port, module.dna)">
-							<td md-cell>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
-							<td md-cell>{{ vm.utils.ecDecode(module.ec) }}</td>
+							<td md-cell ng-cloak>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
+							<td md-cell ng-cloak>{{ vm.utils.ecDecode(module.ec) }}</td>
 						</tr>
 						<tr md-row
 								ng-repeat="module in vm.data.issue.hot"
 								ng-click="vm.utils.gotoDetail(module.ip, module.port, module.dna)">
-							<td md-cell>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
+							<td md-cell ng-cloak>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
 							<td md-cell>Hot Before</td>
 						</tr>
 					</tbody>

@@ -24,12 +24,12 @@
 	<!-- Node List -->
 	<md-content class="node" layout="row">
 		<md-list flex>
-			<md-list-item
+			<md-list-item ng-cloak
 					ng-repeat="node in vm.data.nodes"
 					class="node-selected-{{ node.selected }}">
 				<a ng-click="vm.select(node); vm.reload()">
 					<md-item-content md-ink-ripple layout="row" layout-align="start center">
-						<div class="inset">
+						<div class="inset" ng-cloak>
 							{{ node.ip + ':' + node.port }}
 						</div>
 						<md-divider></md-divider>
@@ -73,7 +73,8 @@
 									</md-card-header>
 									<md-card-content>
 										<md-content>
-											<div style="height:{{ vm.hashrate.options.chart.height }}px" layout="row" layout-align="center center">
+											<div style="height:{{ vm.hashrate.options.chart.height }}px"
+													ng-cloak layout="row" layout-align="center center">
 												<div ui-view="summary" layout="row" layout-align="center center" flex></div>
 											</div>
 										</md-content>

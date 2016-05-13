@@ -25,15 +25,15 @@
 		<h4>Node</h4>
 		<md-input-container>
 			<label>NTP</label>
-			<input ng-model="vm.data.config.ntp_enable" disabled="{{ vm.status.auth }}"/>
+			<input ng-model="vm.data.config.ntp_enable" ng-cloak disabled="{{ vm.status.auth }}"/>
 		</md-input-container>
 		<md-input-container>
 			<label>API Allow</label>
-			<input ng-model="vm.data.config.api_allow" disabled="{{ vm.status.auth }}"/>
+			<input ng-model="vm.data.config.api_allow" ng-cloak disabled="{{ vm.status.auth }}"/>
 		</md-input-container>
 		<md-input-container>
 			<label>More Options</label>
-			<input ng-model="vm.data.config.more_options" disabled="{{ vm.status.auth }}"/>
+			<input ng-model="vm.data.config.more_options" ng-cloak disabled="{{ vm.status.auth }}"/>
 		</md-input-container>
 
 		<md-divider></md-divider>
@@ -42,13 +42,13 @@
 		<div layout="row">
 			<md-input-container>
 				<label>Fan</label>
-				<input ng-model="vm.data.config.fan" disabled="{{ vm.status.auth }}"/>
+				<input ng-model="vm.data.config.fan" ng-cloak disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
 			<md-input-container>
 				<label>Voltage</label>
-				<input ng-model="vm.data.config.chip_voltage" disabled="{{ vm.status.auth }}"/>
+				<input ng-model="vm.data.config.chip_voltage" ng-cloak disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
-			<md-checkbox
+			<md-checkbox ng-cloak
 					ng-model="vm.data.config.autoAdjust"
 					layout-align="center center"
 					layout="row"
@@ -64,54 +64,54 @@
 		<h4>Pool</h4>
 		<md-input-container>
 			<label>Pool Balance</label>
-			<input ng-model="vm.data.config.pool_balance" disabled="{{ vm.status.auth }}"/>
+			<input ng-model="vm.data.config.pool_balance" ng-cloak disabled="{{ vm.status.auth }}"/>
 		</md-input-container>
 
 		<md-divider style="width: 100%"></md-divider>
 		<md-input-container style="width: 100%">
 			<label>Address1</label>
-			<input ng-model="vm.data.config.pool1url" disabled="{{ vm.status.auth }}"/>
+			<input ng-model="vm.data.config.pool1url" ng-cloak disabled="{{ vm.status.auth }}"/>
 		</md-input-container>
 		<div layout="row">
 			<md-input-container flex="50">
 				<label>Worker</label>
-				<input ng-model="vm.data.config.pool1user" disabled="{{ vm.status.auth }}"/>
+				<input ng-model="vm.data.config.pool1user" ng-cloak disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
 			<md-input-container flex>
 				<label>Password</label>
-				<input ng-model="vm.data.config.pool1pw" disabled="{{ vm.status.auth }}"/>
+				<input ng-model="vm.data.config.pool1pw" ng-cloak disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
 		</div>
 
 		<md-divider style="width: 100%"></md-divider>
 		<md-input-container style="width: 100%">
 			<label>Address2</label>
-			<input ng-model="vm.data.config.pool2url" disabled="{{ vm.status.auth }}"/>
+			<input ng-model="vm.data.config.pool2url" ng-cloak disabled="{{ vm.status.auth }}"/>
 		</md-input-container>
 		<div layout="row">
 			<md-input-container flex="50">
 				<label>Worker</label>
-				<input ng-model="vm.data.config.pool2user" disabled="{{ vm.status.auth }}"/>
+				<input ng-model="vm.data.config.pool2user" ng-cloak disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
 			<md-input-container flex>
 				<label>Password</label>
-				<input ng-model="vm.data.config.pool2pw" disabled="{{ vm.status.auth }}"/>
+				<input ng-model="vm.data.config.pool2pw" ng-cloak disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
 		</div>
 
 		<md-divider style="width: 100%"></md-divider>
 		<md-input-container style="width: 100%">
 			<label>Address3</label>
-			<input ng-model="vm.data.config.pool3url" disabled="{{ vm.status.auth }}"/>
+			<input ng-model="vm.data.config.pool3url" ng-cloak disabled="{{ vm.status.auth }}"/>
 		</md-input-container>
 		<div layout="row">
 			<md-input-container flex="50">
 				<label>Worker</label>
-				<input ng-model="vm.data.config.pool3user" disabled="{{ vm.status.auth }}"/>
+				<input ng-model="vm.data.config.pool3user" ng-cloak disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
 			<md-input-container flex>
 				<label>Password</label>
-				<input ng-model="vm.data.config.pool3pw" disabled="{{ vm.status.auth }}"/>
+				<input ng-model="vm.data.config.pool3pw" ng-cloak disabled="{{ vm.status.auth }}"/>
 			</md-input-container>
 		</div>
 	</div>

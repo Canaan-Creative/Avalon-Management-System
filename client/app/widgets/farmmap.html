@@ -23,17 +23,17 @@
 		</md-card-header-text>
 		<span flex="auto"></span>
 		<md-switch ng-model="vm.status.viewSwitch" flex="20"
-				ng-true-value="'Node'" ng-false-value="'Mod'">
+				ng-true-value="'Node'" ng-false-value="'Mod'" ng-cloak>
 			{{ vm.status.viewSwitch }}
 		</md-switch>
 		<md-switch ng-model="vm.status.tempSwitch" flex="20"
 				ng-true-value="'Intake'" ng-false-value="'Board'"
-				ng-change="vm.switchMap(0)">
+				ng-change="vm.switchMap(0)" ng-cloak>
 			{{ vm.status.tempSwitch }}
 		</md-switch>
 		<md-switch ng-model="vm.status.mathSwitch" flex="20"
 				ng-true-value="'Max'" ng-false-value="'Avg'"
-				ng-change="vm.switchMap(1)">
+				ng-change="vm.switchMap(1)" ng-cloak>
 			{{ vm.status.mathSwitch }}
 		</md-switch>
 	</md-card-header>
@@ -53,13 +53,13 @@
 								cell.node.ip + ':' + cell.node.port)"
 							ng-mouseleave="vm.footer = ''">
 						<p ng-if="cell.node.dead">N/A</p>
-						<p ng-if="!cell.node.dead">{{ cell.node.mod_num }} Mods</p>
-						<p ng-if="!cell.node.dead">{{ vm.utils.numberShorten(cell.node.mhs) }}</p>
-						<p ng-if="!cell.node.dead && vm.status.mathSwitch === 'Max'">
+						<p ng-if="!cell.node.dead" ng-cloak>{{ cell.node.mod_num }} Mods</p>
+						<p ng-if="!cell.node.dead" ng-cloak>{{ vm.utils.numberShorten(cell.node.mhs) }}</p>
+						<p ng-if="!cell.node.dead && vm.status.mathSwitch === 'Max'" ng-cloak>
 							{{ cell.node.max_tempI | number: 1 }}
 							/ {{ cell.node.max_tempB | number: 1 }}
 						</p>
-						<p ng-if="!cell.node.dead && vm.status.mathSwitch === 'Avg'">
+						<p ng-if="!cell.node.dead && vm.status.mathSwitch === 'Avg'" ng-cloak>
 							{{ cell.node.avg_tempI | number: 1 }}
 							/ {{ cell.node.avg_tempB | number: 1 }}
 						</p>
@@ -70,7 +70,7 @@
 							layout="column" layout-align="start start">
 						<div ng-repeat="mrow in cell.modules track by $index"
 								ng-if="!cell.node.dead && mrow" layout="row">
-							<div ng-repeat="mcell in mrow track by $index"
+							<div ng-repeat="mcell in mrow track by $index" ng-cloak
 									style="
 										width: {{ vm.status.modWidth }}px;
 										height: {{ vm.status.modHeight }}px;
@@ -91,7 +91,7 @@
 			</div>
 		</md-content>
 	</md-card-content>
-	<md-card-footer>
+	<md-card-footer ng-cloak>
 		{{ vm.footer }}
 	</md-card-footer>
 </md-card>
