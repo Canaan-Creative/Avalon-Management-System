@@ -49,7 +49,7 @@
 						vm.status.autologin = true;
 						share.utils.autologin();
 					}
-					cancel();
+					vm.close();
 				}
 			});
 		}
