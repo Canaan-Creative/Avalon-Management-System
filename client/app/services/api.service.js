@@ -43,6 +43,7 @@
 		self.setLED = setLED;
 		self.updateNodes = updateNodes;
 		self.rtac = rtac;
+		self.rtacResult = rtacResult;
 
 		var getStatusLock = {
 			summary: {number: 0, id: 0},
@@ -179,7 +180,8 @@
 				).then(function(response) {
 					if (id == getConfigLock.id - 1) {
 						self.data.config = response.data.result;
-						if (self.data.config.voltage_adjust === '--avalon4-automatic-voltage')
+						if (self.data.config.voltage_adjust ===
+								'--avalon4-automatic-voltage')
 							self.data.config.autoAdjust = true;
 						else
 							self.data.config.autoAdjust = false;
@@ -205,8 +207,18 @@
 			return $http.post('/api/update_nodes', {nodes: nodes, token: token});
 		}
 
-		function rtac(nodes, commands, token) {
-			return $http.post('/api/rtac', {nodes: nodes, commands: commands, token: token});
+		function rtac(nodes, commands, session_id, token) {
+			return $http.post(
+				'/api/rtac',
+				{nodes: nodes, commands: commands, session_id: session_id, token: token}
+			);
+		}
+
+		function rtacResult(session_id, token) {
+			return $http.post(
+				'/api/rtac_result',
+				{session_id: session_id, token: token}
+			);
 		}
 	}
 })();

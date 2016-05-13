@@ -44,6 +44,7 @@
 				highlightDNA: null,
 				reloadListeners: [],
 			},
+			rtac: {},
 			farmMap: {
 				loaded: false,
 				switch: 0,

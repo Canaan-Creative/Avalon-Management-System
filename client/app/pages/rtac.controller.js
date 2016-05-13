@@ -29,7 +29,7 @@
 		/* jshint validthis: true */
 		var vm = this;
 
-		vm.status = share.status.setting;
+		vm.status = share.status.rtac;
 		vm.data = api.data;
 
 		share.status.main.title = "RTAC";
@@ -77,6 +77,22 @@
 				vm.level = 'Advance';
 		}
 
+		function polling(session_id) {
+			var session = vm.status[session_id];
+			var promise = session.promise;
+			promise.then(function() {
+				promise = api.rtacResult(session_id).then(function(response) {
+					console.log(vm.status);
+					if (response.data.result !== 'timeout')
+						session.results.push(response.data);
+					if (session.results.length < session.targets.length) {
+						session.promise = promise;
+						polling(session_id);
+					}
+				});
+			});
+		}
+
 		function run() {
 			vm.targetLock = true;
 
@@ -122,7 +138,6 @@
 							],
 						});
 					}
-					commands.push({lib: 'uci', method: 'save', params: ['cgminer']});
 					commands.push({lib: 'uci', method: 'commit', params: ['cgminer']});
 				}
 				if (vm.actions.apiSwitch) {
@@ -136,7 +151,6 @@
 							vm.actions.api,
 						],
 					});
-					commands.push({lib: 'uci', method: 'save', params: ['cgminer']});
 					commands.push({lib: 'uci', method: 'commit', params: ['cgminer']});
 				}
 				if (vm.actions.ntpSwitch) {
@@ -150,7 +164,6 @@
 							vm.actions.ntp,
 						],
 					});
-					commands.push({lib: 'uci', method: 'save', params: ['cgminer']});
 					commands.push({lib: 'uci', method: 'commit', params: ['cgminer']});
 				}
 				if (vm.actions.restartMiner)
@@ -168,8 +181,17 @@
 				break;
 			}
 
-			if (targets.length !== 0 && commands.length !== 0)
-				api.rtac(targets, commands);
+			if (targets.length !== 0 && commands.length !== 0) {
+				var session_id = Date.now();
+				var promise = api.rtac(targets, commands, session_id);
+				vm.status[session_id] = {
+					promise: promise,
+					results: [],
+					commands: commands,
+					targets: targets,
+				};
+				polling(session_id);
+			}
 
 			vm.targetLock = false;
 		}
