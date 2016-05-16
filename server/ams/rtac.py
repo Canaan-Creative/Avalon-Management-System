@@ -52,14 +52,16 @@ def luciThread(node_queue, result_queue, commands, db):
                             else password)
 
         error = False
+        auth = True
         for i in range(3):
             j = 0
             try:
                 luci = ams.luci.LuCI(node['ip'], 80, password)
                 if not luci.auth():
-                    result.append('Authentication Failed')
+                    auth = False
                     error = True
                     continue
+                auth = True
                 result = []
                 for c in commands[j:]:
                     if c['params'] is not None:
@@ -81,8 +83,12 @@ def luciThread(node_queue, result_queue, commands, db):
                 break
             except:
                 error = True
-                result.append('Connection Failed')
                 continue
+
+        if not auth:
+            result.append({'result': 'Authentication Failed'})
+        elif error:
+            result.append({'result': 'Connection Failed'})
         result_queue.put({
             'node': node,
             'result': result,
