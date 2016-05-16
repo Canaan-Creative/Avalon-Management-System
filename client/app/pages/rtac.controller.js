@@ -88,7 +88,6 @@
 					return;
 				promise = api.rtaclog(session_id, vm.auth.token).then(
 					function(response) {
-						console.log(vm.status);
 						if (response.data.result !== 'timeout') {
 							var ip = response.data.node.ip;
 							var port = response.data.node.port;
@@ -101,6 +100,20 @@
 						}
 					});
 			});
+		}
+
+		function commit(targets, commands) {
+			var session_id = Date.now();
+			var promise = api.rtac(targets, commands, session_id, vm.auth.token);
+			vm.status[session_id] = {
+				promise: promise,
+				logs: {},
+				commands: commands,
+				targets: targets,
+				len: 0,
+			};
+			polling(session_id);
+			share.utils.showDialog('rtaclog', {session_id: session_id});
 		}
 
 		function run() {
@@ -192,17 +205,15 @@
 			}
 
 			if (targets.length !== 0 && commands.length !== 0) {
-				var session_id = Date.now();
-				var promise = api.rtac(targets, commands, session_id, vm.auth.token);
-				vm.status[session_id] = {
-					promise: promise,
-					logs: {},
-					commands: commands,
-					targets: targets,
-					len: 0,
-				};
-				polling(session_id);
-				share.utils.showDialog('rtaclog', {session_id: session_id});
+				api.login(vm.auth.name, vm.auth.password).then(function(response) {
+					if (response.data.auth === false)
+						vm.auth.failed = true;
+					else {
+						vm.auth.failed = false;
+						vm.auth.token = response.data.token;
+						commit(targets, commands);
+					}
+				});
 			}
 
 			vm.targetLock = false;

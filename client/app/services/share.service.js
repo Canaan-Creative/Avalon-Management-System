@@ -34,7 +34,6 @@
 				success: false,
 				name: '',
 				token: '',
-				autologin: false,
 			},
 			main: {
 				title: "Overview",
@@ -187,7 +186,6 @@
 			ecDecode: ecDecode,
 			gotoDetail: gotoDetail,
 			showDialog: showDialog,
-			autologin: autologin,
 		};
 
 
@@ -299,9 +297,6 @@
 				locals: params,
 				bindToController: true,
 			});
-		}
-
-		function autologin() {
 		}
 	}
 })();

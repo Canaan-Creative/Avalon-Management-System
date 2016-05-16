@@ -44,11 +44,8 @@
 					vm.failed = false;
 					vm.status.success = true;
 					vm.status.name = vm.username;
+					vm.status.password = vm.password;
 					vm.status.token = response.data.token;
-					if (! vm.status.autologin) {
-						vm.status.autologin = true;
-						share.utils.autologin();
-					}
 					vm.close();
 				}
 			});

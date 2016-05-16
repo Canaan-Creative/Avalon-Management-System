@@ -41,8 +41,9 @@
 		}
 
 		function convert(text) {
-			text = text || '';
-			return $sce.trustAsHtml(text.replace("\n", "<br />"));
+			if (text === undefined)
+				text = '';
+			return $sce.trustAsHtml(String(text).replace("\n", "<br />"));
 		}
 
 		function close() {

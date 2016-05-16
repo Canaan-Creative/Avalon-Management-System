@@ -29,7 +29,6 @@
 		/* jshint validthis: true */
 		var vm = this;
 
-		console.log("node");
 		vm.status = share.status.detail;
 
 		if (share.status.main.latest)
