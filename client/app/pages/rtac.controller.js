@@ -38,11 +38,10 @@
 
 		vm.level = 'Advance';
 		vm.actions = {
-			poolSwitch: false,
 			pool: [
-				{address: '', worker: '', password: ''},
-				{address: '', worker: '', password: ''},
-				{address: '', worker: '', password: ''},
+				{switch: false, address: '', worker: '', password: ''},
+				{switch: false, address: '', worker: '', password: ''},
+				{switch: false, address: '', worker: '', password: ''},
 			],
 			apiSwitch: false,
 			api: '',
@@ -128,8 +127,8 @@
 			var commands = [];
 			switch (vm.level) {
 			case 'Advance':
-				if (vm.actions.poolSwitch) {
-					for (i = 0; i < 3; i++) {
+				for (i = 0; i < 3; i++)
+					if (vm.actions.pool[i].switch) {
 						commands.push({
 							lib: 'uci',
 							method: 'set',
@@ -161,8 +160,6 @@
 							],
 						});
 					}
-					commands.push({lib: 'uci', method: 'commit', params: ['cgminer']});
-				}
 				if (vm.actions.apiSwitch) {
 					commands.push({
 						lib: 'uci',
@@ -174,7 +171,6 @@
 							vm.actions.api,
 						],
 					});
-					commands.push({lib: 'uci', method: 'commit', params: ['cgminer']});
 				}
 				if (vm.actions.ntpSwitch) {
 					commands.push({
@@ -187,6 +183,12 @@
 							vm.actions.ntp,
 						],
 					});
+				}
+				if (vm.actions.pool[0].switch ||
+						vm.actions.pool[1].switch ||
+						vm.actions.pool[2].switch ||
+						vm.actions.apiSwitch ||
+						vm.actions.ntpSwitch) {
 					commands.push({lib: 'uci', method: 'commit', params: ['cgminer']});
 				}
 				if (vm.actions.restartMiner)

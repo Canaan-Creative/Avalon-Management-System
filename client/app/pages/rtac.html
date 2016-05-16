@@ -51,19 +51,19 @@
 	</md-card-header>
 	<md-card-content flex layout="row">
 		<md-content ng-if="vm.level === 'Advance'" flex layout="column">
-			<md-checkbox ng-model="vm.actions.poolSwitch" ng-disabled="vm.targetLock">Pool</md-checkbox>
 			<div layout="row" ng-repeat="pool in vm.actions.pool">
+				<md-checkbox ng-model="pool.switch" ng-disabled="vm.targetLock"></md-checkbox>
 				<md-input-container flex="50">
 					<label>Address</label>
-					<input ng-model="pool.address" ng-disabled="vm.targetLock || !(vm.actions.poolSwitch)"/>
+					<input ng-model="pool.address" ng-disabled="vm.targetLock || !(pool.switch)"/>
 				</md-input-container>
 				<md-input-container flex="25">
 					<label>Worker</label>
-					<input ng-model="pool.worker" ng-disabled="vm.targetLock || !(vm.actions.poolSwitch)"/>
+					<input ng-model="pool.worker" ng-disabled="vm.targetLock || !(pool.switch)"/>
 				</md-input-container>
 				<md-input-container flex="25">
 					<label>Password</label>
-					<input ng-model="pool.password" ng-disabled="vm.targetLock || !(vm.actions.poolSwitch)"/>
+					<input ng-model="pool.password" ng-disabled="vm.targetLock || !(pool.switch)"/>
 				</md-input-container>
 			</div>
 			<md-checkbox ng-model="vm.actions.apiSwitch" ng-disabled="vm.targetLock">API Allow</md-checkbox>
