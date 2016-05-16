@@ -42,6 +42,8 @@
 		vm.addNode = addNode;
 		vm.cancelNode = cancelNode;
 		vm.saveNode = saveNode;
+		vm.encryptNode = encryptNode;
+		vm.encryptAll = encryptAll;
 
 		share.status.main.title = "Setting";
 		share.status.main.subTitle = false;
@@ -55,7 +57,6 @@
 					ip: vm.data.nodes[i].ip,
 					port: vm.data.nodes[i].port,
 					mods: vm.data.nodes[i].mods,
-					password: vm.data.nodes[i].password,
 				});
 			vm.tempNodes = temp;
 		}
@@ -74,11 +75,19 @@
 			vm.tempNodes.splice(vm.tempNodes.indexOf(node), 1);
 		}
 
-		function addNode(ip, port) {
+		function addNode() {
 			vm.nodeChanged = true;
 			vm.tempNodes.push({
-				ip: null, port: 4028, mods: 0, password: null
+				ip: null, port: 4028, mods: 0
 			});
+		}
+
+		function encryptNode(node) {
+
+		}
+
+		function encryptAll() {
+
 		}
 	}
 })();

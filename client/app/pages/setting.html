@@ -23,57 +23,42 @@
 <md-content layout="row" layout-align="center center" flex ng-if="!vm.tempNodes && vm.auth.success">
 	<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 </md-content>
-<md-content ng-if="!!vm.tempNodes && vm.auth.success" flex>
-	<md-table-container flex>
-		<table md-table md-progress="deferred">
-			<thead md-head>
-				<tr md-row>
-					<th md-column>IP</th>
-					<th md-column>Port</th>
-					<th md-column>Modules</th>
-					<th md-column>Password</th>
-					<th md-column>
-						<a ng-click="vm.saveNode()">
-							<ng-md-icon icon="save"></ng-md-icon>
-						</a>
-						<a ng-click="vm.cancelNode()">
-							<ng-md-icon icon="cancel"></ng-md-icon>
-						</a>
-					</th>
-				</tr>
-			</thead>
-			<tbody md-body>
-				<tr md-row ng-repeat="node in vm.tempNodes | orderBy: 'id'">
-					<td md-cell>
-						<input ng-model="node.ip" />
-					</td>
-					<td md-cell>
-						<input ng-model="node.port" />
-					</td>
-					<td md-cell>
-						<input ng-model="node.mods" />
-					</td>
-					<td md-cell>
-						<input ng-model="node.password" />
-					</td>
-					<td md-cell>
-						<a ng-click="vm.deleteNode(node)">
-							<ng-md-icon icon="delete"></ng-md-icon>
-						</a>
-					</td>
-				</tr>
-				<tr md-row>
-					<td md-cell></td>
-					<td md-cell></td>
-					<td md-cell></td>
-					<td md-cell></td>
-					<td md-cell>
-						<a ng-click="vm.addNode(node)">
-							<ng-md-icon icon="add"></ng-md-icon>
-						</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</md-table-container>
+<md-content ng-if="!!vm.tempNodes && vm.auth.success" flex layout="column">
+	<div layout="row" layout-align="center start">
+		<h3 class="md-subhead" flex="25">IP</h3>
+		<h3 class="md-subhead" flex="25">Port</h3>
+		<h3 class="md-subhead" flex="25">Modules</h3>
+		<h3 class="md-subhead" flex="25">Actions</h3>
+	</div>
+	<md-content flex layout="column">
+		<div ng-repeat="node in vm.tempNodes | orderBy: 'id'" layout="row" class="setting-column">
+			<md-input-container flex="25">
+				<input ng-model="node.ip" aria-label="ip" />
+			</md-input-container>
+			<md-input-container flex="25">
+				<input ng-model="node.port" aria-label="port" />
+			</md-input-container>
+			<md-input-container flex="25">
+				<input ng-model="node.mods" aria-label="mods" />
+			</md-input-container>
+			<div flex="25" layout="row">
+				<md-button ng-click="vm.encryptNode(node)" class="md-raised md-primary">Encrypt</md-button>
+				<md-button ng-click="vm.deleteNode(node)" class="md-raised md-warn">Delete</md-button>
+			</div>
+		</div>
+		<div layout="row" class="setting-column">
+			<div flex="25"></div>
+			<div flex="25"></div>
+			<div flex="25"></div>
+			<div flex="25" layout="row">
+				<md-button ng-click="vm.addNode()" class="md-raised md-primary">Add</md-button>
+			</div>
+		</div>
+	</md-content>
+	<div layout="row">
+		<md-button ng-click="vm.encryptAll()" class="md-raised md-primary">Encrypt All</md-button>
+		<div flex="auto"></div>
+		<md-button ng-click="vm.saveNode()" class="md-raised md-primary">Save</md-button>
+		<md-button ng-click="vm.cancelNode()" class="md-raised md-primary">Cancel</md-button>
+	</div>
 </md-content>

@@ -163,3 +163,8 @@ md-card-footer {
 .dialog-title {
 	margin-top: 0 !important;
 }
+
+.setting-column {
+	min-height: 48px;
+	max-height: 48px;
+}
