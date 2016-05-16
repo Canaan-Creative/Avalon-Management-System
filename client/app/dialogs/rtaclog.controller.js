@@ -23,9 +23,9 @@
 		.module('ams')
 		.controller('RTACLogController', RTACLogController);
 
-	RTACLogController.$inject = ['ShareService', 'APIService', '$mdDialog'];
+	RTACLogController.$inject = ['ShareService', 'APIService', '$mdDialog', '$sce'];
 
-	function RTACLogController(share, api, $mdDialog) {
+	function RTACLogController(share, api, $mdDialog, $sce) {
 		/* jshint validthis: true */
 		var vm = this;
 
@@ -34,9 +34,15 @@
 
 		vm.focus = focus;
 		vm.close = close;
+		vm.convert = convert;
 
 		function focus(node) {
 			vm.show = node;
+		}
+
+		function convert(text) {
+			text = text || '';
+			return $sce.trustAsHtml(text.replace("\n", "<br />"));
 		}
 
 		function close() {

@@ -17,36 +17,64 @@
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 -->
 <md-dialog aria-label="RTACLog" flex="75">
-	<md-dialog-content>
-		<div layout="column" class="md-dialog-content">
+	<md-dialog-content style="max-height: 80%">
+		<div layout="column" class="md-dialog-content" style="max-height: 80%">
 			<h2 class="md-title dialog-title">RTAC Log</h2>
 			<div layout="row">
-				<md-content layout="column" flex="40">
-					<div layout="row" ng-click="vm.focus(node)" ng-repeat="node in vm.data.targets">
-						<div>{{ node.ip }}:{{ node.port }}</div>
-						<div flex="auto"></div>
-						<div ng-if="!vm.data.logs[node.ip + ':' + node.port]">Running</div>
-						<div ng-if="vm.data.logs[node.ip + ':' + node.port] && !vm.data.logs[node.ip + ':' + node.port].error">Done</div>
-						<div ng-if="vm.data.logs[node.ip + ':' + node.port] && vm.data.logs[node.ip + ':' + node.port].error">Failed</div>
-					</div>
+				<md-content layout="column" flex="40" style="max-height: 80%">
+					<md-list>
+						<md-subheader class="md-no-sticky">Targets</md-subheader>
+						<md-divider ng-repeat-start="node in vm.data.targets"></md-divider>
+						<md-list-item ng-cloak ng-repeat-end
+								ng-class="vm.show.ip == node.ip && vm.show.port == node.port ?
+									'dark-true' : 'dark-false'">
+							<a ng-click="vm.focus(node)" flex>
+								<md-item-content md-ink-ripple layout="row" layout-align="end center">
+									<div ng-cloak>
+										{{ node.ip + ':' + node.port }}
+									</div>
+									<div flex="auto"></div>
+									<md-button class="md-raised"
+										ng-if="!vm.data.logs[node.ip + ':' + node.port]">Running</md-button>
+									<md-button class="md-raised md-primary" md-no-ink
+										ng-if="vm.data.logs[node.ip + ':' + node.port] &&
+										!vm.data.logs[node.ip + ':' + node.port].error">Done</md-button>
+									<md-button class="md-raised md-warn" md-no-ink
+										ng-if="vm.data.logs[node.ip + ':' + node.port] &&
+										vm.data.logs[node.ip + ':' + node.port].error">Failed</md-button>
+								</md-item-content>
+							</a>
+						</md-list-item>
+					</md-list>
 				</md-content>
 				<div flex="5"></div>
-				<md-content>
-					<div ng-if="vm.show" layout="column">
-						<div layout="column" ng-repeat="command in vm.data.commands track by $index">
-							<div layout="row">
-								<div>{{ command.lib }}</div>
-								<div>&nbsp;</div>
-								<div>{{ command.method }}</div>
-								<div ng-repeat-start="params in command.params">&nbsp;</div>
-								<div ng-repeat-end>{{ param }}</div>
+				<md-content style="max-height: 80%">
+					<md-list ng-if="vm.show">
+						<md-subheader class="md-no-sticky">Logs</md-subheader>
+						<md-divider ng-repeat-start="command in vm.data.commands track by $index"></md-divider>
+						<md-list-item class="md-3-line md-long-text" ng-cloak ng-repeat-end>
+							<div class="md-list-item-text">
+								<h3 layout="row">
+									<span>{{ command.lib }}&nbsp;{{ command.method }}</span>
+									<span ng-repeat="param in command.params">&nbsp;{{ param }}</span>
+								</h3>
+								<p ng-if="vm.data.logs[vm.show.ip + ':' + vm.show.port]">
+									result:
+									<br />
+									{{ vm.convert(vm.data.logs[vm.show.ip + ':' + vm.show.port].result[$index].result) }}
+									<br />
+									error:
+									<br />
+									<span ng-if="vm.data.logs[vm.show.ip + ':' + vm.show.port].result[$index].error">
+										{{ vm.data.logs[vm.show.ip + ':' + vm.show.port].result[$index].error }}
+									</span>
+									<span ng-if="! vm.data.logs[vm.show.ip + ':' + vm.show.port].result[$index].error">
+										null
+									</span>
+								</p>
 							</div>
-							<div ng-if="vm.data.logs[vm.show.ip + ':' + vm.show.port] &&
-									!vm.data.logs[vm.show.ip + ':' + vm.show.port].error">
-								{{ vm.data.logs[vm.show.ip + ':' + vm.show.port].result[$index] }}
-							</div>
-						</div>
-					</div>
+						</md-list-item>
+					</md-list>
 				</md-content>
 			</div>
 		</div>
