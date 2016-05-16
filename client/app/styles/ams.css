@@ -159,3 +159,7 @@ table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+
 md-card-footer {
 	min-height: 18px;
 }
+
+.dialog-title {
+	margin-top: 0 !important;
+}

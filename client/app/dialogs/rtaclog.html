@@ -16,5 +16,42 @@
  You should have received a copy of the GNU General Public License
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 -->
-<md-dialog ng-cloak>
+<md-dialog aria-label="RTACLog" flex="75">
+	<md-dialog-content>
+		<div layout="column" class="md-dialog-content">
+			<h2 class="md-title dialog-title">RTAC Log</h2>
+			<div layout="row">
+				<md-content layout="column" flex="40">
+					<div layout="row" ng-click="vm.focus(node)" ng-repeat="node in vm.data.targets">
+						<div>{{ node.ip }}:{{ node.port }}</div>
+						<div flex="auto"></div>
+						<div ng-if="!vm.data.logs[node.ip + ':' + node.port]">Running</div>
+						<div ng-if="vm.data.logs[node.ip + ':' + node.port] && !vm.data.logs[node.ip + ':' + node.port].error">Done</div>
+						<div ng-if="vm.data.logs[node.ip + ':' + node.port] && vm.data.logs[node.ip + ':' + node.port].error">Failed</div>
+					</div>
+				</md-content>
+				<div flex="5"></div>
+				<md-content>
+					<div ng-if="vm.show" layout="column">
+						<div layout="column" ng-repeat="command in vm.data.commands track by $index">
+							<div layout="row">
+								<div>{{ command.lib }}</div>
+								<div>&nbsp;</div>
+								<div>{{ command.method }}</div>
+								<div ng-repeat-start="params in command.params">&nbsp;</div>
+								<div ng-repeat-end>{{ param }}</div>
+							</div>
+							<div ng-if="vm.data.logs[vm.show.ip + ':' + vm.show.port] &&
+									!vm.data.logs[vm.show.ip + ':' + vm.show.port].error">
+								{{ vm.data.logs[vm.show.ip + ':' + vm.show.port].result[$index] }}
+							</div>
+						</div>
+					</div>
+				</md-content>
+			</div>
+		</div>
+	</md-dialog-content>
+	<md-dialog-actions>
+		<md-button class="md-raised md-primary" ng-click="vm.close()">Close</md-button>
+	</md-dialog-actions>
 </md-dialog>

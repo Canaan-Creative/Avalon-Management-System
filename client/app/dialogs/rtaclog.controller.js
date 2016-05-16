@@ -23,10 +23,25 @@
 		.module('ams')
 		.controller('RTACLogController', RTACLogController);
 
-	RTACLogController.$inject = ['ShareService', 'APIService', 'session_id'];
+	RTACLogController.$inject = ['ShareService', 'APIService', '$mdDialog'];
 
-	function RTACLogController(share, api, session_id) {
+	function RTACLogController(share, api, $mdDialog) {
 		/* jshint validthis: true */
 		var vm = this;
+
+		vm.data = share.status.rtac[vm.session_id];
+		vm.show = null;
+
+		vm.focus = focus;
+		vm.close = close;
+
+		function focus(node) {
+			vm.show = node;
+		}
+
+		function close() {
+			$mdDialog.hide();
+		}
+
 	}
 })();

@@ -89,9 +89,13 @@
 				promise = api.rtaclog(session_id, vm.auth.token).then(
 					function(response) {
 						console.log(vm.status);
-						if (response.data.result !== 'timeout')
-							session.results.push(response.data);
-						if (session.results.length < session.targets.length) {
+						if (response.data.result !== 'timeout') {
+							var ip = response.data.node.ip;
+							var port = response.data.node.port;
+							session.logs[ip + ":" + port] = response.data;
+							session.len++;
+						}
+						if (session.len < session.targets.length) {
 							session.promise = promise;
 							polling(session_id);
 						}
@@ -192,11 +196,13 @@
 				var promise = api.rtac(targets, commands, session_id, vm.auth.token);
 				vm.status[session_id] = {
 					promise: promise,
-					results: [],
+					logs: {},
 					commands: commands,
 					targets: targets,
+					len: 0,
 				};
 				polling(session_id);
+				share.utils.showDialog('rtaclog', {session_id: session_id});
 			}
 
 			vm.targetLock = false;

@@ -297,6 +297,7 @@
 				controller: controller,
 				controllerAs: 'vm',
 				locals: params,
+				bindToController: true,
 			});
 		}
 
