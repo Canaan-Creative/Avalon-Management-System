@@ -30,12 +30,19 @@
 	background-color: #64b5f6;
 }
 
+.md-taller {
+	height: 160px;
+	min-height: 160px;
+	max-height: 160px;
+}
+
 .node > md-list > md-list-item {
 	width: 180px;
 }
 
 h3.logo {
 	margin-top: 0;
+	margin-bottom: 0;
 }
 
 .md-sidenav-left {
@@ -112,7 +119,7 @@ table[md-data-table][md-row-select] > tfoot > tr > td:first-child {
 }
 table[md-data-table][md-row-select] > thead:not([md-table-progress]) > tr > th:nth-child(2),
 table[md-data-table][md-row-select] > tbody > tr > td:nth-child(2),
-table[md-data-table][md-row-select] > tfoot > tr > td:nth-child(2) {
+table[md-data-table][md-row-select] > tfoot > tr > td:nth-child(3) {
 	padding: 0 14px 0 0;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th:last-child,
@@ -180,6 +187,10 @@ md-card-footer {
 	min-height: 64px !important;
 	max-height: 64px !important;
 	margin-left: 16px !important;
+}
+
+.version {
+	font-size: 10px !important;
 }
 
 ::-webkit-scrollbar {

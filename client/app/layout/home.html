@@ -19,10 +19,12 @@
 <body layout="row">
 	<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-4dp"
 			md-component-id="left"
+			layout-align="center center"
 			md-is-locked-open="$mdMedia('gt-lg')">
-		<md-toolbar class="md-tall md-hue-2" layout="column" layout-align="center center">
+		<md-toolbar class="md-taller md-hue-2" layout="column" layout-align="start center">
 			<img src="./asset/logo.svg" />
 			<h3 class="md-title logo">AMS</h3>
+			<span class="version">v{{ vm.version.version }}-git-{{ vm.version.hash }}</span>
 		</md-toolbar>
 		<md-list>
 			<md-list-item>
@@ -63,7 +65,7 @@
 				</a>
 			</md-list-item>
 		</md-list>
-		<md-divider></md-divider>
+		<md-divider style="width: 100%"></md-divider>
 		<md-list>
 			<md-list-item ng-repeat="item in vm.menu">
 				<a ng-click="vm.select(item)">
@@ -79,6 +81,10 @@
 				</a>
 			</md-list-item>
 		</md-list>
+		<div flex></div>
+		<span class="version">Powered by</span>
+		<span class="version">Canaan Creative</span>
+		<span class="version">&nbsp;</span>
 	</md-sidenav>
 	<div layout="column" layout-fill>
 		<md-toolbar class="ams-toolbar">

@@ -54,6 +54,7 @@
 		];
 		vm.status = share.status.main;
 		vm.auth = share.status.auth;
+		vm.version = share.status.version;
 		vm.toggleSidenav = toggleSidnav;
 		vm.select = select;
 		vm.chooseSnap = chooseSnap;

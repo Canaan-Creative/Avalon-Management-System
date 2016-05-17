@@ -4,6 +4,12 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 
+		githash: {
+			main: {
+				options: {},
+			},
+		},
+
 		bower: {
 			install: {
 				options: {
@@ -49,6 +55,23 @@ module.exports = function(grunt) {
 					dest: 'lib/css/'
 				}]
 			}
+		},
+
+		'string-replace': {
+			dist: {
+				files: {
+					'lib/js/ams.min.js': 'lib/js/ams.min.js',
+				},
+			},
+			options: {
+				replacements: [{
+					pattern: '__VERSION__',
+					replacement: '<%= pkg.version %>',
+				}, {
+					pattern: '__GIT_HASH__',
+					replacement: '<%= githash.main.short %>',
+				}]
+			},
 		},
 
 		uglify: {
@@ -173,6 +196,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-html2js');
 	grunt.loadNpmTasks('grunt-bower-task');
 	grunt.loadNpmTasks('grunt-banner');
+	grunt.loadNpmTasks('grunt-string-replace');
+	grunt.loadNpmTasks('grunt-githash');
 
 	grunt.registerTask('prereq', [
 		'clean:temp',
@@ -192,6 +217,8 @@ module.exports = function(grunt) {
 		'clean:temp',
 		'clean:dist',
 		'compress',
+		'githash:main',
+		'string-replace:dist',
 	]);
 	grunt.registerTask('debug', [
 		'jshint',
