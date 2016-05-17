@@ -52,7 +52,7 @@
 	<md-card-content flex layout="row">
 		<md-content ng-if="vm.level === 'Advance'" flex layout="column">
 			<div layout="row" ng-repeat="pool in vm.actions.pool">
-				<md-checkbox ng-model="pool.switch" ng-disabled="vm.targetLock"></md-checkbox>
+				<md-checkbox ng-model="pool.switch" ng-disabled="vm.targetLock" aria-label="Pool"></md-checkbox>
 				<md-input-container flex="50">
 					<label>Address</label>
 					<input ng-model="pool.address" ng-disabled="vm.targetLock || !(pool.switch)"/>
@@ -67,14 +67,14 @@
 				</md-input-container>
 			</div>
 			<div layout="row">
-				<md-checkbox ng-model="vm.actions.apiSwitch" ng-disabled="vm.targetLock"></md-checkbox>
+				<md-checkbox ng-model="vm.actions.apiSwitch" ng-disabled="vm.targetLock" aria-label="API"></md-checkbox>
 				<md-input-container>
 					<label>API Allow</label>
 					<input ng-model="vm.actions.api" ng-disabled="vm.targetLock || !(vm.actions.apiSwitch)"/>
 				</md-input-container>
 			</div>
 			<div layout="row">
-				<md-checkbox ng-model="vm.actions.ntpSwitch" ng-disabled="vm.targetLock"></md-checkbox>
+				<md-checkbox ng-model="vm.actions.ntpSwitch" ng-disabled="vm.targetLock" aria-label="NTP"></md-checkbox>
 				<md-input-container>
 					<label>NTP</label>
 					<input ng-model="vm.actions.ntp" ng-disabled="vm.targetLock || !(vm.actions.ntpSwitch)"/>
