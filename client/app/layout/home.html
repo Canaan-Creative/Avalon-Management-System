@@ -25,6 +25,46 @@
 			<h3 class="md-title logo">AMS</h3>
 		</md-toolbar>
 		<md-list>
+			<md-list-item>
+				<md-item-content layout="row" layout-align="center center">
+					<div class="inset">
+						<ng-md-icon icon="account_circle" ng-cloak>
+						</ng-md-icon>
+					</div>
+					<div class="inset md-subhead" ng-cloak>
+						{{ vm.auth.name === '' ? 'guest' : vm.auth.name }}
+					</div>
+				</md-item-content>
+			</md-list-item>
+			<md-list-item ng-if="vm.auth.name === ''">
+				<a ng-click="vm.login()">
+					<md-item-content md-ink-ripple layout="row" layout-align="center center">
+						<div class="inset">
+							<ng-md-icon icon="login" ng-cloak>
+							</ng-md-icon>
+						</div>
+						<div class="inset md-subhead" ng-cloak>
+							Login
+						</div>
+					</md-item-content>
+				</a>
+			</md-list-item>
+			<md-list-item ng-if="vm.auth.name !== ''">
+				<a ng-click="vm.logout()">
+					<md-item-content md-ink-ripple layout="row" layout-align="center center">
+						<div class="inset">
+							<ng-md-icon icon="logout" ng-cloak>
+							</ng-md-icon>
+						</div>
+						<div class="inset md-subhead" ng-cloak>
+							Logout
+						</div>
+					</md-item-content>
+				</a>
+			</md-list-item>
+		</md-list>
+		<md-divider></md-divider>
+		<md-list>
 			<md-list-item ng-repeat="item in vm.menu">
 				<a ng-click="vm.select(item)">
 					<md-item-content md-ink-ripple layout="row" layout-align="center center">
@@ -35,7 +75,6 @@
 						<div class="inset md-subhead" ng-cloak>
 							{{ item.name }}
 						</div>
-						<md-divider></md-divider>
 					</md-item-content>
 				</a>
 			</md-list-item>

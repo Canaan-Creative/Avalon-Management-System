@@ -53,9 +53,12 @@
 			}
 		];
 		vm.status = share.status.main;
+		vm.auth = share.status.auth;
 		vm.toggleSidenav = toggleSidnav;
 		vm.select = select;
 		vm.chooseSnap = chooseSnap;
+		vm.logout = logout;
+		vm.login = login;
 
 		function toggleSidnav() {
 			$mdSidenav('left').toggle();
@@ -73,6 +76,18 @@
 
 		function chooseSnap() {
 			share.utils.showDialog('snapshot');
+		}
+
+		function logout() {
+			vm.auth = {
+				success: false,
+				name: '',
+				token: '',
+			};
+		}
+
+		function login() {
+			share.utils.showDialog('login');
 		}
 	}
 })();
