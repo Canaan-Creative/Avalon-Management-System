@@ -42,8 +42,6 @@
 		vm.addNode = addNode;
 		vm.cancelNode = cancelNode;
 		vm.saveNode = saveNode;
-		vm.encryptNode = encryptNode;
-		vm.encryptAll = encryptAll;
 
 		share.status.main.title = "Setting";
 		share.status.main.subTitle = false;
@@ -80,14 +78,6 @@
 			vm.tempNodes.push({
 				ip: null, port: 4028, mods: 0
 			});
-		}
-
-		function encryptNode(node) {
-
-		}
-
-		function encryptAll() {
-
 		}
 	}
 })();

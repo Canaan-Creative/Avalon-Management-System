@@ -164,7 +164,30 @@ md-card-footer {
 	margin-top: 0 !important;
 }
 
+.setting-header {
+	min-height: 48px !important;
+	max-height: 48px !important;
+	margin-left: 24px !important;
+}
+
 .setting-column {
-	min-height: 48px;
-	max-height: 48px;
+	min-height: 48px !important;
+	max-height: 48px !important;
+	margin-left: 16px !important;
+}
+
+.setting-footer {
+	min-height: 64px !important;
+	max-height: 64px !important;
+	margin-left: 16px !important;
+}
+
+::-webkit-scrollbar {
+	height: 2px;
+	width: 2px;
+}
+::-webkit-scrollbar-thumb {
+	background: #2196F3;
+	-webkit-border-radius: 1ex;
+	-webkit-box-shadow: 0px;
 }

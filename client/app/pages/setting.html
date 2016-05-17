@@ -24,7 +24,7 @@
 	<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 </md-content>
 <md-content ng-if="!!vm.tempNodes && vm.auth.success" flex layout="column">
-	<div layout="row" layout-align="center start">
+	<div layout="row" layout-align="center start" class="setting-header">
 		<h3 class="md-subhead" flex="25">IP</h3>
 		<h3 class="md-subhead" flex="25">Port</h3>
 		<h3 class="md-subhead" flex="25">Modules</h3>
@@ -42,7 +42,6 @@
 				<input ng-model="node.mods" aria-label="mods" />
 			</md-input-container>
 			<div flex="25" layout="row">
-				<md-button ng-click="vm.encryptNode(node)" class="md-raised md-primary">Encrypt</md-button>
 				<md-button ng-click="vm.deleteNode(node)" class="md-raised md-warn">Delete</md-button>
 			</div>
 		</div>
@@ -55,10 +54,13 @@
 			</div>
 		</div>
 	</md-content>
-	<div layout="row">
-		<md-button ng-click="vm.encryptAll()" class="md-raised md-primary">Encrypt All</md-button>
-		<div flex="auto"></div>
-		<md-button ng-click="vm.saveNode()" class="md-raised md-primary">Save</md-button>
-		<md-button ng-click="vm.cancelNode()" class="md-raised md-primary">Cancel</md-button>
+	<div layout="row" layout-align="start center" class="setting-footer">
+		<div flex="25"></div>
+		<div flex="25"></div>
+		<div flex="25"></div>
+		<div flex="25">
+			<md-button ng-click="vm.saveNode()" class="md-raised md-primary">Save</md-button>
+			<md-button ng-click="vm.cancelNode()" class="md-raised md-primary">Cancel</md-button>
+		</div>
 	</div>
 </md-content>
