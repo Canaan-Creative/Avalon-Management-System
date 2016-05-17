@@ -20,7 +20,7 @@ module.exports = function(grunt) {
 					flatten: true,
 					src: [
 						'bower_components/**/*.min.js',
-						'!bower_components/angular-material/angular-material.layouts.min.js',
+						'!bower_components/angular-material/layouts/*.js',
 						'!bower_components/angular-messages/*.js',
 						'!bower_components/angular-material/modules/**/*.js'
 					],
@@ -30,7 +30,7 @@ module.exports = function(grunt) {
 					flatten: true,
 					src: [
 						'bower_components/**/*.min.css',
-						'!bower_components/angular-material/angular-material.layouts.min.css',
+						'!bower_components/angular-material/layouts/*.css',
 						'!bower_components/angular-material/modules/**/*.css'
 					],
 					dest: 'lib/css/'
