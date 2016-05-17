@@ -80,11 +80,9 @@
 		}
 
 		function logout() {
-			vm.auth = {
-				success: false,
-				name: '',
-				token: '',
-			};
+			vm.auth.success = false;
+			vm.auth.name = '';
+			vm.auth.token = '';
 		}
 
 		function login() {
