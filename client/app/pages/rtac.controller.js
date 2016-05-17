@@ -30,6 +30,7 @@
 		var vm = this;
 
 		vm.auth = share.status.auth;
+		vm.lock = share.status.lock;
 		vm.status = share.status.rtac;
 		vm.data = api.data;
 
@@ -60,7 +61,7 @@
 		vm.run = run;
 
 		api.getNodes();
-
+		api.getLocks();
 
 		function selectAll() {
 			for (var i = 0; i < vm.data.nodes.length; i++)
@@ -196,6 +197,12 @@
 						lib: 'sys',
 						method: 'exec',
 						params: ['/etc/init.d/cgminer restart'],
+					});
+				if (vm.actions.encrypt)
+					commands.push({
+						lib: 'sys',
+						method: 'user.setpasswd',
+						params: ['`random`'],
 					});
 				break;
 			case 'Basic':

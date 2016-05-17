@@ -66,17 +66,22 @@
 					<input ng-model="pool.password" ng-disabled="vm.targetLock || !(pool.switch)"/>
 				</md-input-container>
 			</div>
-			<md-checkbox ng-model="vm.actions.apiSwitch" ng-disabled="vm.targetLock">API Allow</md-checkbox>
-			<md-input-container>
-				<label>API Allow</label>
-				<input ng-model="vm.actions.api" ng-disabled="vm.targetLock || !(vm.actions.apiSwitch)"/>
-			</md-input-container>
-			<md-checkbox ng-model="vm.actions.ntpSwitch" ng-disabled="vm.targetLock">NTP</md-checkbox>
-			<md-input-container>
-				<label>NTP</label>
-				<input ng-model="vm.actions.ntp" ng-disabled="vm.targetLock || !(vm.actions.ntpSwitch)"/>
-			</md-input-container>
+			<div layout="row">
+				<md-checkbox ng-model="vm.actions.apiSwitch" ng-disabled="vm.targetLock"></md-checkbox>
+				<md-input-container>
+					<label>API Allow</label>
+					<input ng-model="vm.actions.api" ng-disabled="vm.targetLock || !(vm.actions.apiSwitch)"/>
+				</md-input-container>
+			</div>
+			<div layout="row">
+				<md-checkbox ng-model="vm.actions.ntpSwitch" ng-disabled="vm.targetLock"></md-checkbox>
+				<md-input-container>
+					<label>NTP</label>
+					<input ng-model="vm.actions.ntp" ng-disabled="vm.targetLock || !(vm.actions.ntpSwitch)"/>
+				</md-input-container>
+			</div>
 			<md-checkbox ng-model="vm.actions.restartMiner" ng-disabled="vm.targetLock">Restart CGMiner</md-checkbox>
+			<md-checkbox ng-model="vm.actions.encrypt" ng-disabled="vm.targetLock || vm.lock.encrypt">Encrypt</md-checkbox>
 		</md-content>
 		<md-content ng-if="vm.level === 'Basic'" flex layout="column">
 			<md-input-container>

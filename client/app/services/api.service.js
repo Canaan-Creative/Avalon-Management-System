@@ -45,6 +45,7 @@
 		self.rtac = rtac;
 		self.rtaclog = rtaclog;
 		self.login = login;
+		self.getLocks = getLocks;
 
 		var getStatusLock = {
 			summary: {number: 0, id: 0},
@@ -224,6 +225,10 @@
 
 		function login(username, password) {
 			return $http.post('/api/login', {username: username, password: password});
+		}
+
+		function getLocks() {
+			return $http.get('/api/locks');
 		}
 	}
 })();
