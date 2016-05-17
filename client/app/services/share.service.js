@@ -30,6 +30,10 @@
 		var self = this;
 
 		self.status = {
+			version: {
+				version: '__VERSION__',
+				hash: '__GIT_HASH__',
+			},
 			auth: {
 				success: false,
 				name: '',
