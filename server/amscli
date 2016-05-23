@@ -380,6 +380,12 @@ def alert(argv):
     pass
 
 
+def report(argv):
+    from ams.report import sendReport
+    mail = readCfg(cfgfile)['Email']
+    sendReport(mail)
+
+
 def init(argv):
     from ams.sql import DataBase
     db = readCfg(cfgfile)['DataBase']
@@ -445,5 +451,7 @@ THIS IS THE DOC.'''
         config(sys.argv[2:])
     elif (sys.argv[1] == 'alert'):
         alert(sys.argv[2:])
+    elif (sys.argv[1] == 'report'):
+        report(sys.argv[2:])
     else:
         print(doc)
