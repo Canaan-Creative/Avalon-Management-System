@@ -194,8 +194,8 @@ md-card-footer {
 }
 
 ::-webkit-scrollbar {
-	height: 2px;
-	width: 2px;
+	height: 8px;
+	width: 8px;
 }
 ::-webkit-scrollbar-thumb {
 	background: #2196F3;
