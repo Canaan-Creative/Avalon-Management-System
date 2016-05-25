@@ -366,7 +366,7 @@ def pool(argv):
         {"name": "name", "type": "VARCHAR(16)"},
         {"name": "address", "type": "VARCHAR(64)"},
         {"name": "user", "type": "VARCHAR(64)"},
-        {"name": "worker", "type": "VARCHAR(65535)"},
+        {"name": "worker", "type": "VARCHAR(4096)"},
         {"name": "key", "type": "VARCHAR(64)"},
         {"name": "seckey", "type": "VARCHAR(64)"}
     ])
