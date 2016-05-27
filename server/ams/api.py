@@ -102,20 +102,18 @@ def before_request():
     g.database.connect()
 
 
-# miner.password need permission protection
 @app.route('/nodes', methods=['GET'])
 def get_nodes():
     result = g.database.run(
         'select',
         'controller_config',
-        ['ip', 'port', 'mods', 'password'])
+        ['ip', 'port', 'mods'])
     nodes = []
     for r in result:
-        nodes.append({'ip': r[0], 'port': r[1], 'mods': r[2], 'password': r[3]})
+        nodes.append({'ip': r[0], 'port': r[1], 'mods': r[2]})
     return ams_dumps({'result': nodes})
 
 
-# Need permission protection
 @app.route('/update_nodes', methods=['POST'])
 def update_nodes():
     token = request.json.get('token')
@@ -127,14 +125,12 @@ def update_nodes():
         {"name": "ip", "type": "VARCHAR(40)"},
         {"name": "port", "type": "SMALLINT UNSIGNED"},
         {"name": "mods", "type": "SMALLINT UNSIGNED"},
-        {"name": "password", "type": "VARCHAR(32)"}
     ])
     for node in nodes:
         safe_node = {
            'ip': node['ip'],
            'port': node['port'],
-           'password': node['password'],
-           'mods': node['mods']
+           'mods': node['mods'],
         }
         g.database.run(
             'insert', 'controller_config',
@@ -178,14 +174,27 @@ def get_last_time():
 
 @app.route('/config/<ip>/<port>', methods=['GET'])
 def get_config(ip, port):
-    clause = "`ip` = %s"
-    nodes = g.database.run(
-        'select', 'controller_config', ['password'], clause, [ip])
-    if not nodes:
-        return '{"result": "wrong node"}'
-    password = nodes[0][0] if nodes[0][0] is not None else ''
+    try:
+        nodes = g.database.run(
+            'select',
+            'controller_security',
+            ['old_password', 'password'],
+            "`ip` = %s",
+            [ip]
+        )
+        password = nodes[0][1] if nodes[0][1] is not None else ''
+        old_password = (nodes[0][0] if nodes[0][0] is not None else password)
+    except:
+        password = ''
+
     luci = ams.luci.LuCI(ip, 80, password)
-    luci.auth()
+    if not luci.auth():
+        luci = ams.luci.LuCI(ip, 80, old_password)
+    if not luci.auth():
+        luci = ams.luci.LuCI(ip, 80, '')
+    if not luci.auth():
+        return '{"result": "auth false"}'
+
     result = luci.put('uci', 'get_all', ['cgminer.default'])
     return ams_dumps(result)
 
@@ -598,17 +607,42 @@ def rtac():
     rtac_process.daemon = False
     rtac_process.start()
 
+    pass_index = None
+    for i, c in enumerate(commands):
+        if c['method'] == 'user.setpasswd':
+            pass_index = i
+            # TODO:
+            # lock in redis controller_security of write
+            # change new_password in controller_security
+
+            break
+
     def storeResults(queue, key):
         server = redis.StrictRedis()
         while True:
             result = queue.get()
             if result == 'END':
+                if pass_index is not None:
+                    # TODO:
+                    # unlock in redis
+                    pass
                 break
+            if pass_index is not None:
+                if (len(result['result']) > pass_index + 1 and
+                        result['result'][pass_index].result):
+                    pass
+                # TODO:
+                # update table controller_security:
+                #     password -> old_password
+                #     new_password -> password
+                #     result['node']['ip'] -> ip
+                #     result['node']['port'] -> port
+                #     result['result'][pass_index].result == True
             server.rpush(key, json.dumps(result))
 
     result_process = multiprocessing.Process(
         target=storeResults,
-        args=(result_queue, key)
+        args=(result_queue, key, pass_index)
     )
     result_process.daemon = False
     result_process.start()

@@ -39,16 +39,19 @@ def luciThread(node_queue, result_queue, commands, db):
         result = database.run(
             'select',
             'controller_security',
-            ['password', 'new_password'],
+            ['old_password', 'password', 'new_password'],
             "`ip` = %s",
             [node['ip']]
         )
         if not result or not result[0]:
             password = ''
+            old_password = ''
             new_password = ''
         else:
-            password = result[0][0] if result[0][0] is not None else ''
-            new_password = (result[0][1] if result[0][1] is not None
+            password = result[0][1] if result[0][1] is not None else ''
+            old_password = (result[0][0] if result[0][0] is not None
+                            else password)
+            new_password = (result[0][2] if result[0][2] is not None
                             else password)
 
         error = False
@@ -58,9 +61,13 @@ def luciThread(node_queue, result_queue, commands, db):
             try:
                 luci = ams.luci.LuCI(node['ip'], 80, password)
                 if not luci.auth():
+                    luci = ams.luci.LuCI(node['ip'], 80, old_password)
+                if not luci.auth():
+                    luci = ams.luci.LuCI(node['ip'], 80, '')
+                if not luci.auth():
                     auth = False
                     error = True
-                    continue
+                    break
                 auth = True
                 result = []
                 for c in commands[j:]:
@@ -76,7 +83,7 @@ def luciThread(node_queue, result_queue, commands, db):
                                 '`new_password`', new_password
                             )
                     result.append(luci.put(
-                        c['lib'], c['method'], c['params'], i + 3
+                        c['lib'], c['method'], c['params'], i + 10
                     ))
                     j += 1
                 error = False
