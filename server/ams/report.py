@@ -120,7 +120,7 @@ def sendReport(cfg):
     )
     tbody = ''
     for pool in pool_summary:
-        pool['ghs'] = numberShorten(pool['ghs'] * 1.0e6)
+        pool['ghs'] = numberShorten(pool['ghs'] * 1.0e3)
         tbody += """\
                 <tr>
                     <td style="border: 1px solid black;">{url}</td>
