@@ -30,8 +30,8 @@ cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV') or '/', 'etc/ams.conf')
 
 def readCfg(filename):
     import configparser
-    config = configparser.ConfigParser()
-    config.read(filename)
+    config = configparser.ConfigParser(interpolation=None)
+    config.read(filename, encoding="utf8")
     return config
 
 
@@ -380,8 +380,8 @@ def alert(argv):
 
 def report(argv):
     from ams.report import sendReport
-    mail = readCfg(cfgfile)['Email']
-    sendReport(mail)
+    cfg = readCfg(cfgfile)
+    sendReport(cfg)
 
 
 def init(argv):

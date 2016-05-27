@@ -44,8 +44,8 @@ cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV') or '/', 'etc/ams.conf')
 
 
 def readCfg(filename):
-    config = configparser.ConfigParser()
-    config.read(filename)
+    config = configparser.ConfigParser(interpolation=None)
+    config.read(filename, encoding="utf8")
     return config
 
 
