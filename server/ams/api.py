@@ -140,6 +140,7 @@ def update_nodes():
     return ams_dumps({'success': True})
 
 
+# TODO: change to /shortlog/<time>
 @app.route('/shortlog', methods=['GET'])
 def get_shortlog():
     result = g.database.run(
@@ -164,6 +165,45 @@ SELECT a.time, a.mhs, a.node, b.module
         'node_num': result[0][2],
         'module_num': result[0][3],
     }})
+
+
+@app.route('/pool_summary/<time>', methods=['GET'])
+def get_pool_summary(time):
+    if time == 'latest':
+        result = g.database.run('raw', 'SELECT MAX(time) from hashrate')
+        time = result[0][0].timestamp()
+    time = datetime.datetime.fromtimestamp(int(time))
+
+    result = g.database.run(
+        'raw',
+        '''\
+SELECT url, SUBSTRING_INDEX(`user`, '.', 1) AS username, sum(ghs) AS ghs,
+       COUNT(ip) AS ip_num, SUM(module_num) AS module_num
+  FROM (
+        SELECT a.ip, a.port, url, user, b.ghs ,b.module_num
+          FROM pool AS a
+          JOIN (
+                SELECT ip, port, SUM(ghsmm) AS ghs, COUNT(dna) AS module_num
+                  FROM module
+                 WHERE time = '{0:%Y-%m-%d %H:%M:%S}'
+                 GROUP BY ip, port)
+            AS b
+            ON a.port = b.port AND a.ip = b.ip
+         WHERE a.time = '{0:%Y-%m-%d %H:%M:%S}' AND a.pool_id = 0
+         ORDER BY a.ip)
+    AS c
+ GROUP BY username'''.format(time))
+
+    summary = []
+    for r in result:
+        summary.append({
+            'url': r[0],
+            'username': r[1],
+            'ghs': r[2],
+            'node_num': r[3],
+            'module_num': r[4],
+        })
+    return ams_dumps({'result': summary})
 
 
 @app.route('/lasttime', methods=['GET'])
