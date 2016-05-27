@@ -25,6 +25,10 @@ thread_num = 50
 
 [Farm]
 type = avalon6
+code = TEST
+name = TEST
+info = http://farm.info/test
+balance = 1canaantesttesttest
 
 [JWT]
 password = JWT_PASSWORD
