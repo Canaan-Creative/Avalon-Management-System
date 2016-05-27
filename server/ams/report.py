@@ -98,7 +98,7 @@ def sendReport(cfg):
                 <tr>
                     <th style="border: 1px solid black;">Pool</th>
                     <th style="border: 1px solid black;">User</th>
-                    <th style="border: 1px solid black;">GHs</th>
+                    <th style="border: 1px solid black;">Hs</th>
                     <th style="border: 1px solid black;">Node Number</th>
                     <th style="border: 1px solid black;">Module Number</th>
                 <tr>
