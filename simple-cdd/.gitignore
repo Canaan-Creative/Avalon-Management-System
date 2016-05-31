@@ -1,0 +1,6 @@
+profiles/ams.preseed
+private.conf
+extras/root/etc/init.d/
+extras/authorized_keys
+*.tar.gz
+images/

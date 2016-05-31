@@ -1,0 +1,29 @@
+#!/bin/bash
+pushd ../server/
+python3 setup.py sdist
+popd
+
+pushd ../client
+npm install
+grunt prereq
+grunt build
+popd
+
+cp ../server/dist/*.tar.gz extras/
+cp ../client/dist/*.tar.gz extras/
+
+source ./private.conf
+
+D=$'\001'
+PATTERN='s'$D'MYSQL_PASSWORD'$D$MYSQL_PASSWORD$D'g;s'$D'ROOT_PASSWORD'$D$ROOT_PASSWORD$D'g;s'$D'AMS_PASSWORD'$D$AMS_PASSWORD$D'g'
+sed $PATTERN profiles/ams.preseed.template > profiles/ams.preseed
+mkdir -p extras/root/etc/init.d/
+sed $PATTERN firstboot > extras/root/etc/init.d/firstboot
+chmod +x extras/root/etc/init.d/firstboot
+
+echo $PUBLIC_KEY > extras/authorized_keys
+
+tar czvf extras.tar.gz extras/
+
+build-simple-cdd
+build-simple-cdd --conf ./ams.cdd.conf --force-preseed

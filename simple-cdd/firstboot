@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+### BEGIN INIT INFO
+# Provides:          firstboot
+# Required-Start:    mysql apache2
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: First boot script
+# Description: First boot script
+### END INIT INFO
+#
+
+if [ -f /root/first-boot-done ]
+then
+	exit 0
+fi
+
+DATABASE_SECTION=`sed '1,/\[DataBase\]/d' /etc/ams.conf`
+USER=`printf "$DATABASE_SECTION" | awk -F "=" '/user/ {print $2;exit}' | tr -d ' '`
+HOST=`printf "$DATABASE_SECTION" | awk -F "=" '/host/ {print $2;exit}' | tr -d ' '`
+DATABASE=`printf "$DATABASE_SECTION" | awk -F "=" '/database/ {print $2;exit}' | tr -d ' '`
+PASSWORD=`printf "$DATABASE_SECTION" | awk -F "=" '/password/ {print $2;exit}' | tr -d ' '`
+
+CLIENT_SECTION=`sed '1,/\[Client\]/d' /etc/ams.conf`
+CLIENT_PASSWORD=`printf "$CLIENT_SECTION" | awk -F "=" '/password/ {print $2;exit}' | tr -d ' '`
+
+cp /opt/extras/scripts/update_network.sh /root/
+chmod +x /root/update_network.sh
+
+tar xzvf /opt/extras/ams-server*.tar.gz -C /opt/
+tar xzvf /opt/extras/ams-client*.tar.gz -C /var/www/html/
+mv /var/www/html/ams-client /var/www/html/ams
+cd /opt/ams-server*
+python3 setup.py install
+
+a2enmod wsgi headers
+service apache2 restart
+
+mkdir /home/ams/.ssh
+cp /opt/extras/authorized_keys /home/ams/.ssh/
+chmod 700 /home/ams/.ssh
+chmod 600 /home/ams/.ssh/authorized_keys
+chown -R ams:ams /home/ams/.ssh
+
+mysql -uroot -p'MYSQL_PASSWORD' -e "CREATE DATABASE $DATABASE;"
+mysql -uroot -p'MYSQL_PASSWORD' -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO $USER@$HOST IDENTIFIED BY \"$PASSWORD\";"
+mysql -uroot -p'MYSQL_PASSWORD' -e "FLUSH PRIVILEGES;"
+
+/usr/local/bin/amscli init
+/usr/local/bin/amscli adduser admin $CLIENT_PASSWORD
+
+touch /root/first-boot-done
+exit 0
