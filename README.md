@@ -78,9 +78,19 @@ Build (for Developer)
 
 * client:
 
+    Requirement:
+
+    ```
+    sudo apt-get install npm
+    sudo ln -s /usr/bin/nodejs /usr/bin/node
+    sudo npm install -g grunt-cli jshint
+
+    ```
+
+    Build:
+
     ```
     cd client
-    sudo npm install -g grunt-cli jshint
     npm install
     grunt prereq
     grunt build
