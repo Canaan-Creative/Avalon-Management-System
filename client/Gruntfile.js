@@ -216,9 +216,9 @@ module.exports = function(grunt) {
 		'usebanner:build',
 		'clean:temp',
 		'clean:dist',
-		'compress',
 		'githash:main',
 		'string-replace:dist',
+		'compress',
 	]);
 	grunt.registerTask('debug', [
 		'jshint',
