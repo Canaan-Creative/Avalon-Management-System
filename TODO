@@ -1,18 +1,19 @@
-Snapshot and realtime infos for whole farm or single pi/miner
-Custom graph??
+1. Cleanup amscli
+	* amscli cfg F:CTR_LIST F:KEY=VALUE_LIST
+	* amscli plot ?
+	* amscli db SQL ?
+	* amscli alert
 
-ams.lock, mysql database write lock
+2. angularjs json security vulnerability
+	add ")]}',\n" to json blob head
 
-amscli ctrl *edit RPi list* //Done
-amscli update *fetch RPi data and store in db* //Done
-amscli fetch ip port command *fetch RPi data, single thread* //Done
-amscli pool *edit Pool list* //Done
+3. node encryption
+	* log password changes and attemp failures
+	* database write lock
 
+4. snapshot data
 
-amscli cfg F:CTR_LIST F:KEY=VALUE_LIST
-// luci api
+5. tableview of node data
 
-amscli plot ?
-amscli db SQL ?
-
-amscli alert
+6. log viewer on ams-client:
+	user, actions and results
