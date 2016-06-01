@@ -1,9 +1,15 @@
 #!/bin/bash
+set -e
+
+rm -rf images
+
 pushd ../server/
+rm -rf dist
 python3 setup.py sdist
 popd
 
 pushd ../client
+grunt distclean
 npm install
 grunt prereq
 grunt build
