@@ -36,6 +36,7 @@ diffutils
 discover
 dmidecode
 dmsetup
+dnsmasq
 dnsutils
 doc-debian
 dos2unix
@@ -62,6 +63,7 @@ grub-common
 grub-efi-amd64
 gzip
 host
+hostapd
 hostname
 ifupdown
 info

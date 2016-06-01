@@ -1,6 +1,8 @@
+dnsmasq
 dos2unix
 firmware-iwlwifi
 git
+hostapd
 libapache2-mod-wsgi-py3
 mysql-client
 mysql-server
