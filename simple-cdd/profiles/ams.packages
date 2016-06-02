@@ -1,11 +1,13 @@
 dnsmasq
 dos2unix
+exfat-fuse
 firmware-iwlwifi
 git
 hostapd
 libapache2-mod-wsgi-py3
 mysql-client
 mysql-server
+ntfs-3g
 ntp
 python3
 python3-pip
