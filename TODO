@@ -1,23 +1,23 @@
-1. Cleanup amscli
+- cleanup amscli
 	* amscli cfg F:CTR_LIST F:KEY=VALUE_LIST
 	* amscli plot ?
 	* amscli db SQL ?
 	* amscli alert
 
-2. angularjs json security vulnerability
+- angularjs json security vulnerability
 	add ")]}',\n" to json blob head
 
-3. node encryption
+- node encryption
 	* log password changes and attemp failures
 	* database write lock
 
-4. snapshot data
+- snapshot data
 
-5. tableview of node data
+- tableview of node data
 
-6. log viewer on ams-client:
+- log viewer on ams-client:
 	user, actions and results
 
-7. switch to https using custom ca
+- client i18n
 
-8. client i18n
+- farm setting modification by uploading, say, excel files.
