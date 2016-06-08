@@ -27,7 +27,20 @@ mkdir -p extras/root/etc/init.d/
 sed $PATTERN firstboot > extras/root/etc/init.d/firstboot
 chmod +x extras/root/etc/init.d/firstboot
 
-echo $PUBLIC_KEY > extras/authorized_keys
+cp $PUBLIC_KEY extras/authorized_keys
+rm -rf extras/root/etc/ssl
+mkdir -p extras/root/etc/ssl/private
+mkdir -p extras/root/etc/ssl/certs
+cp $SERVER_KEY extras/root/etc/ssl/private/ams-client.key.pem
+chmod 400 extras/root/etc/ssl/private/ams-client.key.pem
+cp $SERVER_CERT extras/root/etc/ssl/certs/ams-client.cert.pem
+cp $CA_CHAIN extras/root/etc/ssl/certs/ca-chain.cert.pem
+if [ "$SSL" = true ]
+then
+	touch ./extras/scripts/ssl_flag
+else
+	rm -f ./extras/scripts/ssl_flag
+fi
 
 tar czvf extras.tar.gz extras/
 

@@ -34,6 +34,12 @@ cd /opt/ams-server*
 python3 setup.py install
 
 a2enmod wsgi headers
+if [ -f /root/ssl_flag ]
+then
+	a2enmod ssl rewrite
+	a2dissite 000-default
+	a2ensite default-ssl 000-default-with-ssl
+fi
 service apache2 restart
 
 mkdir /home/ams/.ssh
