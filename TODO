@@ -21,3 +21,5 @@
 - client i18n
 
 - farm setting modification by uploading, say, excel files.
+
+- move from apache2 to nginx
