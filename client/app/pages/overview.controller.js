@@ -42,7 +42,8 @@
 			share.status.main.subTitle = [
 				'Time: ' + d3.time.format('%Y.%m.%d %H:%M')(
 					new Date(shortlog.time * 1000)),
-				'Hashrate: ' + vm.utils.numberShorten(shortlog.hashrate),
+				'Hashrate: ' + vm.utils.numberShorten(shortlog.hashrate_cgminer) +
+					' (CGM) / ' + vm.utils.numberShorten(shortlog.hashrate) + ' (THEO)',
 				'Nodes: ' + shortlog.node_num,
 				'Modules: ' + shortlog.module_num
 			];
