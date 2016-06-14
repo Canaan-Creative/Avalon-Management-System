@@ -9,7 +9,7 @@ python3 setup.py sdist
 popd
 
 pushd ../client
-grunt distclean
+grunt distclean || true
 npm install
 grunt prereq
 grunt build
