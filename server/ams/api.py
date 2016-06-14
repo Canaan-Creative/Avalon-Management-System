@@ -146,7 +146,7 @@ def get_shortlog():
     result = g.database.run(
         'raw',
         '''\
-SELECT a.time, a.mhs, a.node, b.module
+SELECT a.time, a.mhs, a.node, b.module, b.ghs
   FROM (
         SELECT time, SUM(mhs) AS mhs, COUNT(ip) AS node
           FROM miner
@@ -154,16 +154,17 @@ SELECT a.time, a.mhs, a.node, b.module
         )
     AS a
   JOIN (
-        SELECT time, COUNT(dna) AS module
+        SELECT time, COUNT(dna) AS module, SUM(ghsmm) AS ghs
           FROM module
          WHERE time = (SELECT MAX(time) FROM miner)
         )
     AS b''')
     return ams_dumps({'result': {
         'time': result[0][0],
-        'hashrate': result[0][1],
+        'hashrate_cgminer': result[0][1],
         'node_num': result[0][2],
         'module_num': result[0][3],
+        'hashrate': float(result[0][4]) * 1000,
     }})
 
 
