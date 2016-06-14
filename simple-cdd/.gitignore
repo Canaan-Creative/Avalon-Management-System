@@ -2,6 +2,9 @@ profiles/ams.preseed
 private.conf
 extras/root/etc/init.d/
 extras/authorized_keys
+extras/scripts/ssl_flag
 *.tar.gz
 images/
 *.pem
+tmp/
+keys/
