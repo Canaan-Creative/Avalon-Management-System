@@ -24,7 +24,7 @@ PASSWORD=`printf "$DATABASE_SECTION" | awk -F "=" '/password/ {print $2;exit}' |
 CLIENT_SECTION=`sed '1,/\[Client\]/d' /etc/ams.conf`
 CLIENT_PASSWORD=`printf "$CLIENT_SECTION" | awk -F "=" '/password/ {print $2;exit}' | tr -d ' '`
 
-cp /opt/extras/scripts/update_network.sh /root/
+cp /opt/extras/scripts/* /root/
 chmod +x /root/update_network.sh
 
 tar xzvf /opt/extras/ams-server*.tar.gz -C /opt/
