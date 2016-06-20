@@ -202,7 +202,7 @@
 					commands.push({
 						lib: 'sys',
 						method: 'user.setpasswd',
-						params: ['`random`'],
+						params: [],
 					});
 				break;
 			case 'Basic':

@@ -391,9 +391,7 @@ def init(argv):
     database.connect()
     database.run('create', 'controller_security', [
         {'name': 'ip', 'type': 'VARCHAR(40)'},
-        {'name': 'old_password', 'type': 'VARCHAR(64) DEFAULT NULL'},
         {'name': 'password', 'type': 'VARCHAR(64) DEFAULT NULL'},
-        {'name': 'new_password', 'type': 'VARCHAR(64) DEFAULT NULL'},
     ], 'PRIMARY KEY(`ip`)')
     database.run('create', 'user', [
         {'name': 'username', 'type': 'VARCHAR(64)'},

@@ -25,3 +25,5 @@
 - move from apache2 to nginx
 
 - virtual environment for testing
+
+- from parallelism to concurrency

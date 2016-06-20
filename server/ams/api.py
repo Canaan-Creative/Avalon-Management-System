@@ -648,42 +648,17 @@ def rtac():
     rtac_process.daemon = False
     rtac_process.start()
 
-    pass_index = None
-    for i, c in enumerate(commands):
-        if c['method'] == 'user.setpasswd':
-            pass_index = i
-            # TODO:
-            # lock in redis controller_security of write
-            # change new_password in controller_security
-
-            break
-
     def storeResults(queue, key):
         server = redis.StrictRedis()
         while True:
             result = queue.get()
             if result == 'END':
-                if pass_index is not None:
-                    # TODO:
-                    # unlock in redis
-                    pass
                 break
-            if pass_index is not None:
-                if (len(result['result']) > pass_index + 1 and
-                        result['result'][pass_index].result):
-                    pass
-                # TODO:
-                # update table controller_security:
-                #     password -> old_password
-                #     new_password -> password
-                #     result['node']['ip'] -> ip
-                #     result['node']['port'] -> port
-                #     result['result'][pass_index].result == True
             server.rpush(key, json.dumps(result))
 
     result_process = multiprocessing.Process(
         target=storeResults,
-        args=(result_queue, key, pass_index)
+        args=(result_queue, key)
     )
     result_process.daemon = False
     result_process.start()

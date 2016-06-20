@@ -75,6 +75,9 @@ class DataBase():
         )
         self.cursor = self.conn.cursor()
 
+    def start_transaction(self):
+        self.conn.start_transaction()
+
     def commit(self):
         self.conn.commit()
 

@@ -22,6 +22,8 @@
 import threading
 import queue
 import copy
+import base64
+import os
 
 import ams.luci
 from ams.sql import DataBase
@@ -36,23 +38,18 @@ def luciThread(node_queue, result_queue, commands, db):
         except:
             break
 
+        database.start_transaction()
         result = database.run(
             'select',
             'controller_security',
-            ['old_password', 'password', 'new_password'],
-            "`ip` = %s",
+            ['password'],
+            "`ip` = %s FOR UPDATE",
             [node['ip']]
         )
         if not result or not result[0]:
             password = ''
-            old_password = ''
-            new_password = ''
         else:
-            password = result[0][1] if result[0][1] is not None else ''
-            old_password = (result[0][0] if result[0][0] is not None
-                            else password)
-            new_password = (result[0][2] if result[0][2] is not None
-                            else password)
+            password = result[0][0] if result[0][0] is not None else ''
 
         error = False
         auth = True
@@ -61,14 +58,13 @@ def luciThread(node_queue, result_queue, commands, db):
             try:
                 luci = ams.luci.LuCI(node['ip'], 80, password)
                 if not luci.auth():
-                    luci = ams.luci.LuCI(node['ip'], 80, old_password)
-                if not luci.auth():
                     luci = ams.luci.LuCI(node['ip'], 80, '')
                 if not luci.auth():
                     auth = False
                     error = True
                     break
                 auth = True
+                database.commit()
                 result = []
                 for c in commands[j:]:
                     if c['params'] is not None:
@@ -76,15 +72,33 @@ def luciThread(node_queue, result_queue, commands, db):
                             c['params'][i] = param.replace(
                                 '`ip4`', node['ip'].split('.')[3]
                             )
-                            c['params'][i] = param.replace(
-                                '`password`', password
-                            )
-                            c['params'][i] = param.replace(
-                                '`new_password`', new_password
-                            )
-                    result.append(luci.put(
-                        c['lib'], c['method'], c['params'], i + 10
-                    ))
+                    if c['method'] == 'user.setpasswd':
+                        new_password = base64.b64encode(os.urandom(9)).decode()
+                        c['params'] = [new_password]
+                        database.start_transaction()
+                        result = database.run(
+                            'select',
+                            'controller_security',
+                            ['password'],
+                            "`ip` = %s FOR UPDATE",
+                            [node['ip']]
+                        )
+
+                    r = luci.put(c['lib'], c['method'], c['params'], i + 10)
+
+                    if c['method'] == 'user.setpasswd':
+                        if r['error'] is None:
+                            database.run(
+                                'raw',
+                                '''\
+UPDATE controller_security
+   SET password = %s
+ WHERE ip = %s''',
+                                [node['ip'], new_password])
+                        database.commit()
+
+                    result.append(r)
+
                     j += 1
                 error = False
                 break
