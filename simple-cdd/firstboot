@@ -31,6 +31,8 @@ tar xzvf /opt/extras/ams-server*.tar.gz -C /opt/
 tar xzvf /opt/extras/ams-client*.tar.gz -C /var/www/html/
 mv /var/www/html/ams-client /var/www/html/ams
 cd /opt/ams-server*
+pip3 install Flask setuptools python-jose redis
+pip3 install --egg mysql-connector-python-rf
 python3 setup.py install
 
 a2enmod wsgi headers
