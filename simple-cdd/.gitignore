@@ -1,6 +1,7 @@
 profiles/ams.preseed
 private.conf
 extras/root/etc/init.d/
+extras/root/etc/ams.conf
 extras/authorized_keys
 extras/scripts/ssl_flag
 *.tar.gz

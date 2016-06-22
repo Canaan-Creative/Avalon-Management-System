@@ -10,10 +10,29 @@
 ### END INIT INFO
 #
 
+set -e
 if [ -f /root/first-boot-done ]
 then
 	exit 0
 fi
+
+mkdir -p /home/ams/.ssh
+cp /opt/extras/authorized_keys /home/ams/.ssh/
+chmod 700 /home/ams/.ssh
+chmod 600 /home/ams/.ssh/authorized_keys
+chown -R ams:ams /home/ams/.ssh
+
+cp /opt/extras/scripts/* /root/
+chmod +x /root/update_network.sh
+
+pip3 install Flask setuptools python-jose redis
+pip3 install --egg mysql-connector-python-rf
+
+tar xzvf /opt/extras/ams-server*.tar.gz -C /opt/
+tar xzvf /opt/extras/ams-client*.tar.gz -C /opt/
+mv /opt/ams-client /var/www/html/ams || true
+cd /opt/ams-server*
+python3 setup.py install
 
 DATABASE_SECTION=`sed '1,/\[DataBase\]/d' /etc/ams.conf`
 USER=`printf "$DATABASE_SECTION" | awk -F "=" '/user/ {print $2;exit}' | tr -d ' '`
@@ -24,17 +43,6 @@ PASSWORD=`printf "$DATABASE_SECTION" | awk -F "=" '/password/ {print $2;exit}' |
 CLIENT_SECTION=`sed '1,/\[Client\]/d' /etc/ams.conf`
 CLIENT_PASSWORD=`printf "$CLIENT_SECTION" | awk -F "=" '/password/ {print $2;exit}' | tr -d ' '`
 
-cp /opt/extras/scripts/* /root/
-chmod +x /root/update_network.sh
-
-tar xzvf /opt/extras/ams-server*.tar.gz -C /opt/
-tar xzvf /opt/extras/ams-client*.tar.gz -C /var/www/html/
-mv /var/www/html/ams-client /var/www/html/ams
-cd /opt/ams-server*
-pip3 install Flask setuptools python-jose redis
-pip3 install --egg mysql-connector-python-rf
-python3 setup.py install
-
 a2enmod wsgi headers
 if [ -f /root/ssl_flag ]
 then
@@ -44,14 +52,8 @@ then
 fi
 service apache2 restart
 
-mkdir /home/ams/.ssh
-cp /opt/extras/authorized_keys /home/ams/.ssh/
-chmod 700 /home/ams/.ssh
-chmod 600 /home/ams/.ssh/authorized_keys
-chown -R ams:ams /home/ams/.ssh
-
 mysql -uroot -p'MYSQL_PASSWORD' -e "CREATE DATABASE $DATABASE;"
-mysql -uroot -p'MYSQL_PASSWORD' -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO $USER@$HOST IDENTIFIED BY \"$PASSWORD\";"
+mysql -uroot -p'MYSQL_PASSWORD' -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO '$USER'@'$HOST' IDENTIFIED BY \"$PASSWORD\";"
 mysql -uroot -p'MYSQL_PASSWORD' -e "FLUSH PRIVILEGES;"
 
 /usr/local/bin/amscli init
