@@ -7,10 +7,6 @@
 - angularjs json security vulnerability
 	add ")]}',\n" to json blob head
 
-- node encryption
-	* log password changes and attemp failures
-	* database write lock
-
 - snapshot data
 
 - tableview of node data
