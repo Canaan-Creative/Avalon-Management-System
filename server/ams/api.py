@@ -35,6 +35,7 @@ import redis
 
 import ams.luci
 import ams.rtac
+from ams.log import log
 from ams.sql import DataBase
 from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
 
@@ -98,6 +99,7 @@ def ams_auth(token):
 
 @app.before_request
 def before_request():
+    log()
     g.database = DataBase(db)
     g.database.connect()
 

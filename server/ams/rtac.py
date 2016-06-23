@@ -24,12 +24,13 @@ import queue
 import copy
 import base64
 import os
+import logging
 
 import ams.luci
 from ams.sql import DataBase
 
 
-def luciThread(node_queue, result_queue, commands, db):
+def luciThread(node_queue, result_queue, commands, db, log, lock):
     database = DataBase(db)
     database.connect()
     while True:
@@ -74,7 +75,7 @@ def luciThread(node_queue, result_queue, commands, db):
                             )
                     if c['method'] == 'user.setpasswd':
                         new_password = base64.b64encode(os.urandom(9)).decode()
-                        c['params'] = [new_password]
+                        c['params'] = ['root', new_password]
                         database.start_transaction()
                         result = database.run(
                             'select',
@@ -91,18 +92,31 @@ def luciThread(node_queue, result_queue, commands, db):
                             database.run(
                                 'raw',
                                 '''\
-UPDATE controller_security
-   SET password = %s
- WHERE ip = %s''',
-                                [node['ip'], new_password])
+INSERT INTO controller_security
+       (ip, password)
+VALUES (%s, %s)
+    ON DUPLICATE KEY UPDATE
+       password = %s''',
+                                [node['ip'], new_password, new_password])
                         database.commit()
+
+                    with lock:
+                        log.debug('[{}][{}][{}][{}][{}]'.format(
+                            node['ip'],
+                            c['method'],
+                            '|'.join(c['params']),
+                            r['result'],
+                            r['error'],
+                        ))
 
                     result.append(r)
 
                     j += 1
                 error = False
                 break
-            except:
+            except Exception as e:
+                with lock:
+                    log.error('[{}]'.format(e))
                 error = True
                 continue
 
@@ -125,6 +139,9 @@ def sshThread(node_queue, result_queue, commands, db):
 
 def rtac(nodes, commands, method, db, result_queue):
 
+    log = logging.getLogger('AMS.RTAC')
+    lock = threading.Lock()
+
     node_queue = queue.Queue()
 
     for node in nodes:
@@ -138,7 +155,12 @@ def rtac(nodes, commands, method, db, result_queue):
     for i in range(min(len(nodes), 50)):
         t = threading.Thread(
             target=target,
-            args=(node_queue, result_queue, copy.deepcopy(commands), db)
+            args=(
+                node_queue,
+                result_queue,
+                copy.deepcopy(commands),
+                db, log, lock
+            )
         )
         t.start()
     node_queue.join()
