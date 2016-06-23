@@ -34,9 +34,6 @@
 				version: '__VERSION__',
 				hash: '__GIT_HASH__',
 			},
-			lock: {
-				encrypt: true,
-			},
 			auth: {
 				success: false,
 				name: '',

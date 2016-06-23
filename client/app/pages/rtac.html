@@ -81,7 +81,7 @@
 				</md-input-container>
 			</div>
 			<md-checkbox ng-model="vm.actions.restartMiner" ng-disabled="vm.targetLock">Restart CGMiner</md-checkbox>
-			<md-checkbox ng-model="vm.actions.encrypt" ng-disabled="vm.targetLock || vm.lock.encrypt">Encrypt</md-checkbox>
+			<md-checkbox ng-model="vm.actions.encrypt" ng-disabled="vm.targetLock">Encrypt</md-checkbox>
 		</md-content>
 		<md-content ng-if="vm.level === 'Basic'" flex layout="column">
 			<md-input-container>

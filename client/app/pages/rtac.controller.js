@@ -30,7 +30,6 @@
 		var vm = this;
 
 		vm.auth = share.status.auth;
-		vm.lock = share.status.lock;
 		vm.status = share.status.rtac;
 		vm.data = api.data;
 
