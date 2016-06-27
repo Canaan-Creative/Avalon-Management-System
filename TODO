@@ -23,3 +23,5 @@
 - virtual environment for testing
 
 - from parallelism to concurrency
+
+- AMS device info page: show/config IP, etc.
