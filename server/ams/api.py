@@ -111,8 +111,9 @@ def get_nodes():
         'controller_config',
         ['ip', 'port', 'mods'])
     nodes = []
-    for r in result:
-        nodes.append({'ip': r[0], 'port': r[1], 'mods': r[2]})
+    if result:
+        for r in result:
+            nodes.append({'ip': r[0], 'port': r[1], 'mods': r[2]})
     return ams_dumps({'result': nodes})
 
 
