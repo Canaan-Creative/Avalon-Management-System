@@ -42,6 +42,9 @@ else
 	rm -f ./extras/scripts/ssl_flag
 fi
 
+mkdir -p ./extras/pip/
+pip3 install --download ./extras/pip/ redis Flask python-jose mysql-connector-python-rf
+
 tar czvf extras.tar.gz extras/
 
 build-simple-cdd

@@ -25,8 +25,8 @@ chown -R ams:ams /home/ams/.ssh
 cp /opt/extras/scripts/* /root/
 chmod +x /root/update_network.sh
 
-pip3 install Flask setuptools python-jose redis
-pip3 install --egg mysql-connector-python-rf
+pip3 install --no-index --find-links=/opt/extras/pip/ Flask python-jose redis
+pip3 install --no-index --find-links=/opt/extras/pip/ --egg mysql-connector-python-rf
 
 tar xzvf /opt/extras/ams-server*.tar.gz -C /opt/
 tar xzvf /opt/extras/ams-client*.tar.gz -C /opt/
