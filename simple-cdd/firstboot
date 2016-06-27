@@ -16,6 +16,11 @@ then
 	exit 0
 fi
 
+chown -R root:root /opt/extras
+find /opt/extras/ -type d -exec chmod 755 {} +
+find /opt/extras/ -type f -exec chmod 644 {} +
+find /opt/extras/ssl/private -type f -exec chmod 400 {} + || true
+
 mkdir -p /home/ams/.ssh
 cp /opt/extras/authorized_keys /home/ams/.ssh/
 chmod 700 /home/ams/.ssh
