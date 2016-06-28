@@ -44,18 +44,21 @@ def sendReport(cfg):
     farm = cfg['Farm']
 
     # Get Shortlog:
-    response = urllib.request.urlopen('http://127.0.0.1/api/shortlog')
-    shortlog = json.loads(response.read().decode())['result']
+    res = urllib.request.urlopen('http://127.0.0.1/api/shortlog')
+    shortlog = json.loads(res.read().decode())['result']
 
     time = datetime.datetime.fromtimestamp(shortlog['time'])
     hashrate = numberShorten(shortlog['hashrate'])
 
     # Get Pool Summary
-    response = urllib.request.urlopen('http://127.0.0.1/api/pool_summary/latest')
-    pool_summary = json.loads(response.read().decode())['result']
+    res = urllib.request.urlopen('http://127.0.0.1/api/pool_summary/latest')
+    pool_summary = json.loads(res.read().decode())['result']
 
     # Get Balance
-    balance = getBalance(farm['balance'])
+    if 'balance' in farm:
+        balance = getBalance(farm['balance'])
+    else:
+        balance = None
 
     user = mail['from_address'].split('@')[0]
 
@@ -64,11 +67,10 @@ def sendReport(cfg):
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = (
-        "[AMS Report][{}][{:%y%m%d%H}]"
-        "[{:.1f} BTC][{}][IP{}][MOD{}]").format(
+        "[AMS Report][{}]"
+        "{}[{}Hs][{} IP][{} MOD]").format(
             farm['code'],
-            time,
-            balance,
+            '[{:.1f} BTC]'.format(balance) if balance is not None else '',
             hashrate,
             shortlog['node_num'],
             shortlog['module_num']
@@ -85,20 +87,13 @@ def sendReport(cfg):
 <html>
     <head></head>
     <body>
-        <h3>AMS Report</h3>
-        <p>Time: {0:%Y-%m-%d %H:%M}</p>
-        <p>Server: {1}</p>
-        <p>Hashrate: {2}</p>
-        <p>Node Number: {3}</p>
-        <p>Module Number: {4}</p>
-        <p>Balance: {5} BTC</p>
-        <p>Info: <a href="{6}">{6}</a></p>
+        <h3>{0} ({1}) AMS Report {2:%Y-%m-%d %H:%M}</h3>
         <table style="border-collapse: collapse; border: 1px solid black;">
             <thead>
                 <tr>
                     <th style="border: 1px solid black;">Pool</th>
                     <th style="border: 1px solid black;">User</th>
-                    <th style="border: 1px solid black;">Hs</th>
+                    <th style="border: 1px solid black;">Hash/s</th>
                     <th style="border: 1px solid black;">Node Number</th>
                     <th style="border: 1px solid black;">Module Number</th>
                 <tr>
@@ -107,15 +102,13 @@ def sendReport(cfg):
                 $tbody$
             </tbody>
         </table>
+        <p>Info: <a href="{3}">{3}</a></p>
     </body>
 </html>
 """.format(
-        time,
         farm['name'],
-        hashrate,
-        shortlog['node_num'],
-        shortlog['module_num'],
-        balance,
+        farm['mod'],
+        time,
         farm['info'],
     )
     tbody = ''
@@ -129,6 +122,17 @@ def sendReport(cfg):
                     <td style="border: 1px solid black;">{node_num:.0f}</td>
                     <td style="border: 1px solid black;">{module_num:.0f}</td>
                 </tr>\n""".format(**pool)
+    tbody += """\
+                <tr>
+                    <td style="border: 1px solid black; font-weight: bold;"
+                        colspan="2">Sum</td>
+                    <td style="border: 1px solid black;">{}</td>
+                    <td style="border: 1px solid black;">{:.0f}</td>
+                    <td style="border: 1px solid black;">{:.0f}</td>
+                </tr>\n""".format(
+                    hashrate,
+                    shortlog['node_num'],
+                    shortlog['module_num'])
     mail['content'] = content.replace('$tbody$', tbody)
 
     msg_html = MIMEText(mail['content'], 'HTML')
