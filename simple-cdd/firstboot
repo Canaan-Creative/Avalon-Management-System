@@ -16,10 +16,8 @@ then
 	exit 0
 fi
 
-chown -R root:root /opt/extras
-find /opt/extras/ -type d -exec chmod 755 {} +
-find /opt/extras/ -type f -exec chmod 644 {} +
-find /opt/extras/ssl/private -type f -exec chmod 400 {} + || true
+pip3 install --no-index --find-links=/opt/extras/pip/ Flask python-jose redis
+pip3 install --no-index --find-links=/opt/extras/pip/ --egg mysql-connector-python-rf
 
 mkdir -p /home/ams/.ssh
 cp /opt/extras/authorized_keys /home/ams/.ssh/
@@ -27,14 +25,18 @@ chmod 700 /home/ams/.ssh
 chmod 600 /home/ams/.ssh/authorized_keys
 chown -R ams:ams /home/ams/.ssh
 
-cp /opt/extras/scripts/* /root/
-chmod +x /root/update_network.sh
-
-pip3 install --no-index --find-links=/opt/extras/pip/ Flask python-jose redis
-pip3 install --no-index --find-links=/opt/extras/pip/ --egg mysql-connector-python-rf
 
 tar xzvf /opt/extras/ams-server*.tar.gz -C /opt/
 tar xzvf /opt/extras/ams-client*.tar.gz -C /opt/
+
+chown -R root:root /opt/extras
+find /opt/ -type d -exec chmod 755 {} +
+find /opt/ -type f -exec chmod 644 {} +
+find /opt/extras/ssl/private -type f -exec chmod 400 {} + || true
+
+cp /opt/extras/scripts/* /root/
+chmod +x /root/update_network.sh
+
 mv /opt/ams-client /var/www/html/ams || true
 cd /opt/ams-server*
 python3 setup.py install
