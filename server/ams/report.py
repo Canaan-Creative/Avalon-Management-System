@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import urllib.request
 import json
+import ssl
 
 
 def numberShorten(number):
@@ -43,15 +44,21 @@ def sendReport(cfg):
     mail = cfg['Email']
     farm = cfg['Farm']
 
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
     # Get Shortlog:
-    res = urllib.request.urlopen('http://127.0.0.1/api/shortlog')
+    res = urllib.request.urlopen('http://127.0.0.1/api/shortlog', context=ctx)
     shortlog = json.loads(res.read().decode())['result']
 
     time = datetime.datetime.fromtimestamp(shortlog['time'])
     hashrate = numberShorten(shortlog['hashrate'])
 
     # Get Pool Summary
-    res = urllib.request.urlopen('http://127.0.0.1/api/pool_summary/latest')
+    res = urllib.request.urlopen(
+        'http://127.0.0.1/api/pool_summary/latest',
+        context=ctx
+    )
     pool_summary = json.loads(res.read().decode())['result']
 
     # Get Balance
