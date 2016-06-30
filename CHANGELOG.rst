@@ -1,5 +1,15 @@
 Changelog
 =========
+Version 3.0.0-dev6 (2016.06.30)
+-------------------------------
+- Use simple-cdd to build autoinstall Debian CD.
+- Add email report.
+- Enable login to ams client.
+- Add RTAC to ams client.
+- Support HTTPS
+- Add node random encryption.
+- Client layout adjust
+
 Version 3.0.0.dev5 (2016.04.12)
 -------------------------------
 - Add map view.
