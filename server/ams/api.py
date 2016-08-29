@@ -164,10 +164,10 @@ SELECT a.time, a.mhs, a.node, b.module, b.ghs
     AS b''')
     return ams_dumps({'result': {
         'time': result[0][0],
-        'hashrate_cgminer': result[0][1],
+        'hashrate_cgminer': result[0][1] if result[0][1] else 0,
         'node_num': result[0][2],
         'module_num': result[0][3],
-        'hashrate': float(result[0][4]) * 1000,
+        'hashrate': float(result[0][4]) * 1000 if result[0][4] else 0,
     }})
 
 
