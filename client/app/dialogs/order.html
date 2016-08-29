@@ -1,0 +1,115 @@
+<!--
+ Copyright (C) 2016  DING Changchang (of Canaan Creative)
+
+ This file is part of Avalon Management System (AMS).
+
+ AMS is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ AMS is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with AMS. If not, see <http://www.gnu.org/licenses/>.
+-->
+<object
+		id="barcode" type="application/pdf"
+		data="{{vm.printOrder(vm.order.uid)}}"
+		height="0" width="0">
+</object>
+<md-dialog aria-label="Order" flex="75">
+	<md-dialog-content style="height: 80%">
+		<div layout="column" class="md-dialog-content" style="max-height: 80%">
+			<h2 class="md-title dialog-title">Order Detail</h2>
+			<div layout="row">
+				<md-content layout="column" layout-align="start start" flex="40" style="max-height: 80%">
+					<md-input-container>
+						<label>Order ID</label>
+						<input ng-model="vm.order.id" ng-cloak disabled="{{ vm.old }}"/>
+					</md-input-container>
+					<md-input-container>
+						<label>Quantity</label>
+						<input ng-model="vm.order.quantity" ng-cloak disabled="{{ vm.old }}"/>
+					</md-input-container>
+					<md-input-container>
+						<label>Document ID</label>
+						<input ng-model="vm.order.doc_id" ng-cloak disabled="{{ vm.old }}"/>
+					</md-input-container>
+					<md-input-container>
+						<label>Date</label>
+						<input ng-model="vm.order.time" ng-cloak disabled="{{ vm.old }}"/>
+					</md-input-container>
+					<md-input-container>
+						<label>Batch No.</label>
+						<input ng-model="vm.order.batch" ng-cloak disabled="{{ vm.old }}"/>
+					</md-input-container>
+					<md-input-container>
+						<label>Serial No.</label>
+						<input ng-model="vm.order.serial" ng-cloak disabled="{{ vm.old }}"/>
+					</md-input-container>
+					<md-input-container>
+						<label>Model Name</label>
+						<input ng-model="vm.order.model" ng-cloak disabled="{{ vm.old }}"/>
+					</md-input-container>
+				</md-content>
+				<div flex="5"></div>
+				<md-content layout="column" style="max-height: 80%">
+					<h3 class="md-subhead">BOM</h3>
+					<md-content layout="row" layout-align="center center" flex ng-if="!vm.tempNodes && vm.auth.success">
+						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+					</md-content>
+					<md-content flex layout="column">
+						<div layout="row" layout-align="center start" class="setting-header">
+							<h3 class="md-subhead" flex="5">ID</h3>
+							<h3 class="md-subhead" flex="25">Name</h3>
+							<h3 class="md-subhead" flex="25">Model</h3>
+							<h3 class="md-subhead" flex="25">SN</h3>
+							<h3 class="md-subhead" flex="20">Date</h3>
+							<h3 class="md-subhead" flex="10">Action</h3>
+						</div>
+						<md-content flex layout="column">
+							<div ng-repeat="b in vm.order.boms | order by 'id'" layout="row" class="setting-column">
+								<md-input-container flex="5">
+									<input ng-model="b.id" disabled />
+								</md-input-container>
+								<md-input-container flex="25">
+									<input ng-model="b.name" disabled="{{ vm.old }}" />
+								</md-input-container>
+								<md-input-container flex="25">
+									<input ng-model="b.model" disabled="{{ vm.old }}" />
+								</md-input-container>
+								<md-input-container flex="25">
+									<input ng-model="b.sn" disabled="{{ vm.old }}" />
+								</md-input-container>
+								<md-input-container flex="10">
+									<input ng-model="b.time" disabled="{{ vm.old }}" />
+								</md-input-container>
+								<div flex="10" layout="row">
+									<md-button ng-click="vm.deleteBOM(b)" disabled="{{ vm.old }}" class="md-raised md-warn">Delete</md-button>
+								</div>
+							</div>
+							<div layout="row" class="setting-column">
+								<div flex="5"></div>
+								<div flex="25"></div>
+								<div flex="25"></div>
+								<div flex="25"></div>
+								<div flex="10"></div>
+								<div flex="10" layout="row">
+									<md-button ng-click="vm.addBOM()" disabled="{{ vm.old }}" class="md-raised md-primary">Add</md-button>
+								</div>
+							</div>
+						</md-content>
+					</md-content>
+				</md-content>
+			</div>
+		</div>
+	</md-dialog-content>
+	<md-dialog-actions>
+		<md-button class="md-raised md-primary" ng-click="vm.print()">Save and Print</md-button>
+		<md-button class="md-raised md-primary" ng-click="vm.close()">Close</md-button>
+	</md-dialog-actions>
+</md-dialog>

@@ -292,6 +292,10 @@
 				url = 'app/dialogs/login.html';
 				controller = 'LoginController';
 				break;
+			case 'order':
+				url = 'app/dialogs/order.html';
+				controller = 'OrderController';
+				break;
 			}
 			$mdDialog.show({
 				parent: angular.element(document.body),

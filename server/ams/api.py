@@ -104,6 +104,70 @@ def before_request():
     g.database.connect()
 
 
+@app.route('/orders', methods=['GET'])
+def get_orders():
+    result = g.database.run(
+        'select',
+        'orders',
+        ['time', 'id', 'doc_id', 'quantity', 'batch', 'serial', 'model', 'uid']
+    )
+    orders = []
+    if result:
+        for r in result:
+            orders.append({
+                'time': r[0], 'id': r[1], 'doc_id': r[2], 'quantity': r[3],
+                'batch': r[4], 'serial': r[5], 'model': r[6], 'uid': r[8]
+            })
+    return ams_dumps({'result': orders})
+
+
+@app.route('/boms/<order_uid>', methods=['GET'])
+def get_boms(order_uid):
+    result = g.database.run(
+        'select', 'boms'
+        ['id', 'name', 'model', 'sn', 'time'],
+        '`order_uid` = %s',
+        order_uid
+    )
+    boms = []
+    if result:
+        for r in result:
+            boms.append({
+                'id': r[0], 'name': r[1], 'model': r[2],
+                'sn': r[3], 'time': r[4]
+            })
+    return ams_dumps({'result': boms})
+
+
+@app.route('/add_order', methods=['POST'])
+def add_order():
+    order = request.json.get('order')
+    uid = int(hashlib.sha1(
+                '{}{}'.format(order['id'], order['doc_id']).decode()
+            ).hexdigest()[:8], 16)
+    while g.database.run('select', 'orders', ['uid'], '`uid` = %s', uid):
+        uid += 1
+    g.database.run(
+        'insert', 'orders',
+        ['time', 'id', 'doc_id', 'quantity',
+         'batch', 'serial', 'model', 'uid'],
+        [order['time'], order['id'], order['doc_id'], order['quantity'],
+         order['batch'], order['serial'], order['model'], uid]
+    )
+    for b in order['boms']:
+        g.database.run(
+            'insert', 'boms',
+            ['id', 'model', 'sn', 'time', 'order_uid'],
+            [order['id'], order['model'], order['sn'], order['time'], uid],
+            [b['id']])
+    return ams_dumps({'success': True, 'uid': uid})
+
+
+@app.route('/print_order/<order_uid>', methods=['GET'])
+def print_order(order_uid):
+    pass
+
+
 @app.route('/nodes', methods=['GET'])
 def get_nodes():
     result = g.database.run(

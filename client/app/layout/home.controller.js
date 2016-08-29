@@ -50,6 +50,10 @@
 				link: 'home.rtac',
 				name: 'RTAC',
 				icon: 'build',
+			}, {
+				link: 'home.factory',
+				name: 'factory',
+				icon: 'airport_shuttle',
 			}
 		];
 		vm.status = share.status.main;

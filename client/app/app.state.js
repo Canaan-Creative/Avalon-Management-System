@@ -131,6 +131,12 @@
 				controller: 'RTACController',
 				controllerAs: 'vm',
 			})
+			.state('home.factory', {
+				url: '/factory',
+				templateUrl: 'app/pages/factory.html',
+				controller: 'FactoryController',
+				controllerAs: 'vm',
+			})
 			.state('farmmap', {
 				url: '/farmmap',
 				templateUrl: 'app/widgets/farmmap.html',

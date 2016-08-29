@@ -40,8 +40,12 @@
 		self.getAliverate = getAliverate;
 		self.getFarmHashrate = getFarmHashrate;
 		self.getNodeHashrate = getNodeHashrate;
+		self.getOrders = getOrders;
+		self.getBOMs = getBOMs;
 		self.setLED = setLED;
 		self.updateNodes = updateNodes;
+		self.printOrder = printOrder;
+		self.addOrder = addOrder;
 		self.rtac = rtac;
 		self.rtaclog = rtaclog;
 		self.login = login;
@@ -200,6 +204,40 @@
 					if (--getConfigLock.number === 0)
 						getConfigLock.id = 0;
 				});
+		}
+
+		function getOrders() {
+			return $http.get('/api/orders').then(
+				function(response) {
+					self.data.orders = response.data.result;
+				}, function(errResponse) {
+					self.data.orders = null;
+					console.error('Error fetching orders');
+				});
+		}
+
+		function getBOMs(order_uid) {
+			return $http.get('/api/boms/' + order_uid).then(
+				function(response) {
+					self.data.boms = response.data.result;
+				}, function(errResponse) {
+					self.data.boms = null;
+					console.error('Error fetching BOMs');
+				});
+		}
+
+		function addOrder(order) {
+			return $http.post('/api/add_order/', {order: order}).then(
+				function(response) {
+					order.uid = response.data.result.uid;
+				}, function(errResponse) {
+					order.uid = null;
+					console.error('Error adding order');
+				});
+		}
+
+		function printOrder(order_uid) {
+			return '/api/print_order/' + order_uid;
 		}
 
 		function setLED(data) {

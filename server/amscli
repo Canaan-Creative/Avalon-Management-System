@@ -397,6 +397,27 @@ def init(argv):
         {'name': 'username', 'type': 'VARCHAR(64)'},
         {'name': 'password', 'type': 'CHAR(64)'},
     ], 'PRIMARY KEY(`username`)')
+
+    database.run('create', 'orders', [
+        {'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'},
+        {'name': 'id', 'type': 'VARCHAR(64)'},
+        {'name': 'doc_id', 'type': 'VARCHAR(64)'},
+        {'name': 'quantity', 'type': 'INT UNSIGNED'},
+        {'name': 'batch', 'type': 'VARCHAR(64)'},
+        {'name': 'serial', 'type': 'VARCHAR(64)'},
+        {'name': 'model', 'type': 'VARCHAR(8)'},
+        {'name': 'uid', 'type': 'INT UNSIGNED'},
+    ], 'PRIMARY KEY(`uid`)')
+
+    database.run('create', 'boms', [
+        {'name': 'id', 'type': 'INT UNSIGNED'},
+        {'name': 'name', 'type': 'VARCHAR(128)'},
+        {'name': 'model', 'type': 'VARCHAR(128)'},
+        {'name': 'sn', 'type': 'VARCHAR(64)'},
+        {'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'},
+        {'name': 'order_uid', 'type': 'INT UNSIGNED'},
+    ], 'PRIMARY KEY(`order_uid`, `id`)')
+
     database.commit()
     database.disconnect()
 
