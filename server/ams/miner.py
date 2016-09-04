@@ -52,7 +52,7 @@ class Miner():
                         continue
                     else:
                         break
-                except socket.error:
+                except (socket.error, ConnectionError):
                     response = None
                     if not self.log:
                         continue
@@ -75,7 +75,7 @@ class Miner():
                 af, socktype, proto, canonname, sa = res
                 try:
                     s = socket.socket(af, socktype, proto)
-                except socket.error:
+                except (socket.error, ConnectionError):
                     if not self.log:
                         continue
                     self.log.debug(
@@ -87,7 +87,7 @@ class Miner():
                 s.settimeout(r/2)
                 try:
                     s.connect(sa)
-                except socket.error:
+                except (socket.error, ConnectionError):
                     if not self.log:
                         continue
                     self.log.debug(
@@ -173,7 +173,7 @@ class Miner():
             af, socktype, proto, canonname, sa = res
             try:
                 s = socket.socket(af, socktype, proto)
-            except socket.error:
+            except (socket.error, ConnectionError):
                 if not self.log:
                     continue
                 self.log.debug('{} Error in fetching {}: socket init.'
@@ -183,7 +183,7 @@ class Miner():
             s.settimeout(timeout)
             try:
                 s.connect(sa)
-            except socket.error:
+            except (socket.error, ConnectionError):
                 if not self.log:
                     continue
                 self.log.debug('{} Error in fetching {}: socket connect.'
