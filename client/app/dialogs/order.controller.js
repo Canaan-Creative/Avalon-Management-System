@@ -35,14 +35,20 @@
 		} else {
 			vm.old = false;
 			vm.order = {
-				time: Math.floor(Date.now() / 1000),
+				time: new Date(),
 				id: '',
 				doc_id: '',
 				quantity: 0,
 				batch: '',
 				serial: '',
 				model: '',
-				boms: []
+				boms: [{
+					id: 0,
+					name: '',
+					model: '',
+					sn: '',
+					time: new Date()
+				}]
 			};
 		}
 
@@ -71,15 +77,17 @@
 
 		function deleteBOM(b) {
 			vm.order.boms.splice(vm.order.boms.indexOf(b), 1);
+			for (var i = 0; i < vm.order.boms.length; i++)
+				vm.order.boms[i].id = i + 1;
 		}
 
 		function addBOM() {
 			vm.order.boms.push({
-				id: vm.order.boms.length,
+				id: vm.order.boms.length + 1,
 				name: '',
 				model: '',
 				sn: '',
-				time: Math.floor(Date.time / 1000)
+				time: new Date()
 			});
 		}
 

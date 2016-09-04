@@ -15,91 +15,97 @@
 
  You should have received a copy of the GNU General Public License
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
--->
 <object
 		id="barcode" type="application/pdf"
 		data="{{vm.printOrder(vm.order.uid)}}"
 		height="0" width="0">
 </object>
-<md-dialog aria-label="Order" flex="75">
-	<md-dialog-content style="height: 80%">
-		<div layout="column" class="md-dialog-content" style="max-height: 80%">
+-->
+<md-dialog aria-label="Order" flex="85">
+	<md-dialog-content style="height: 90%">
+		<div layout="column" class="md-dialog-content" layout-fill>
 			<h2 class="md-title dialog-title">Order Detail</h2>
-			<div layout="row">
-				<md-content layout="column" layout-align="start start" flex="40" style="max-height: 80%">
-					<md-input-container>
+			<div layout="row" flex>
+				<md-content layout="column" layout-align="center center" flex="25">
+					<div layout="row">
+						<md-datepicker ng-model="vm.order.time" ng-disabled="vm.old"></md-datepicker>
+					</div>
+					<md-input-container class="setting-column">
 						<label>Order ID</label>
-						<input ng-model="vm.order.id" ng-cloak disabled="{{ vm.old }}"/>
+						<input ng-model="vm.order.id" ng-cloak ng-disabled="vm.old"/>
 					</md-input-container>
-					<md-input-container>
+					<md-input-container class="setting-column">
 						<label>Quantity</label>
-						<input ng-model="vm.order.quantity" ng-cloak disabled="{{ vm.old }}"/>
+						<input ng-model="vm.order.quantity" ng-cloak ng-disabled="vm.old"/>
 					</md-input-container>
-					<md-input-container>
+					<md-input-container class="setting-column">
 						<label>Document ID</label>
-						<input ng-model="vm.order.doc_id" ng-cloak disabled="{{ vm.old }}"/>
+						<input ng-model="vm.order.doc_id" ng-cloak ng-disabled="vm.old"/>
 					</md-input-container>
-					<md-input-container>
-						<label>Date</label>
-						<input ng-model="vm.order.time" ng-cloak disabled="{{ vm.old }}"/>
-					</md-input-container>
-					<md-input-container>
+					<md-input-container class="setting-column">
 						<label>Batch No.</label>
-						<input ng-model="vm.order.batch" ng-cloak disabled="{{ vm.old }}"/>
+						<input ng-model="vm.order.batch" ng-cloak ng-disabled="vm.old"/>
 					</md-input-container>
-					<md-input-container>
+					<md-input-container class="setting-column">
 						<label>Serial No.</label>
-						<input ng-model="vm.order.serial" ng-cloak disabled="{{ vm.old }}"/>
+						<input ng-model="vm.order.serial" ng-cloak ng-disabled="vm.old"/>
 					</md-input-container>
-					<md-input-container>
+					<md-input-container class="setting-column">
 						<label>Model Name</label>
-						<input ng-model="vm.order.model" ng-cloak disabled="{{ vm.old }}"/>
+						<input ng-model="vm.order.model" ng-cloak ng-disabled="vm.old"/>
 					</md-input-container>
 				</md-content>
-				<div flex="5"></div>
-				<md-content layout="column" style="max-height: 80%">
+				<md-content layout="column" flex>
 					<h3 class="md-subhead">BOM</h3>
-					<md-content layout="row" layout-align="center center" flex ng-if="!vm.tempNodes && vm.auth.success">
+					<md-content layout="row" layout-align="center center" flex ng-if="!vm.order.boms">
 						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
 					</md-content>
 					<md-content flex layout="column">
 						<div layout="row" layout-align="center start" class="setting-header">
 							<h3 class="md-subhead" flex="5">ID</h3>
-							<h3 class="md-subhead" flex="25">Name</h3>
-							<h3 class="md-subhead" flex="25">Model</h3>
-							<h3 class="md-subhead" flex="25">SN</h3>
-							<h3 class="md-subhead" flex="20">Date</h3>
-							<h3 class="md-subhead" flex="10">Action</h3>
+							<h3 class="md-subhead" flex="20">Name</h3>
+							<h3 class="md-subhead" flex="20">Model</h3>
+							<h3 class="md-subhead" flex="20">SN</h3>
+							<h3 class="md-subhead" flex="25">Date</h3>
+							<h3 class="md-subhead" flex="10"></h3>
 						</div>
 						<md-content flex layout="column">
-							<div ng-repeat="b in vm.order.boms | order by 'id'" layout="row" class="setting-column">
+							<div ng-repeat="b in vm.order.boms | orderBy: 'id'" layout="row" class="setting-column">
 								<md-input-container flex="5">
-									<input ng-model="b.id" disabled />
+									<input ng-model="b.id" ng-disabled />
 								</md-input-container>
-								<md-input-container flex="25">
-									<input ng-model="b.name" disabled="{{ vm.old }}" />
+								<md-input-container flex="20">
+									<input ng-model="b.name" ng-disabled="vm.old" />
 								</md-input-container>
-								<md-input-container flex="25">
-									<input ng-model="b.model" disabled="{{ vm.old }}" />
+								<md-input-container flex="20">
+									<input ng-model="b.model" ng-disabled="vm.old" />
 								</md-input-container>
-								<md-input-container flex="25">
-									<input ng-model="b.sn" disabled="{{ vm.old }}" />
+								<md-input-container flex="20">
+									<input ng-model="b.sn" ng-disabled="vm.old" />
 								</md-input-container>
-								<md-input-container flex="10">
-									<input ng-model="b.time" disabled="{{ vm.old }}" />
-								</md-input-container>
+								<div flex="25">
+									<md-datepicker ng-model="b.time" ng-disabled="vm.old"></md-datepicker>
+								</div>
 								<div flex="10" layout="row">
-									<md-button ng-click="vm.deleteBOM(b)" disabled="{{ vm.old }}" class="md-raised md-warn">Delete</md-button>
+									<md-button ng-click="vm.deleteBOM(b)"
+											ng-disabled="vm.old"
+											class="md-raised md-warn ams-button">
+										<ng-md-icon icon="delete">
+									</md-button>
 								</div>
 							</div>
 							<div layout="row" class="setting-column">
 								<div flex="5"></div>
+								<div flex="20"></div>
+								<div flex="20"></div>
+								<div flex="20"></div>
 								<div flex="25"></div>
-								<div flex="25"></div>
-								<div flex="25"></div>
-								<div flex="10"></div>
 								<div flex="10" layout="row">
-									<md-button ng-click="vm.addBOM()" disabled="{{ vm.old }}" class="md-raised md-primary">Add</md-button>
+									<md-button ng-click="vm.addBOM()"
+											ng-disabled="vm.old"
+											class="md-raised md-primary ams-button">
+										<ng-md-icon icon="add">
+									</md-button>
 								</div>
 							</div>
 						</md-content>

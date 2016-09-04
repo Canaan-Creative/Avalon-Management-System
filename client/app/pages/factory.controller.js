@@ -55,7 +55,9 @@
 		vm.openOrder = openOrder;
 		vm.searchOrder = searchOrder;
 
-		api.getOrders();
+		api.getOrders().then(function () {
+			vm.loaded = true;
+		});
 
 		function newOrder() {
 			vm.showDialog('order');

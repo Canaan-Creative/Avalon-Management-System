@@ -202,3 +202,7 @@ md-card-footer {
 	-webkit-border-radius: 1ex;
 	-webkit-box-shadow: 0px;
 }
+
+.ams-button {
+	min-width: 36px !important;
+}
