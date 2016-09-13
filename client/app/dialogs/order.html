@@ -24,87 +24,116 @@
 <md-dialog aria-label="Order" flex="85">
 	<md-dialog-content style="height: 90%">
 		<div layout="column" class="md-dialog-content" layout-fill>
-			<h2 class="md-title dialog-title">Order Detail</h2>
+			<h2 class="md-title dialog-title">Order</h2>
 			<div layout="row" flex>
-				<md-content layout="column" layout-align="center center" flex="25">
-					<div layout="row">
-						<md-datepicker ng-model="vm.order.time" ng-disabled="vm.old"></md-datepicker>
-					</div>
+				<md-content layout="column" layout-align="center start" flex="25">
+					<h3 class="md-subhead">Order Info</h3>
 					<md-input-container class="setting-column">
 						<label>Order ID</label>
-						<input ng-model="vm.order.id" ng-cloak ng-disabled="vm.old"/>
+						<input required ng-model="vm.data.order.id" ng-cloak />
 					</md-input-container>
 					<md-input-container class="setting-column">
 						<label>Quantity</label>
-						<input ng-model="vm.order.quantity" ng-cloak ng-disabled="vm.old"/>
+						<input required ng-model="vm.data.order.quantity" ng-cloak />
 					</md-input-container>
 					<md-input-container class="setting-column">
 						<label>Document ID</label>
-						<input ng-model="vm.order.doc_id" ng-cloak ng-disabled="vm.old"/>
+						<input required ng-model="vm.data.order.doc_id" ng-cloak />
 					</md-input-container>
 					<md-input-container class="setting-column">
 						<label>Batch No.</label>
-						<input ng-model="vm.order.batch" ng-cloak ng-disabled="vm.old"/>
+						<input required ng-model="vm.data.order.batch" ng-cloak />
 					</md-input-container>
-					<md-input-container class="setting-column">
-						<label>Serial No.</label>
-						<input ng-model="vm.order.serial" ng-cloak ng-disabled="vm.old"/>
-					</md-input-container>
-					<md-input-container class="setting-column">
-						<label>Model Name</label>
-						<input ng-model="vm.order.model" ng-cloak ng-disabled="vm.old"/>
-					</md-input-container>
+					<div flex="auto"></div>
 				</md-content>
 				<md-content layout="column" flex>
-					<h3 class="md-subhead">BOM</h3>
-					<md-content layout="row" layout-align="center center" flex ng-if="!vm.order.boms">
-						<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
-					</md-content>
+					<h3 class="md-subhead">Product Info</h3>
+					<div layout="row" class="ams-column">
+						<md-input-container class="ams-cell-input">
+							<label>Serial No.</label>
+							<input ng-model="vm.data.order.serial" ng-cloak disabled />
+						</md-input-container>
+						<md-input-container class="ams-cell-input">
+							<label>Product Code Header</label>
+							<input required
+								ng-model="vm.data.order.product_header"
+								ng-change="vm.buildDep()"
+								ng-cloak />
+						</md-input-container>
+						<md-datepicker class="ams-cell-time" ng-model="vm.product.time">
+						</md-datepicker>
+					</div>
+					<div layout="row" class="ams-column">
+						<md-input-container class="ams-cell-input" flex="20">
+							<label>Name</label>
+							<input ng-model="vm.product.name" disabled />
+						</md-input-container>
+						<md-input-container class="ams-cell-input" flex="20">
+							<label>Model</label>
+							<input ng-model="vm.product.model" disabled />
+						</md-input-container>
+						<md-input-container class="ams-cell-input" flex="20">
+							<label>SN</label>
+							<input required ng-model="vm.product.product_id" />
+						</md-input-container>
+						<div flex="25" class="ams-cell-input"></div>
+						<div flex="15" class="ams-cell-input"></div>
+					</div>
+					<div flex="5"></div>
+					<h3 class="md-subhead">Components Info</h3>
 					<md-content flex layout="column">
-						<div layout="row" layout-align="center start" class="setting-header">
-							<h3 class="md-subhead" flex="5">ID</h3>
-							<h3 class="md-subhead" flex="20">Name</h3>
-							<h3 class="md-subhead" flex="20">Model</h3>
-							<h3 class="md-subhead" flex="20">SN</h3>
-							<h3 class="md-subhead" flex="25">Date</h3>
-							<h3 class="md-subhead" flex="10"></h3>
+						<div layout="row" class="ams-column" layout-align="center center">
+							<p class="md-body-2" flex="20">Name</p>
+							<p class="md-body-2" flex="20">Model</p>
+							<p class="md-body-2" flex="20">SN</p>
+							<p class="md-body-2" flex="25">Date</p>
+							<p class="md-body-2" flex="15"></p>
 						</div>
 						<md-content flex layout="column">
-							<div ng-repeat="b in vm.order.boms | orderBy: 'id'" layout="row" class="setting-column">
-								<md-input-container flex="5">
-									<input ng-model="b.id" ng-disabled />
+							<div ng-repeat="b in vm.product.components" class="ams-column" layout="row">
+								<md-input-container class="ams-cell-input" flex="20">
+									<input ng-model="b.name" disabled />
 								</md-input-container>
-								<md-input-container flex="20">
-									<input ng-model="b.name" ng-disabled="vm.old" />
+								<md-input-container class="ams-cell-input" flex="20">
+									<input ng-model="b.model" disabled />
 								</md-input-container>
-								<md-input-container flex="20">
-									<input ng-model="b.model" ng-disabled="vm.old" />
+								<md-input-container class="ams-cell-input" flex="20">
+									<input required ng-model="b.component_id" />
 								</md-input-container>
-								<md-input-container flex="20">
-									<input ng-model="b.sn" ng-disabled="vm.old" />
-								</md-input-container>
-								<div flex="25">
-									<md-datepicker ng-model="b.time" ng-disabled="vm.old"></md-datepicker>
+								<md-datepicker flex=25 class="ams-cell-time" ng-model="b.time">
+								</md-datepicker>
+								<div flex="15" class="ams-cell-input" layout="row">
 								</div>
-								<div flex="10" layout="row">
-									<md-button ng-click="vm.deleteBOM(b)"
-											ng-disabled="vm.old"
+							</div>
+							<md-divider></md-divider>
+							<div ng-repeat="b in vm.data.order.components" class="ams-column" layout="row">
+								<md-input-container class="ams-cell-input" flex="20">
+									<input ng-model="b.name" disabled />
+								</md-input-container>
+								<md-input-container class="ams-cell-input" flex="20">
+									<input ng-model="b.model" disabled />
+								</md-input-container>
+								<md-input-container class="ams-cell-input" flex="20">
+									<input required ng-model="b.component_id" />
+								</md-input-container>
+								<md-datepicker flex="25" class="ams-cell-time" ng-model="b.time">
+								</md-datepicker>
+								<div flex="15" layout="row" layout-align="start center">
+									<md-button ng-click="vm.deleteComponent(b)"
 											class="md-raised md-warn ams-button">
 										<ng-md-icon icon="delete">
 									</md-button>
 								</div>
 							</div>
-							<div layout="row" class="setting-column">
-								<div flex="5"></div>
-								<div flex="20"></div>
-								<div flex="20"></div>
-								<div flex="20"></div>
-								<div flex="25"></div>
-								<div flex="10" layout="row">
-									<md-button ng-click="vm.addBOM()"
-											ng-disabled="vm.old"
+							<div layout="row" class="ams-column">
+								<div flex="20" class="ams-cell-input"></div>
+								<div flex="20" class="ams-cell-input"></div>
+								<div flex="20" class="ams-cell-input"></div>
+								<div flex="25" class="ams-cell-input"></div>
+								<div flex="15" layout="row" layout-align="start center">
+									<md-button ng-click="vm.addComponent()"
 											class="md-raised md-primary ams-button">
-										<ng-md-icon icon="add">
+										<ng-md-icon icon="add"></ng-md-icon>
 									</md-button>
 								</div>
 							</div>
@@ -115,7 +144,12 @@
 		</div>
 	</md-dialog-content>
 	<md-dialog-actions>
-		<md-button class="md-raised md-primary" ng-click="vm.print()">Save and Print</md-button>
+		<md-switch
+			ng-model="vm.auto" aria-label="Mode" ng-cloak>
+			Automatic {{vm.auto && 'ON' || 'OFF'}}
+		</md-switch>
+		<md-button class="md-raised md-primary" ng-click="vm.updateOrder()">Save</md-button>
+		<md-button class="md-raised md-primary" ng-click="vm.reload()">Reload</md-button>
 		<md-button class="md-raised md-primary" ng-click="vm.close()">Close</md-button>
 	</md-dialog-actions>
 </md-dialog>

@@ -189,6 +189,24 @@ md-card-footer {
 	margin-left: 16px !important;
 }
 
+.ams-column {
+	min-height: 48px;
+	max-height: 48px;
+}
+.ams-cell-input {
+	min-height: 38px !important;
+	max-height: 38px !important;
+	margin-top: 10px !important;
+	margin-bottom: 0px !important;
+}
+.ams-cell-time {
+	min-height: 42px !important;
+	max-height: 42px !important;
+	margin-top: 6px !important;
+	margin-right: 0px !important;
+	margin-bottom: 0px !important;
+}
+
 .version {
 	font-size: 12px !important;
 }

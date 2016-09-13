@@ -52,7 +52,7 @@
 				icon: 'build',
 			}, {
 				link: 'home.factory',
-				name: 'factory',
+				name: 'Factory',
 				icon: 'airport_shuttle',
 			}
 		];

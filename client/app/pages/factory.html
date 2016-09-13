@@ -29,8 +29,15 @@
 			<div class="md-title">Orders</div>
 		</md-card-header-text>
 		<span flex="auto"></span>
-		<md-button class="md-raised md-primary" ng-click="vm.searchOrder()">Search</md-button>
-		<md-button class="md-raised md-primary" ng-click="vm.newOrder()">New</md-button>
+		<md-button class="md-raised md-primary" ng-click="vm.searchOrder()">
+			<ng-md-icon icon="search"></ng-md-icon>
+		</md-button>
+		<md-button class="md-raised md-primary" ng-click="vm.newOrder()">
+			<ng-md-icon icon="add"></ng-md-icon>
+		</md-button>
+		<md-button class="md-raised md-primary" ng-click="vm.setting()">
+			<ng-md-icon icon="settings"></ng-md-icon>
+		</md-button>
 	</md-card-header>
 	<md-card-content flex>
 		<md-table-container>

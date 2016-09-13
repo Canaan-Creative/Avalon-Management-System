@@ -398,25 +398,39 @@ def init(argv):
         {'name': 'password', 'type': 'CHAR(64)'},
     ], 'PRIMARY KEY(`username`)')
 
-    database.run('create', 'orders', [
-        {'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'},
-        {'name': 'id', 'type': 'VARCHAR(64)'},
+    database.run('create', 'order', [
+        {'name': 'order_id', 'type': 'VARCHAR(64)'},
         {'name': 'doc_id', 'type': 'VARCHAR(64)'},
         {'name': 'quantity', 'type': 'INT UNSIGNED'},
         {'name': 'batch', 'type': 'VARCHAR(64)'},
-        {'name': 'serial', 'type': 'VARCHAR(64)'},
-        {'name': 'model', 'type': 'VARCHAR(8)'},
-        {'name': 'uid', 'type': 'INT UNSIGNED'},
-    ], 'PRIMARY KEY(`uid`)')
+    ], 'PRIMARY KEY(`order_id`)')
 
-    database.run('create', 'boms', [
-        {'name': 'id', 'type': 'INT UNSIGNED'},
+    database.run('create', 'product', [
+        {'name': 'product_id', 'type': 'VARCHAR(128)'},
+        {'name': 'order_id', 'type': 'VARCHAR(128)'},
+        {'name': 'time', 'type': 'TIMESTAMP'},
+    ], 'PRIMARY KEY(`product_id`)')
+
+    database.run('create', 'component', [
+        {'name': 'component_id', 'type': 'VARCHAR(128)'},
+        {'name': 'product_id', 'type': 'VARCHAR(128)'},
+        {'name': 'active_time', 'type': 'TIMESTAMP'},
+        {'name': 'revoke', 'type': 'BOOLEAN DEFAULT 0'},
+        {'name': 'revoke_time', 'type': 'TIMESTAMP DEFAULT 0'},
+    ], 'PRIMARY KEY(`component_id`, `product_id`, `active_time`)')
+
+    database.run('create', 'code_rule', [
+        {'name': 'header', 'type': 'VARCHAR(128) NOT NULL'},
         {'name': 'name', 'type': 'VARCHAR(128)'},
         {'name': 'model', 'type': 'VARCHAR(128)'},
-        {'name': 'sn', 'type': 'VARCHAR(64)'},
         {'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'},
-        {'name': 'order_uid', 'type': 'INT UNSIGNED'},
-    ], 'PRIMARY KEY(`order_uid`, `id`)')
+    ], 'PRIMARY KEY(`header`, `time`)')
+
+    database.run('create', 'depend_rule', [
+        {'name': 'component_header', 'type': 'VARCHAR(128)'},
+        {'name': 'product_header', 'type': 'VARCHAR(128)'},
+        {'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'},
+    ], 'PRIMARY KEY(`component_header`, `product_header`, `time`)')
 
     database.commit()
     database.disconnect()

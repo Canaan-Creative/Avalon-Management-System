@@ -296,6 +296,10 @@
 				url = 'app/dialogs/order.html';
 				controller = 'OrderController';
 				break;
+			case 'factory_rules':
+				url = 'app/dialogs/factory_rules.html';
+				controller = 'FactoryRulesController';
+				break;
 			}
 			$mdDialog.show({
 				parent: angular.element(document.body),

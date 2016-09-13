@@ -40,12 +40,13 @@
 		self.getAliverate = getAliverate;
 		self.getFarmHashrate = getFarmHashrate;
 		self.getNodeHashrate = getNodeHashrate;
-		self.getOrders = getOrders;
-		self.getBOMs = getBOMs;
+		self.getOrder = getOrder;
+		self.setOrder = setOrder;
+		self.getRules = getRules;
+		self.setRules = setRules;
+		self.addProduct = addProduct;
 		self.setLED = setLED;
 		self.updateNodes = updateNodes;
-		self.printOrder = printOrder;
-		self.addOrder = addOrder;
 		self.rtac = rtac;
 		self.rtaclog = rtaclog;
 		self.login = login;
@@ -206,38 +207,46 @@
 				});
 		}
 
-		function getOrders() {
-			return $http.get('/api/orders').then(
+		function getOrder() {
+			return $http.get('/api/order').then(
 				function(response) {
-					self.data.orders = response.data.result;
+					self.data.order = response.data.result;
 				}, function(errResponse) {
-					self.data.orders = null;
-					console.error('Error fetching orders');
+					self.data.order = null;
+					console.error('Error fetching order');
 				});
 		}
 
-		function getBOMs(order_uid) {
-			return $http.get('/api/boms/' + order_uid).then(
+		function setOrder() {
+			return $http.post('/api/order', {order: self.data.order}).then(
 				function(response) {
-					self.data.boms = response.data.result;
+
 				}, function(errResponse) {
-					self.data.boms = null;
-					console.error('Error fetching BOMs');
+					console.error('Error fetching order');
 				});
 		}
 
-		function addOrder(order) {
-			return $http.post('/api/add_order/', {order: order}).then(
+		function getRules() {
+			return $http.get('/api/rules').then(
 				function(response) {
-					order.uid = response.data.result.uid;
+					self.data.rules = response.data.result;
 				}, function(errResponse) {
-					order.uid = null;
-					console.error('Error adding order');
+					self.data.rules = null;
+					console.error('Error fetching order');
 				});
 		}
 
-		function printOrder(order_uid) {
-			return '/api/print_order/' + order_uid;
+		function setRules() {
+			return $http.post('/api/rules', {rules: self.data.rules});
+		}
+
+		function addProduct(product) {
+			return $http.post('/api/product/', {product: product}).then(
+				function(response) {
+
+				}, function(errResponse) {
+					console.error('Error adding product');
+				});
 		}
 
 		function setLED(data) {

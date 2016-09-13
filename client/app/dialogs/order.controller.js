@@ -28,71 +28,88 @@
 	function OrderController(share, api, $mdDialog) {
 		/* jshint validthis: true */
 		var vm = this;
-
-		if (vm.order) {
-			vm.old = true;
-			api.getBOMs(vm.order.uid).then(cloneBOMs);
-		} else {
-			vm.old = false;
-			vm.order = {
-				time: new Date(),
-				id: '',
-				doc_id: '',
-				quantity: 0,
-				batch: '',
-				serial: '',
-				model: '',
-				boms: [{
-					id: 0,
-					name: '',
-					model: '',
-					sn: '',
-					time: new Date()
-				}]
-			};
-		}
+		vm.auto = "OFF";
+		vm.data = api.data;
+		vm.product = {};
+		vm.loaded = false;
 
 		vm.close = close;
-		vm.addBOM = addBOM;
-		vm.deleteBOM = deleteBOM;
-		vm.print = print;
+		vm.reload = reload;
+		vm.setOrder = setOrder;
+		vm.addComponent = addComponent;
+		vm.deleteComponent = deleteComponent;
+		vm.buildDep = buildDep;
+
+		init();
+
+		function init() {
+			api.getOrder().then(api.getRules).then(function() {
+				vm.buildDep();
+				vm.loaded = true;
+			});
+		}
+
+		function reload() {
+			vm.loaded = false;
+			init();
+		}
 
 		function close() {
 			$mdDialog.hide();
 		}
 
-		function cloneBOMs() {
-			var boms = [];
-			for (var i = 0; i < api.data.boms.length; i++) {
-				boms.push({
-					id: api.data.boms[i].id,
-					name: api.data.boms[i].name,
-					model: api.data.boms[i].model,
-					sn: api.data.boms[i].sn,
-					time: api.data.boms[i].time,
-				});
-			}
-			vm.order.boms = boms;
+		function deleteComponent(component) {
+			vm.data.order.components.splice(vm.data.order.components.indexOf(component), 1);
 		}
 
-		function deleteBOM(b) {
-			vm.order.boms.splice(vm.order.boms.indexOf(b), 1);
-			for (var i = 0; i < vm.order.boms.length; i++)
-				vm.order.boms[i].id = i + 1;
-		}
-
-		function addBOM() {
-			vm.order.boms.push({
-				id: vm.order.boms.length + 1,
+		function addComponent() {
+			vm.data.order.components.push({
 				name: '',
 				model: '',
-				sn: '',
-				time: new Date()
+				component_id: '',
+				time: vm.product.time || new Date(),
 			});
 		}
 
-		function print() {
-			
+		function setOrder() {
+			product.order_id = vm.data.order.order_id;
+			Array.prototype.push.apply(
+				vm.product.components, vm.data.order.components
+			);
+			for (var i = 0; i < vm.product.components.length; i++)
+				vm.product.components[i].product_id =
+				vm.product.product_id;
+			api.setOrder.then(function() {
+				api.addProduct(vm.product);
+			});
+		}
+
+		function buildDep() {
+			var time = new Date();
+			for (var j = 0; j < vm.data.rules.code.length; j++)
+				if (vm.data.order.product_header ===
+						vm.data.rules.code[j].header)
+					vm.product = {
+						header: vm.data.rules.code[j].header,
+						name: vm.data.rules.code[j].name,
+						model: vm.data.rules.code[j].model,
+						product_id: '',
+						time: time,
+						components: [],
+					};
+			for (var i = 0; i < vm.data.rules.depend.length; i++)
+				if (vm.data.rules.depend[i].product_header ===
+						vm.data.order.product_header)
+					for (j = 0; j < vm.data.rules.code.length; j++)
+						if (vm.data.rules.depend[i].component_header ===
+							vm.data.rules.code[j].header)
+						vm.product.components.push({
+							header: vm.data.rules.code[j].header,
+							name: vm.data.rules.code[j].name,
+							model: vm.data.rules.code[j].model,
+							component_id: '',
+							time: time,
+						});
 		}
 	}
 })();

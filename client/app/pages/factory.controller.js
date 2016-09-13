@@ -54,8 +54,9 @@
 		vm.newOrder = newOrder;
 		vm.openOrder = openOrder;
 		vm.searchOrder = searchOrder;
+		vm.setting = setting;
 
-		api.getOrders().then(function () {
+		api.getOrder().then(function () {
 			vm.loaded = true;
 		});
 
@@ -69,6 +70,10 @@
 
 		function searchOrder(sn) {
 
+		}
+
+		function setting() {
+			vm.showDialog('factory_rules');
 		}
 	}
 })();

@@ -104,68 +104,113 @@ def before_request():
     g.database.connect()
 
 
-@app.route('/orders', methods=['GET'])
-def get_orders():
-    result = g.database.run(
-        'select',
-        'orders',
-        ['time', 'id', 'doc_id', 'quantity', 'batch', 'serial', 'model', 'uid']
-    )
-    orders = []
-    if result:
-        for r in result:
-            orders.append({
-                'time': r[0], 'id': r[1], 'doc_id': r[2], 'quantity': r[3],
-                'batch': r[4], 'serial': r[5], 'model': r[6], 'uid': r[8]
-            })
-    return ams_dumps({'result': orders})
-
-
-@app.route('/boms/<order_uid>', methods=['GET'])
-def get_boms(order_uid):
-    result = g.database.run(
-        'select', 'boms'
-        ['id', 'name', 'model', 'sn', 'time'],
-        '`order_uid` = %s',
-        order_uid
-    )
-    boms = []
-    if result:
-        for r in result:
-            boms.append({
-                'id': r[0], 'name': r[1], 'model': r[2],
-                'sn': r[3], 'time': r[4]
-            })
-    return ams_dumps({'result': boms})
-
-
-@app.route('/add_order', methods=['POST'])
-def add_order():
-    order = request.json.get('order')
-    uid = int(hashlib.sha1(
-                '{}{}'.format(order['id'], order['doc_id']).decode()
-            ).hexdigest()[:8], 16)
-    while g.database.run('select', 'orders', ['uid'], '`uid` = %s', uid):
-        uid += 1
-    g.database.run(
-        'insert', 'orders',
-        ['time', 'id', 'doc_id', 'quantity',
-         'batch', 'serial', 'model', 'uid'],
-        [order['time'], order['id'], order['doc_id'], order['quantity'],
-         order['batch'], order['serial'], order['model'], uid]
-    )
-    for b in order['boms']:
+@app.route('/order', methods=['POST', 'GET'])
+def order_handler():
+    server = redis.StrictRedis()
+    if request.method == 'POST':
+        order = request.json.get('order')
         g.database.run(
-            'insert', 'boms',
-            ['id', 'model', 'sn', 'time', 'order_uid'],
-            [order['id'], order['model'], order['sn'], order['time'], uid],
-            [b['id']])
-    return ams_dumps({'success': True, 'uid': uid})
+            'raw',
+            '''\
+INSERT INTO order
+       (order_id, doc_id, quantity, batch)
+VALUES (%s, %s, %s, %s)
+    ON DUPLICATE KEY UPDATE
+       order_id = %s''',
+            [order['order_id'], order['doc_id'],
+             order['quantity'], order['batch'],
+             order['order_id']]
+        )
+        server.set('order', ams_dumps(order))
+        return ams_dumps({'success': True, 'order_id': order['order_id']})
+
+    else:
+        order = server.get('order')
+        if order is None:
+            order = {
+                'order_id': '',
+                'doc_id': '',
+                'quantity': '',
+                'batch': '',
+                'serial': 0,
+                'product_header': '',
+                'components': [],
+            }
+            order = ams_dumps(order)
+        return ams_dumps({
+            'success': True,
+            'result': json.loads(order),
+        })
 
 
-@app.route('/print_order/<order_uid>', methods=['GET'])
-def print_order(order_uid):
-    pass
+@app.route('/product', methods=['POST'])
+def product_handler():
+    product = request.json.get('product')
+    g.database.run(
+        'insert', 'products',
+        ['product_id', 'order_id', 'time'],
+        [product['product_id'], product['order_id'],
+         '{:%Y-%m-%d %H:%M:%S}'.format(
+             datetime.datetime.fromtimestamp(product['time'])
+         )]
+    )
+    for component in product['components']:
+        g.database.run(
+            'insert', 'components',
+            ['component_id', 'product_id', 'time'],
+            [component['component_id'], product['product_id'],
+             '{:%Y-%m-%d %H:%M:%S}'.format(
+                 datetime.datetime.fromtimestamp(component['time'])
+             )]
+        )
+    g.database.commit()
+    return ams_dumps({'success': True})
+
+
+@app.route('/rules', methods=['POST', 'GET'])
+def rule_handler():
+    if request.method == 'POST':
+        rules = request.json.get('rules')
+        now = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+        for code_rule in rules['code']:
+            g.database.run(
+                'insert', 'code_rule',
+                ['header', 'name', 'model', 'time'],
+                [code_rule['header'], code_rule['name'],
+                 code_rule['model'], now]
+            )
+        for depend_rule in rules['depend']:
+            g.database.run(
+                'insert', 'depend_rule',
+                ['component_header', 'product_header', 'time'],
+                [depend_rule['component_header'],
+                 depend_rule['product_header'],
+                 now]
+            )
+        g.database.commit()
+        return ams_dumps({'success': True})
+    else:
+        rules = {'code': [], 'depend': []}
+        result = g.database.run(
+            'select', 'code_rule',
+            ['header', 'name', 'model'],
+            'time = (SELECT MAX(time) from code_rule)'
+        )
+        for r in result:
+            rules['code'].append({
+                'header': r[0], 'name': r[1], 'model': r[2]
+            })
+        result = g.database.run(
+            'select', 'depend_rule',
+            ['component_header', 'product_header'],
+            'time = (SELECT MAX(time) from code_rule)'
+        )
+        for r in result:
+            rules['depend'].append({
+                'component_header': r[0], 'product_header': r[1]
+            })
+
+        return ams_dumps({'result': rules})
 
 
 @app.route('/nodes', methods=['GET'])
