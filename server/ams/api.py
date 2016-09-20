@@ -97,6 +97,11 @@ def ams_auth(token):
         return False
 
 
+def iso2epoch(ts):
+    dt = datetime.datetime.strptime(ts[:19], "%Y-%m-%dT%H:%M:%S")
+    return (dt - datetime.datetime(1970, 1, 1)).total_seconds()
+
+
 @app.before_request
 def before_request():
     log()
@@ -112,20 +117,20 @@ def order_handler():
         g.database.run(
             'raw',
             '''\
-INSERT INTO order
-       (order_id, doc_id, quantity, batch)
-VALUES (%s, %s, %s, %s)
+INSERT INTO `order`
+       (order_id, doc_id, quantity)
+VALUES (%s, %s, %s)
     ON DUPLICATE KEY UPDATE
        order_id = %s''',
             [order['order_id'], order['doc_id'],
-             order['quantity'], order['batch'],
-             order['order_id']]
+             order['quantity'], order['order_id']]
         )
+        g.database.commit()
         server.set('order', ams_dumps(order))
         return ams_dumps({'success': True, 'order_id': order['order_id']})
 
     else:
-        order = server.get('order')
+        order = server.get('order').decode()
         if order is None:
             order = {
                 'order_id': '',
@@ -147,20 +152,20 @@ VALUES (%s, %s, %s, %s)
 def product_handler():
     product = request.json.get('product')
     g.database.run(
-        'insert', 'products',
-        ['product_id', 'order_id', 'time'],
-        [product['product_id'], product['order_id'],
+        'insert', 'product',
+        ['product_id', 'order_id', 'batch', 'time'],
+        [product['product_id'], product['order_id'], product['batch'],
          '{:%Y-%m-%d %H:%M:%S}'.format(
-             datetime.datetime.fromtimestamp(product['time'])
+             datetime.datetime.fromtimestamp(iso2epoch(product['time']))
          )]
     )
     for component in product['components']:
         g.database.run(
-            'insert', 'components',
-            ['component_id', 'product_id', 'time'],
-            [component['component_id'], product['product_id'],
+            'insert', 'component',
+            ['component_id', 'product_id', 'active_time'],
+            [component['component_id'], component['product_id'],
              '{:%Y-%m-%d %H:%M:%S}'.format(
-                 datetime.datetime.fromtimestamp(component['time'])
+                 datetime.datetime.fromtimestamp(iso2epoch(component['time']))
              )]
         )
     g.database.commit()

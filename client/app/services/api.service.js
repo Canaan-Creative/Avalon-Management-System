@@ -241,7 +241,7 @@
 		}
 
 		function addProduct(product) {
-			return $http.post('/api/product/', {product: product}).then(
+			return $http.post('/api/product', {product: product}).then(
 				function(response) {
 
 				}, function(errResponse) {

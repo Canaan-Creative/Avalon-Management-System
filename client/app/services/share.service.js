@@ -192,6 +192,30 @@
 			showDialog: showDialog,
 		};
 
+		self.event = {
+			keydown: new Event(),
+		};
+
+
+		function Event() {
+			var registered = [];
+			
+			this.addListener = function(callback) {
+				return registered.push(callback) - 1;
+			};
+
+			this.removeListener = function(id) {
+				delete(registered[id]);
+			};
+			
+			this.fire = function(e) {
+				for (var i = 0; i < registered.length; i++) {
+					var listener = registered[i];
+					if (listener !== undefined)
+						listener(e);
+				}
+			};
+		}
 
 		function getLastTime() {
 			return $http.get('/api/lasttime')

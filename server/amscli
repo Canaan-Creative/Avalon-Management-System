@@ -402,12 +402,12 @@ def init(argv):
         {'name': 'order_id', 'type': 'VARCHAR(64)'},
         {'name': 'doc_id', 'type': 'VARCHAR(64)'},
         {'name': 'quantity', 'type': 'INT UNSIGNED'},
-        {'name': 'batch', 'type': 'VARCHAR(64)'},
     ], 'PRIMARY KEY(`order_id`)')
 
     database.run('create', 'product', [
         {'name': 'product_id', 'type': 'VARCHAR(128)'},
         {'name': 'order_id', 'type': 'VARCHAR(128)'},
+        {'name': 'batch', 'type': 'VARCHAR(64)'},
         {'name': 'time', 'type': 'TIMESTAMP'},
     ], 'PRIMARY KEY(`product_id`)')
 

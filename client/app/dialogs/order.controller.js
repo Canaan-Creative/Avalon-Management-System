@@ -28,17 +28,22 @@
 	function OrderController(share, api, $mdDialog) {
 		/* jshint validthis: true */
 		var vm = this;
-		vm.auto = "OFF";
+		vm.auto = false;
 		vm.data = api.data;
 		vm.product = {};
 		vm.loaded = false;
+		vm.eid = undefined;
 
 		vm.close = close;
 		vm.reload = reload;
-		vm.setOrder = setOrder;
+		vm.updateOrder = updateOrder;
 		vm.addComponent = addComponent;
 		vm.deleteComponent = deleteComponent;
 		vm.buildDep = buildDep;
+		vm.switchMode = switchMode;
+
+		var buffer = "";
+		var missed_id = 1;
 
 		init();
 
@@ -50,11 +55,17 @@
 		}
 
 		function reload() {
+			if (vm.auto) {
+				vm.auto = false;
+				vm.switchMode();
+			}
 			vm.loaded = false;
 			init();
 		}
 
 		function close() {
+			if (vm.eid !== undefined)
+				share.event.keydown.removeListener(vm.eid);
 			$mdDialog.hide();
 		}
 
@@ -71,16 +82,22 @@
 			});
 		}
 
-		function setOrder() {
-			product.order_id = vm.data.order.order_id;
+		function freeze() {
+			vm.reload();
+		}
+
+		function updateOrder() {
+			vm.loaded = false;
+			vm.product.order_id = vm.data.order.order_id;
+			vm.product.batch = vm.data.order.batch;
 			Array.prototype.push.apply(
 				vm.product.components, vm.data.order.components
 			);
 			for (var i = 0; i < vm.product.components.length; i++)
 				vm.product.components[i].product_id =
-				vm.product.product_id;
-			api.setOrder.then(function() {
-				api.addProduct(vm.product);
+					vm.product.product_id;
+			api.setOrder().then(function() {
+				api.addProduct(vm.product).then(freeze);
 			});
 		}
 
@@ -88,28 +105,72 @@
 			var time = new Date();
 			for (var j = 0; j < vm.data.rules.code.length; j++)
 				if (vm.data.order.product_header ===
-						vm.data.rules.code[j].header)
+						vm.data.rules.code[j].header) {
 					vm.product = {
 						header: vm.data.rules.code[j].header,
 						name: vm.data.rules.code[j].name,
 						model: vm.data.rules.code[j].model,
-						product_id: '',
+						product_id: null,
 						time: time,
 						components: [],
 					};
+					missed_id = 1;
+				}
 			for (var i = 0; i < vm.data.rules.depend.length; i++)
 				if (vm.data.rules.depend[i].product_header ===
 						vm.data.order.product_header)
 					for (j = 0; j < vm.data.rules.code.length; j++)
 						if (vm.data.rules.depend[i].component_header ===
-							vm.data.rules.code[j].header)
-						vm.product.components.push({
-							header: vm.data.rules.code[j].header,
-							name: vm.data.rules.code[j].name,
-							model: vm.data.rules.code[j].model,
-							component_id: '',
-							time: time,
-						});
+								vm.data.rules.code[j].header) {
+							vm.product.components.push({
+								header: vm.data.rules.code[j].header,
+								name: vm.data.rules.code[j].name,
+								model: vm.data.rules.code[j].model,
+								component_id: null,
+								time: time,
+							});
+							missed_id++;
+						}
+		}
+
+		function switchMode() {
+			if (vm.auto) {
+				vm.freeze = true;
+				vm.eid = share.event.keydown.addListener(readBarcode);
+			} else {
+				vm.freeze = false;
+				share.event.keydown.removeListener(vm.eid);
+			}
+		}
+
+		function readBarcode(e) {
+			var key = e.key;
+			if (key == 'Enter' || key == 'Tab') {
+				var code = buffer;
+				buffer = "";
+				checkBarcode(code);
+			} else
+				buffer += key;
+		}
+
+		function checkBarcode(code) {
+			console.log(code);
+			if (code.indexOf(vm.product.header) === 0) {
+				if (vm.product.product_id === null)
+					missed_id--;
+				vm.product.product_id = code;
+			} else
+				for (var i = 0; i < vm.product.components.length; i++) {
+					var component = vm.product.components[i];
+					if (code.indexOf(component.header) === 0) {
+						if (component.component_id === null)
+							missed_id--;
+						component.component_id = code;
+						break;
+					}
+				}
+			if (missed_id === 0)
+				vm.updateOrder();
 		}
 	}
 })();

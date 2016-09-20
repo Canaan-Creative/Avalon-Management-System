@@ -22,85 +22,89 @@
 </object>
 -->
 <md-dialog aria-label="Order" flex="85">
-	<md-dialog-content style="height: 90%">
+	<md-dialog-content style="height: 90%" layout="row" layout-align="center center" ng-if="!vm.loaded">
+		<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+	</md-dialog-content>
+	<md-dialog-content style="height: 90%" ng-if="vm.loaded">
 		<div layout="column" class="md-dialog-content" layout-fill>
-			<h2 class="md-title dialog-title">Order</h2>
+			<h2 class="md-title dialog-title">订单</h2>
 			<div layout="row" flex>
 				<md-content layout="column" layout-align="center start" flex="25">
-					<h3 class="md-subhead">Order Info</h3>
+					<h3 class="md-subhead">订单信息</h3>
 					<md-input-container class="setting-column">
-						<label>Order ID</label>
-						<input required ng-model="vm.data.order.id" ng-cloak />
+						<label>订单编号</label>
+						<input required aria-label="Order ID" ng-disabled="vm.freeze" ng-model="vm.data.order.order_id" ng-cloak />
 					</md-input-container>
 					<md-input-container class="setting-column">
-						<label>Quantity</label>
-						<input required ng-model="vm.data.order.quantity" ng-cloak />
+						<label>投产数量</label>
+						<input required aria-label="Quantity" ng-disabled="vm.freeze" ng-model="vm.data.order.quantity" ng-cloak />
 					</md-input-container>
 					<md-input-container class="setting-column">
-						<label>Document ID</label>
-						<input required ng-model="vm.data.order.doc_id" ng-cloak />
+						<label>工艺文件编号</label>
+						<input required aria-label="Document ID" ng-disabled="vm.freeze" ng-model="vm.data.order.doc_id" ng-cloak />
 					</md-input-container>
 					<md-input-container class="setting-column">
-						<label>Batch No.</label>
-						<input required ng-model="vm.data.order.batch" ng-cloak />
+						<label>生产批次</label>
+						<input required aria-label="batch" ng-disabled="vm.freeze" ng-model="vm.data.order.batch" ng-cloak />
 					</md-input-container>
 					<div flex="auto"></div>
 				</md-content>
 				<md-content layout="column" flex>
-					<h3 class="md-subhead">Product Info</h3>
+					<h3 class="md-subhead">产品信息</h3>
 					<div layout="row" class="ams-column">
 						<md-input-container class="ams-cell-input">
-							<label>Serial No.</label>
+							<label>流水编号</label>
 							<input ng-model="vm.data.order.serial" ng-cloak disabled />
 						</md-input-container>
 						<md-input-container class="ams-cell-input">
-							<label>Product Code Header</label>
-							<input required
+							<label>产品编码头</label>
+							<input required ng-disabled="vm.freeze"
+								aria-label="Product Code Header"
 								ng-model="vm.data.order.product_header"
 								ng-change="vm.buildDep()"
 								ng-cloak />
 						</md-input-container>
-						<md-datepicker class="ams-cell-time" ng-model="vm.product.time">
+						<md-datepicker class="ams-cell-time" ng-disabled="vm.freeze" ng-model="vm.product.time">
 						</md-datepicker>
 					</div>
 					<div layout="row" class="ams-column">
 						<md-input-container class="ams-cell-input" flex="20">
-							<label>Name</label>
-							<input ng-model="vm.product.name" disabled />
+							<label>产品名称</label>
+							<input aria-label="name" ng-model="vm.product.name" disabled />
 						</md-input-container>
 						<md-input-container class="ams-cell-input" flex="20">
-							<label>Model</label>
-							<input ng-model="vm.product.model" disabled />
+							<label>产品型号</label>
+							<input aria-label="model" ng-model="vm.product.model" disabled />
 						</md-input-container>
 						<md-input-container class="ams-cell-input" flex="20">
-							<label>SN</label>
-							<input required ng-model="vm.product.product_id" />
+							<label>序列号</label>
+							<input required aria-label="SN" ng-disabled="vm.freeze" ng-model="vm.product.product_id" />
 						</md-input-container>
 						<div flex="25" class="ams-cell-input"></div>
 						<div flex="15" class="ams-cell-input"></div>
 					</div>
 					<div flex="5"></div>
-					<h3 class="md-subhead">Components Info</h3>
+					<h3 class="md-subhead">组件信息</h3>
 					<md-content flex layout="column">
 						<div layout="row" class="ams-column" layout-align="center center">
-							<p class="md-body-2" flex="20">Name</p>
-							<p class="md-body-2" flex="20">Model</p>
-							<p class="md-body-2" flex="20">SN</p>
-							<p class="md-body-2" flex="25">Date</p>
+							<p class="md-body-2" flex="20">名称</p>
+							<p class="md-body-2" flex="20">型号</p>
+							<p class="md-body-2" flex="20">序列号</p>
+							<p class="md-body-2" flex="25">领用日期</p>
 							<p class="md-body-2" flex="15"></p>
 						</div>
 						<md-content flex layout="column">
 							<div ng-repeat="b in vm.product.components" class="ams-column" layout="row">
 								<md-input-container class="ams-cell-input" flex="20">
-									<input ng-model="b.name" disabled />
+									<input aria-label="name" ng-model="b.name" disabled />
 								</md-input-container>
 								<md-input-container class="ams-cell-input" flex="20">
-									<input ng-model="b.model" disabled />
+									<input aria-label="model" ng-model="b.model" disabled />
 								</md-input-container>
 								<md-input-container class="ams-cell-input" flex="20">
-									<input required ng-model="b.component_id" />
+									<input aria-label="id" ng-disabled="vm.freeze" required ng-model="b.component_id" />
 								</md-input-container>
-								<md-datepicker flex=25 class="ams-cell-time" ng-model="b.time">
+								<md-datepicker flex=25 class="ams-cell-time" ng-disabled="vm.freeze" ng-model="b.time">
 								</md-datepicker>
 								<div flex="15" class="ams-cell-input" layout="row">
 								</div>
@@ -108,18 +112,18 @@
 							<md-divider></md-divider>
 							<div ng-repeat="b in vm.data.order.components" class="ams-column" layout="row">
 								<md-input-container class="ams-cell-input" flex="20">
-									<input ng-model="b.name" disabled />
+									<input aria-label="name" ng-model="b.name" disabled />
 								</md-input-container>
 								<md-input-container class="ams-cell-input" flex="20">
-									<input ng-model="b.model" disabled />
+									<input aria-label="model" ng-model="b.model" disabled />
 								</md-input-container>
 								<md-input-container class="ams-cell-input" flex="20">
-									<input required ng-model="b.component_id" />
+									<input aria-label="sn" required ng-model="b.component_id" />
 								</md-input-container>
-								<md-datepicker flex="25" class="ams-cell-time" ng-model="b.time">
+								<md-datepicker flex="25" ng-disabled="vm.freeze" class="ams-cell-time" ng-disabled="vm.freeze" ng-model="b.time">
 								</md-datepicker>
 								<div flex="15" layout="row" layout-align="start center">
-									<md-button ng-click="vm.deleteComponent(b)"
+									<md-button type="button" aria-label="delete" ng-disabled="vm.freeze" ng-click="vm.deleteComponent(b)"
 											class="md-raised md-warn ams-button">
 										<ng-md-icon icon="delete">
 									</md-button>
@@ -131,7 +135,7 @@
 								<div flex="20" class="ams-cell-input"></div>
 								<div flex="25" class="ams-cell-input"></div>
 								<div flex="15" layout="row" layout-align="start center">
-									<md-button ng-click="vm.addComponent()"
+									<md-button type="button" aria-label="add" ng-disabled="vm.freeze" ng-click="vm.addComponent()"
 											class="md-raised md-primary ams-button">
 										<ng-md-icon icon="add"></ng-md-icon>
 									</md-button>
@@ -145,11 +149,12 @@
 	</md-dialog-content>
 	<md-dialog-actions>
 		<md-switch
-			ng-model="vm.auto" aria-label="Mode" ng-cloak>
-			Automatic {{vm.auto && 'ON' || 'OFF'}}
+			ng-change="vm.switchMode()"
+			ng-model="vm.auto" aria-label="Mode" ng-disable="!vm.loaded" ng-cloak>
+			自动模式 {{vm.auto && '开' || '关'}}
 		</md-switch>
-		<md-button class="md-raised md-primary" ng-click="vm.updateOrder()">Save</md-button>
-		<md-button class="md-raised md-primary" ng-click="vm.reload()">Reload</md-button>
-		<md-button class="md-raised md-primary" ng-click="vm.close()">Close</md-button>
+		<md-button type="button" aria-label="save" ng-disabled="vm.freeze" class="md-raised md-primary" ng-disabled="!vm.loaded" ng-click="vm.updateOrder()">保存</md-button>
+		<md-button type="button" aria-label="reload" class="md-raised md-primary" ng-disabled="!vm.loaded" ng-click="vm.reload()">重新载入</md-button>
+		<md-button type="button" aria-label="close" class="md-raised md-primary" ng-disabled="!vm.loaded" ng-click="vm.close()">关闭</md-button>
 	</md-dialog-actions>
 </md-dialog>

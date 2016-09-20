@@ -26,27 +26,28 @@
 		<div layout="column" class="md-dialog-content" layout-fill>
 			<div layout="row" flex>
 				<md-content layout="column" flex="60">
-					<h3 class="md-subhead">Code Rules</h3>
+					<h3 class="md-subhead">编码规则</h3>
 					<md-content flex layout="column">
 						<div layout="row" layout-align="center start" class="setting-header">
-							<h3 class="md-subhead" flex="20">Header</h3>
-							<h3 class="md-subhead" flex="35">Name</h3>
-							<h3 class="md-subhead" flex="35">Model</h3>
+							<h3 class="md-subhead" flex="20">编码头</h3>
+							<h3 class="md-subhead" flex="35">名称</h3>
+							<h3 class="md-subhead" flex="35">型号</h3>
 							<h3 class="md-subhead" flex="10"></h3>
 						</div>
 						<md-content flex layout="column">
 							<div ng-repeat="r in vm.data.rules.code" layout="row" class="setting-column">
 								<md-input-container flex="20">
-									<input ng-model="r.header" />
+									<input aria-label="header" ng-model="r.header" />
 								</md-input-container>
 								<md-input-container flex="35">
-									<input ng-model="r.name" />
+									<input aria-label="name" ng-model="r.name" />
 								</md-input-container>
 								<md-input-container flex="35">
-									<input ng-model="r.model" />
+									<input aria-label="model" ng-model="r.model" />
 								</md-input-container>
 								<div flex="10" layout="row">
 									<md-button ng-click="vm.deleteRules(r, 'code')"
+											aria-label="delete"
 											class="md-raised md-warn ams-button">
 										<ng-md-icon icon="delete">
 									</md-button>
@@ -58,6 +59,7 @@
 								<div flex="35"></div>
 								<div flex="10" layout="row">
 									<md-button ng-click="vm.addRules('code')"
+											aria-label="add"
 											class="md-raised md-primary ams-button">
 										<ng-md-icon icon="add"></ng-md-icon>
 									</md-button>
@@ -67,23 +69,24 @@
 					</md-content>
 				</md-content>
 				<md-content layout="column" flex>
-					<h3 class="md-subhead">Dependency Rules</h3>
+					<h3 class="md-subhead">依赖规则</h3>
 					<md-content flex layout="column">
 						<div layout="row" layout-align="center start" class="setting-header">
-							<h3 class="md-subhead" flex="40">Product Header</h3>
-							<h3 class="md-subhead" flex="40">Component Header</h3>
+							<h3 class="md-subhead" flex="40">产品编码头</h3>
+							<h3 class="md-subhead" flex="40">组件编码头</h3>
 							<h3 class="md-subhead" flex="20"></h3>
 						</div>
 						<md-content flex layout="column">
 							<div ng-repeat="r in vm.data.rules.depend" layout="row" class="setting-column">
 								<md-input-container flex="40">
-									<input ng-model="r.product_header" ng-disabled />
+									<input aria-label="pheader" ng-model="r.product_header" ng-disabled />
 								</md-input-container>
 								<md-input-container flex="40">
-									<input ng-model="r.component_header" ng-disabled />
+									<input aria-label="cheader" ng-model="r.component_header" ng-disabled />
 								</md-input-container>
 								<div flex="20" layout="row">
 									<md-button ng-click="vm.deleteRules(r, 'depend')"
+											aria-label="delete"
 											class="md-raised md-warn ams-button">
 										<ng-md-icon icon="delete">
 									</md-button>
@@ -94,6 +97,7 @@
 								<div flex="40"></div>
 								<div flex="20" layout="row">
 									<md-button ng-click="vm.addRules('depend')"
+											aria-label="add"
 											class="md-raised md-primary ams-button">
 										<ng-md-icon icon="add"></ng-md-icon>
 									</md-button>
@@ -106,8 +110,8 @@
 		</div>
 	</md-dialog-content>
 	<md-dialog-actions>
-		<md-button class="md-raised md-primary" ng-click="vm.setRules()">Save</md-button>
-		<md-button class="md-raised md-primary" ng-click="vm.reload()">Reload</md-button>
-		<md-button class="md-raised md-primary" ng-click="vm.close()">Close</md-button>
+		<md-button aria-label="save" class="md-raised md-primary" ng-click="vm.setRules()">保存</md-button>
+		<md-button aria-label="reload" class="md-raised md-primary" ng-click="vm.reload()">重新载入</md-button>
+		<md-button aria-label="close" class="md-raised md-primary" ng-click="vm.close()">关闭</md-button>
 	</md-dialog-actions>
 </md-dialog>

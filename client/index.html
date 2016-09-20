@@ -16,15 +16,16 @@
  You should have received a copy of the GNU General Public License
  along with AMS. If not, see <http://www.gnu.org/licenses/>.
 -->
-<html ng-app="ams">
+<html ng-app="ams" ng-controller="MainController">
 	<head>
 		<title>Avalon Management System</title>
 		<link href="./lib/css/angular-material.min.css" rel="stylesheet" />
 		<link href="./lib/css/md-data-table.min.css" rel="stylesheet" />
 		<link href="./lib/css/nv.d3.min.css" rel="stylesheet" />
 		<link href="./lib/css/ams.min.css" rel="stylesheet" />
+		<meta charset="utf-8" />
 	</head>
-	<body layout="row" ui-view>
+	<body layout="row" ui-view ng-keydown="keydown($event)">
 		<script src="./lib/js/angular.min.js"></script>
 		<script src="./lib/js/angular-aria.min.js"></script>
 		<script src="./lib/js/angular-animate.min.js"></script>

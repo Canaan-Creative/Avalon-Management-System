@@ -27,5 +27,15 @@
 			'ui.router',
 			'md.data.table',
 			'nvd3',
-		]);
+		])
+		.controller('MainController', MainController);
+
+	MainController.$inject = ['ShareService', '$scope'];
+
+	function MainController(share, $scope) {
+		$scope.keydown = function(e) {
+			share.event.keydown.fire(e);
+		};
+	}
+
 })();
