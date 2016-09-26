@@ -75,9 +75,11 @@
 
 		function addComponent() {
 			vm.data.order.components.push({
+				cid: vm.data.order.components.length + 1,
 				name: '',
 				model: '',
-				component_id: '',
+				note: '',
+				component_sn: '',
 				time: vm.product.time || new Date(),
 			});
 		}
@@ -90,12 +92,13 @@
 			vm.loaded = false;
 			vm.product.order_id = vm.data.order.order_id;
 			vm.product.batch = vm.data.order.batch;
+			vm.product.note = vm.data.order.note;
 			Array.prototype.push.apply(
 				vm.product.components, vm.data.order.components
 			);
 			for (var i = 0; i < vm.product.components.length; i++)
-				vm.product.components[i].product_id =
-					vm.product.product_id;
+				vm.product.components[i].product_sn =
+					vm.product.product_sn;
 			api.setOrder().then(function() {
 				api.addProduct(vm.product).then(freeze);
 			});
@@ -110,7 +113,7 @@
 						header: vm.data.rules.code[j].header,
 						name: vm.data.rules.code[j].name,
 						model: vm.data.rules.code[j].model,
-						product_id: null,
+						product_sn: null,
 						time: time,
 						components: [],
 					};
@@ -123,10 +126,12 @@
 						if (vm.data.rules.depend[i].component_header ===
 								vm.data.rules.code[j].header) {
 							vm.product.components.push({
+								cid: vm.data.rules.code[j].cid,
 								header: vm.data.rules.code[j].header,
 								name: vm.data.rules.code[j].name,
 								model: vm.data.rules.code[j].model,
-								component_id: null,
+								note: '',
+								component_sn: null,
 								time: time,
 							});
 							missed_id++;
@@ -156,9 +161,9 @@
 		function checkBarcode(code) {
 			console.log(code);
 			if (code.indexOf(vm.product.header) === 0) {
-				if (vm.product.product_id === null)
+				if (vm.product.product_sn === null)
 					missed_id--;
-				vm.product.product_id = code;
+				vm.product.product_sn = code;
 			} else
 				for (var i = 0; i < vm.product.components.length; i++) {
 					var component = vm.product.components[i];

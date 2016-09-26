@@ -402,22 +402,25 @@ def init(argv):
         {'name': 'order_id', 'type': 'VARCHAR(64)'},
         {'name': 'doc_id', 'type': 'VARCHAR(64)'},
         {'name': 'quantity', 'type': 'INT UNSIGNED'},
+        {'name': 'note', 'type': 'VARCHAR(128)'},
     ], 'PRIMARY KEY(`order_id`)')
 
     database.run('create', 'product', [
-        {'name': 'product_id', 'type': 'VARCHAR(128)'},
-        {'name': 'order_id', 'type': 'VARCHAR(128)'},
+        {'name': 'product_sn', 'type': 'VARCHAR(128)'},
+        {'name': 'order_sn', 'type': 'VARCHAR(128)'},
         {'name': 'batch', 'type': 'VARCHAR(64)'},
         {'name': 'time', 'type': 'TIMESTAMP'},
     ], 'PRIMARY KEY(`product_id`)')
 
     database.run('create', 'component', [
-        {'name': 'component_id', 'type': 'VARCHAR(128)'},
-        {'name': 'product_id', 'type': 'VARCHAR(128)'},
+        {'name': 'component_sn', 'type': 'VARCHAR(128)'},
+        {'name': 'component_id', 'type': 'INT UNSIGNED'},
+        {'name': 'product_sn', 'type': 'VARCHAR(128)'},
+        {'name': 'note', 'type': 'VARCHAR(128)'},
         {'name': 'active_time', 'type': 'TIMESTAMP'},
         {'name': 'revoke', 'type': 'BOOLEAN DEFAULT 0'},
         {'name': 'revoke_time', 'type': 'TIMESTAMP DEFAULT 0'},
-    ], 'PRIMARY KEY(`component_id`, `product_id`, `active_time`)')
+    ], 'PRIMARY KEY(`component_sn`, `product_sn`, `active_time`)')
 
     database.run('create', 'code_rule', [
         {'name': 'header', 'type': 'VARCHAR(128) NOT NULL'},
@@ -428,9 +431,10 @@ def init(argv):
 
     database.run('create', 'depend_rule', [
         {'name': 'component_header', 'type': 'VARCHAR(128)'},
+        {'name': 'component_id', 'type': 'VARCHAR(128)'},
         {'name': 'product_header', 'type': 'VARCHAR(128)'},
         {'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'},
-    ], 'PRIMARY KEY(`component_header`, `product_header`, `time`)')
+    ], 'PRIMARY KEY(`component_id`, `product_header`, `time`)')
 
     database.commit()
     database.disconnect()

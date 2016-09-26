@@ -47,6 +47,10 @@
 						<label>生产批次</label>
 						<input required aria-label="batch" ng-disabled="vm.freeze" ng-model="vm.data.order.batch" ng-cloak />
 					</md-input-container>
+					<md-input-container class="setting-column">
+						<label>备注</label>
+						<input required aria-label="note" ng-disabled="vm.freeze" ng-model="vm.data.order.note" ng-cloak />
+					</md-input-container>
 					<div flex="auto"></div>
 				</md-content>
 				<md-content layout="column" flex>
@@ -57,7 +61,7 @@
 							<input ng-model="vm.data.order.serial" ng-cloak disabled />
 						</md-input-container>
 						<md-input-container class="ams-cell-input">
-							<label>产品编码头</label>
+							<label>产品编码前缀</label>
 							<input required ng-disabled="vm.freeze"
 								aria-label="Product Code Header"
 								ng-model="vm.data.order.product_header"
@@ -78,7 +82,7 @@
 						</md-input-container>
 						<md-input-container class="ams-cell-input" flex="20">
 							<label>序列号</label>
-							<input required aria-label="SN" ng-disabled="vm.freeze" ng-model="vm.product.product_id" />
+							<input required aria-label="SN" ng-disabled="vm.freeze" ng-model="vm.product.product_sn" />
 						</md-input-container>
 						<div flex="25" class="ams-cell-input"></div>
 						<div flex="15" class="ams-cell-input"></div>
@@ -87,42 +91,56 @@
 					<h3 class="md-subhead">组件信息</h3>
 					<md-content flex layout="column">
 						<div layout="row" class="ams-column" layout-align="center center">
-							<p class="md-body-2" flex="20">名称</p>
-							<p class="md-body-2" flex="20">型号</p>
-							<p class="md-body-2" flex="20">序列号</p>
+							<p class="md-body-2" flex="5">序号</p>
+							<p class="md-body-2" flex="10">名称</p>
+							<p class="md-body-2" flex="10">型号</p>
+							<p class="md-body-2" flex="25">序列号</p>
 							<p class="md-body-2" flex="25">领用日期</p>
-							<p class="md-body-2" flex="15"></p>
+							<p class="md-body-2" flex="15">备注</p>
+							<p class="md-body-2" flex="10"></p>
 						</div>
 						<md-content flex layout="column">
 							<div ng-repeat="b in vm.product.components" class="ams-column" layout="row">
-								<md-input-container class="ams-cell-input" flex="20">
+								<md-input-container class="ams-cell-input" flex="5">
+									<input aria-label="id" ng-model="b.cid" disabled />
+								</md-input-container>
+								<md-input-container class="ams-cell-input" flex="10">
 									<input aria-label="name" ng-model="b.name" disabled />
 								</md-input-container>
-								<md-input-container class="ams-cell-input" flex="20">
+								<md-input-container class="ams-cell-input" flex="10">
 									<input aria-label="model" ng-model="b.model" disabled />
 								</md-input-container>
-								<md-input-container class="ams-cell-input" flex="20">
-									<input aria-label="id" ng-disabled="vm.freeze" required ng-model="b.component_id" />
+								<md-input-container class="ams-cell-input" flex="25">
+									<input aria-label="sn" ng-disabled="vm.freeze" required ng-model="b.component_sn" />
 								</md-input-container>
 								<md-datepicker flex=25 class="ams-cell-time" ng-disabled="vm.freeze" ng-model="b.time">
 								</md-datepicker>
-								<div flex="15" class="ams-cell-input" layout="row">
+								<md-input-container class="ams-cell-input" flex="15">
+									<input aria-label="note" ng-model="b.note" disabled />
+								</md-input-container>
+								<div flex="10" class="ams-cell-input" layout="row">
 								</div>
 							</div>
 							<md-divider></md-divider>
 							<div ng-repeat="b in vm.data.order.components" class="ams-column" layout="row">
-								<md-input-container class="ams-cell-input" flex="20">
+								<md-input-container class="ams-cell-input" flex="5">
+									<input aria-label="id" ng-model="b.cid" disabled />
+								</md-input-container>
+								<md-input-container class="ams-cell-input" flex="10">
 									<input aria-label="name" ng-model="b.name" disabled />
 								</md-input-container>
-								<md-input-container class="ams-cell-input" flex="20">
+								<md-input-container class="ams-cell-input" flex="10">
 									<input aria-label="model" ng-model="b.model" disabled />
 								</md-input-container>
-								<md-input-container class="ams-cell-input" flex="20">
-									<input aria-label="sn" required ng-model="b.component_id" />
+								<md-input-container class="ams-cell-input" flex="25">
+									<input aria-label="sn" required ng-model="b.component_sn" />
 								</md-input-container>
 								<md-datepicker flex="25" ng-disabled="vm.freeze" class="ams-cell-time" ng-disabled="vm.freeze" ng-model="b.time">
 								</md-datepicker>
-								<div flex="15" layout="row" layout-align="start center">
+								<md-input-container class="ams-cell-input" flex="15">
+									<input aria-label="note" ng-model="b.note" disabled />
+								</md-input-container>
+								<div flex="10" layout="row" layout-align="start center">
 									<md-button type="button" aria-label="delete" ng-disabled="vm.freeze" ng-click="vm.deleteComponent(b)"
 											class="md-raised md-warn ams-button">
 										<ng-md-icon icon="delete">
@@ -130,11 +148,13 @@
 								</div>
 							</div>
 							<div layout="row" class="ams-column">
-								<div flex="20" class="ams-cell-input"></div>
-								<div flex="20" class="ams-cell-input"></div>
-								<div flex="20" class="ams-cell-input"></div>
+								<div flex="5" class="ams-cell-input"></div>
+								<div flex="10" class="ams-cell-input"></div>
+								<div flex="10" class="ams-cell-input"></div>
+								<div flex="15" class="ams-cell-input"></div>
 								<div flex="25" class="ams-cell-input"></div>
-								<div flex="15" layout="row" layout-align="start center">
+								<div flex="25" class="ams-cell-input"></div>
+								<div flex="10" layout="row" layout-align="start center">
 									<md-button type="button" aria-label="add" ng-disabled="vm.freeze" ng-click="vm.addComponent()"
 											class="md-raised md-primary ams-button">
 										<ng-md-icon icon="add"></ng-md-icon>

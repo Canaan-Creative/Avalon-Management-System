@@ -102,6 +102,11 @@ def iso2epoch(ts):
     return (dt - datetime.datetime(1970, 1, 1)).total_seconds()
 
 
+def epoch2iso(ts):
+    dt = datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=ts)
+    return "%Y-%m-%dT%H:%M:%S.000 Z".format(dt)
+
+
 @app.before_request
 def before_request():
     log()
@@ -137,7 +142,7 @@ VALUES (%s, %s, %s)
                 'doc_id': '',
                 'quantity': '',
                 'batch': '',
-                'serial': 0,
+                'serial': 1,
                 'product_header': '',
                 'components': [],
             }
@@ -153,8 +158,8 @@ def product_handler():
     product = request.json.get('product')
     g.database.run(
         'insert', 'product',
-        ['product_id', 'order_id', 'batch', 'time'],
-        [product['product_id'], product['order_id'], product['batch'],
+        ['product_sn', 'order_id', 'batch', 'time'],
+        [product['product_sn'], product['order_id'], product['batch'],
          '{:%Y-%m-%d %H:%M:%S}'.format(
              datetime.datetime.fromtimestamp(iso2epoch(product['time']))
          )]
@@ -162,8 +167,10 @@ def product_handler():
     for component in product['components']:
         g.database.run(
             'insert', 'component',
-            ['component_id', 'product_id', 'active_time'],
-            [component['component_id'], component['product_id'],
+            ['component_sn', 'compenent_id', 'product_sn', 'active_time'],
+            [component['component_sn'],
+             component['component_id'],
+             component['product_sn'],
              '{:%Y-%m-%d %H:%M:%S}'.format(
                  datetime.datetime.fromtimestamp(iso2epoch(component['time']))
              )]
