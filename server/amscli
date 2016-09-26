@@ -410,7 +410,7 @@ def init(argv):
         {'name': 'order_sn', 'type': 'VARCHAR(128)'},
         {'name': 'batch', 'type': 'VARCHAR(64)'},
         {'name': 'time', 'type': 'TIMESTAMP'},
-    ], 'PRIMARY KEY(`product_id`)')
+    ], 'PRIMARY KEY(`product_sn`)')
 
     database.run('create', 'component', [
         {'name': 'component_sn', 'type': 'VARCHAR(128)'},
