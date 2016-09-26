@@ -135,7 +135,7 @@ VALUES (%s, %s, %s)
         return ams_dumps({'success': True, 'order_id': order['order_id']})
 
     else:
-        order = server.get('order').decode()
+        order = server.get('order')
         if order is None:
             order = {
                 'order_id': '',
@@ -147,6 +147,8 @@ VALUES (%s, %s, %s)
                 'components': [],
             }
             order = ams_dumps(order)
+        else:
+            order = order.decode()
         return ams_dumps({
             'success': True,
             'result': json.loads(order),
