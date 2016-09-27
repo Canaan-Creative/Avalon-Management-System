@@ -227,7 +227,7 @@ def rule_handler():
             })
         result = g.database.run(
             'select', 'depend_rule',
-            ['component_header', 'component_rule', 'product_header'],
+            ['component_header', 'component_count', 'product_header'],
             'time = (SELECT MAX(time) from code_rule)'
         )
         for r in result:
