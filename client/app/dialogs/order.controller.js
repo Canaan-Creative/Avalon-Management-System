@@ -69,7 +69,6 @@
 		function parseDate(dateString) {
 			var d = new Date(dateString);
 			var result = d.toTimeString().slice(0, 8);
-			console.log(result);
 			return result;
 		}
 
@@ -109,8 +108,6 @@
 		}
 
 		function buildDep() {
-			console.log("buildDep");
-			console.log(vm.data.order.product_header);
 			var time = new Date();
 			for (var j = 0; j < vm.data.rules.code.length; j++)
 				if (vm.data.order.product_header ===
@@ -157,12 +154,21 @@
 
 		function readBarcode(e) {
 			var key = e.key;
-			if (key == 'Enter' || key == 'Tab') {
-				var code = buffer;
-				buffer = "";
-				checkBarcode(code);
-			} else
-				buffer += key;
+			console.log(e);
+			switch (key) {
+				case 'Enter':
+				case 'Tab':
+				case 'Alt':
+					var code = buffer;
+					buffer = "";
+					checkBarcode(code);
+					break;
+				case 'Shift':
+					break;
+				default:
+					buffer += key;
+					break;
+			}
 		}
 
 		function checkBarcode(code) {
