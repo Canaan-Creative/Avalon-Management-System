@@ -34,6 +34,7 @@
 		vm.loaded = false;
 		vm.eid = undefined;
 
+		vm.parseDate = parseDate;
 		vm.close = close;
 		vm.reload = reload;
 		vm.updateOrder = updateOrder;
@@ -63,6 +64,13 @@
 			if (vm.eid !== undefined)
 				share.event.keydown.removeListener(vm.eid);
 			$mdDialog.hide();
+		}
+
+		function parseDate(dateString) {
+			var d = new Date(dateString);
+			var result = d.toTimeString().slice(0, 8);
+			console.log(result);
+			return result;
 		}
 
 		function deleteComponent(component) {

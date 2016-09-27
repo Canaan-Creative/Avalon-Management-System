@@ -161,6 +161,14 @@
 					</md-content>
 				</md-content>
 			</div>
+			<div layout="row" ng-if="vm.data.product_log">
+				<div>上次提交: {{ vm.data.product_log.success }}&nbsp;</div>
+				<div>{{ vm.parseDate(vm.data.product_log.product.time) }}&nbsp;</div>
+				<div>{{ vm.data.product_log.product.product_sn }}</div>
+				<div ng-repeat="component in vm.data.product_log.product.components">
+					&nbsp;{{ component.component_sn }}
+				</div>
+			</div>
 		</div>
 	</md-dialog-content>
 	<md-dialog-actions>

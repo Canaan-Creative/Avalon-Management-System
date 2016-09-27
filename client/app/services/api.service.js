@@ -246,7 +246,7 @@
 		function addProduct(product) {
 			return $http.post('/api/product', {product: product}).then(
 				function(response) {
-
+					self.data.product_log = response.data;
 				}, function(errResponse) {
 					console.error('Error adding product');
 				});
