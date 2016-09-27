@@ -414,7 +414,9 @@ def init(argv):
 
     database.run('create', 'component', [
         {'name': 'component_sn', 'type': 'VARCHAR(128)'},
-        {'name': 'component_id', 'type': 'INT UNSIGNED'},
+        {'name': 'component_id', 'type': 'INT UNSIGNED DEFAULT 0'},
+        {'name': 'name', 'type': 'VARCHAR(128)'},
+        {'name': 'model', 'type': 'VARCHAR(128)'},
         {'name': 'product_sn', 'type': 'VARCHAR(128)'},
         {'name': 'note', 'type': 'VARCHAR(128)'},
         {'name': 'active_time', 'type': 'TIMESTAMP'},
@@ -431,10 +433,10 @@ def init(argv):
 
     database.run('create', 'depend_rule', [
         {'name': 'component_header', 'type': 'VARCHAR(128)'},
-        {'name': 'component_id', 'type': 'VARCHAR(128)'},
+        {'name': 'component_count', 'type': 'INT UNSIGNED'},
         {'name': 'product_header', 'type': 'VARCHAR(128)'},
         {'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'},
-    ], 'PRIMARY KEY(`component_id`, `product_header`, `time`)')
+    ], 'PRIMARY KEY(`component_header`, `product_header`, `time`)')
 
     database.commit()
     database.disconnect()

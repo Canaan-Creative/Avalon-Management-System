@@ -169,10 +169,19 @@ def product_handler():
     for component in product['components']:
         g.database.run(
             'insert', 'component',
-            ['component_sn', 'compenent_id', 'product_sn', 'active_time'],
+            ['component_sn',
+             'compenent_id',
+             'name',
+             'model',
+             'product_sn',
+             'note',
+             'active_time'],
             [component['component_sn'],
              component['component_id'],
+             component['name'],
+             component['model'],
              component['product_sn'],
+             component['note'],
              '{:%Y-%m-%d %H:%M:%S}'.format(
                  datetime.datetime.fromtimestamp(iso2epoch(component['time']))
              )]
@@ -196,8 +205,10 @@ def rule_handler():
         for depend_rule in rules['depend']:
             g.database.run(
                 'insert', 'depend_rule',
-                ['component_header', 'product_header', 'time'],
+                ['component_header', 'component_count',
+                 'product_header', 'time'],
                 [depend_rule['component_header'],
+                 depend_rule['component_count'],
                  depend_rule['product_header'],
                  now]
             )
@@ -216,12 +227,14 @@ def rule_handler():
             })
         result = g.database.run(
             'select', 'depend_rule',
-            ['component_header', 'product_header'],
+            ['component_header', 'component_rule', 'product_header'],
             'time = (SELECT MAX(time) from code_rule)'
         )
         for r in result:
             rules['depend'].append({
-                'component_header': r[0], 'product_header': r[1]
+                'component_header': r[0],
+                'component_count': r[1],
+                'product_header': r[2],
             })
 
         return ams_dumps({'result': rules})
