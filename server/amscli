@@ -407,7 +407,7 @@ def init(argv):
 
     database.run('create', 'product', [
         {'name': 'product_sn', 'type': 'VARCHAR(128)'},
-        {'name': 'order_sn', 'type': 'VARCHAR(128)'},
+        {'name': 'order_id', 'type': 'VARCHAR(128)'},
         {'name': 'batch', 'type': 'VARCHAR(64)'},
         {'name': 'time', 'type': 'TIMESTAMP'},
     ], 'PRIMARY KEY(`product_sn`)')
