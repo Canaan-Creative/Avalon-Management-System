@@ -126,18 +126,19 @@
 						vm.data.order.product_header)
 					for (j = 0; j < vm.data.rules.code.length; j++)
 						if (vm.data.rules.depend[i].component_header ===
-								vm.data.rules.code[j].header) {
-							vm.product.components.push({
-								cid: vm.data.rules.code[j].cid,
-								header: vm.data.rules.code[j].header,
-								name: vm.data.rules.code[j].name,
-								model: vm.data.rules.code[j].model,
-								note: '',
-								component_sn: null,
-								time: time,
-							});
-							missed_id++;
-						}
+								vm.data.rules.code[j].header)
+							for (var k = 0; k < vm.data.rules.depend[i].component_count; k++) {
+								vm.product.components.push({
+									component_id: k,
+									header: vm.data.rules.code[j].header,
+									name: vm.data.rules.code[j].name,
+									model: vm.data.rules.code[j].model,
+									note: '',
+									component_sn: null,
+									time: time,
+								});
+								missed_id++;
+							}
 		}
 
 		function switchMode() {
@@ -169,10 +170,9 @@
 			} else
 				for (var i = 0; i < vm.product.components.length; i++) {
 					var component = vm.product.components[i];
-					if (code.indexOf(component.header) === 0) {
-						if (component.component_id === null)
-							missed_id--;
-						component.component_id = code;
+					if (component_sn === null && code.indexOf(component.header) === 0) {
+						missed_id--;
+						component.component_sn = code;
 						break;
 					}
 				}

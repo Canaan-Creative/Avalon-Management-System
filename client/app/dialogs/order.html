@@ -105,9 +105,6 @@
 						</div>
 						<md-content flex layout="column">
 							<div ng-repeat="b in vm.product.components" class="ams-column" layout="row">
-								<md-input-container class="ams-cell-input" flex="5">
-									<input aria-label="id" ng-model="b.cid" disabled />
-								</md-input-container>
 								<md-input-container class="ams-cell-input" flex="10">
 									<input aria-label="name" ng-model="b.name" disabled />
 								</md-input-container>
@@ -122,14 +119,11 @@
 								<md-input-container class="ams-cell-input" flex="15">
 									<input aria-label="note" ng-model="b.note" ng-disabled="vm.freeze" />
 								</md-input-container>
-								<div flex="10" class="ams-cell-input" layout="row">
+								<div flex="15" class="ams-cell-input" layout="row">
 								</div>
 							</div>
 							<md-divider></md-divider>
 							<div ng-repeat="b in vm.data.order.components" class="ams-column" layout="row">
-								<md-input-container class="ams-cell-input" flex="5">
-									<input aria-label="id" ng-model="b.cid" disabled />
-								</md-input-container>
 								<md-input-container class="ams-cell-input" flex="10">
 									<input aria-label="name" ng-model="b.name" disabled />
 								</md-input-container>
@@ -144,7 +138,7 @@
 								<md-input-container class="ams-cell-input" flex="15">
 									<input aria-label="note" ng-model="b.note" ng-disabled="vm.freeze" />
 								</md-input-container>
-								<div flex="10" layout="row" layout-align="start center">
+								<div flex="15" layout="row" layout-align="start center">
 									<md-button type="button" aria-label="delete" ng-disabled="vm.freeze" ng-click="vm.deleteComponent(b)"
 											class="md-raised md-warn ams-button">
 										<ng-md-icon icon="delete">
@@ -152,13 +146,12 @@
 								</div>
 							</div>
 							<div layout="row" class="ams-column">
-								<div flex="5" class="ams-cell-input"></div>
 								<div flex="10" class="ams-cell-input"></div>
 								<div flex="10" class="ams-cell-input"></div>
 								<div flex="15" class="ams-cell-input"></div>
 								<div flex="25" class="ams-cell-input"></div>
 								<div flex="25" class="ams-cell-input"></div>
-								<div flex="10" layout="row" layout-align="start center">
+								<div flex="15" layout="row" layout-align="start center">
 									<md-button type="button" aria-label="add" ng-disabled="vm.freeze" ng-click="vm.addComponent()"
 											class="md-raised md-primary ams-button">
 										<ng-md-icon icon="add"></ng-md-icon>
