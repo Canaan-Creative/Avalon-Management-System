@@ -105,6 +105,8 @@
 		}
 
 		function buildDep() {
+			console.log("buildDep");
+			console.log(vm.data.order.product_header);
 			var time = new Date();
 			for (var j = 0; j < vm.data.rules.code.length; j++)
 				if (vm.data.order.product_header ===

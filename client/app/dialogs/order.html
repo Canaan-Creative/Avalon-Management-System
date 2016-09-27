@@ -49,7 +49,7 @@
 					</md-input-container>
 					<md-input-container class="setting-column">
 						<label>备注</label>
-						<input required aria-label="note" ng-disabled="vm.freeze" ng-model="vm.data.order.note" ng-cloak />
+						<input aria-label="note" ng-disabled="vm.freeze" ng-model="vm.data.order.note" ng-cloak />
 					</md-input-container>
 					<div flex="auto"></div>
 				</md-content>
@@ -61,12 +61,16 @@
 							<input ng-model="vm.data.order.serial" ng-cloak disabled />
 						</md-input-container>
 						<md-input-container class="ams-cell-input">
-							<label>产品编码前缀</label>
-							<input required ng-disabled="vm.freeze"
-								aria-label="Product Code Header"
-								ng-model="vm.data.order.product_header"
-								ng-change="vm.buildDep()"
-								ng-cloak />
+							<label>产品前缀</label>
+							<md-select
+									aria-label="product_header"
+									ng-model="vm.data.order.product_header"
+									ng-change="vm.buildDep()"
+									ng-cloak ng-disabled="vm.freeze">
+								<md-option ng-value="opt.header" ng-repeat="opt in vm.data.rules.code">
+									{{ opt.header }}
+								</md-option>
+							</md-select>
 						</md-input-container>
 						<md-datepicker class="ams-cell-time" ng-disabled="vm.freeze" ng-model="vm.product.time">
 						</md-datepicker>
@@ -116,7 +120,7 @@
 								<md-datepicker flex=25 class="ams-cell-time" ng-disabled="vm.freeze" ng-model="b.time">
 								</md-datepicker>
 								<md-input-container class="ams-cell-input" flex="15">
-									<input aria-label="note" ng-model="b.note" disabled />
+									<input aria-label="note" ng-model="b.note" ng-disabled="vm.freeze" />
 								</md-input-container>
 								<div flex="10" class="ams-cell-input" layout="row">
 								</div>
@@ -133,12 +137,12 @@
 									<input aria-label="model" ng-model="b.model" disabled />
 								</md-input-container>
 								<md-input-container class="ams-cell-input" flex="25">
-									<input aria-label="sn" required ng-model="b.component_sn" />
+									<input aria-label="sn" required ng-model="b.component_sn" ng-disabled="vm.freeze" />
 								</md-input-container>
 								<md-datepicker flex="25" ng-disabled="vm.freeze" class="ams-cell-time" ng-disabled="vm.freeze" ng-model="b.time">
 								</md-datepicker>
 								<md-input-container class="ams-cell-input" flex="15">
-									<input aria-label="note" ng-model="b.note" disabled />
+									<input aria-label="note" ng-model="b.note" ng-disabled="vm.freeze" />
 								</md-input-container>
 								<div flex="10" layout="row" layout-align="start center">
 									<md-button type="button" aria-label="delete" ng-disabled="vm.freeze" ng-click="vm.deleteComponent(b)"
