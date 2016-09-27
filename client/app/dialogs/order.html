@@ -95,13 +95,12 @@
 					<h3 class="md-subhead">组件信息</h3>
 					<md-content flex layout="column">
 						<div layout="row" class="ams-column" layout-align="center center">
-							<p class="md-body-2" flex="5">序号</p>
 							<p class="md-body-2" flex="10">名称</p>
 							<p class="md-body-2" flex="10">型号</p>
 							<p class="md-body-2" flex="25">序列号</p>
 							<p class="md-body-2" flex="25">领用日期</p>
 							<p class="md-body-2" flex="15">备注</p>
-							<p class="md-body-2" flex="10"></p>
+							<p class="md-body-2" flex="15"></p>
 						</div>
 						<md-content flex layout="column">
 							<div ng-repeat="b in vm.product.components" class="ams-column" layout="row">
@@ -125,10 +124,10 @@
 							<md-divider></md-divider>
 							<div ng-repeat="b in vm.data.order.components" class="ams-column" layout="row">
 								<md-input-container class="ams-cell-input" flex="10">
-									<input aria-label="name" ng-model="b.name" disabled />
+									<input aria-label="name" ng-model="b.name" ng-disabled="vm.freeze" />
 								</md-input-container>
 								<md-input-container class="ams-cell-input" flex="10">
-									<input aria-label="model" ng-model="b.model" disabled />
+									<input aria-label="model" ng-model="b.model" ng-disabled="vm.freeze" />
 								</md-input-container>
 								<md-input-container class="ams-cell-input" flex="25">
 									<input aria-label="sn" required ng-model="b.component_sn" ng-disabled="vm.freeze" />
