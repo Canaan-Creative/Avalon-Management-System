@@ -55,10 +55,6 @@
 		}
 
 		function reload() {
-			if (vm.auto) {
-				vm.auto = false;
-				vm.switchMode();
-			}
 			vm.loaded = false;
 			init();
 		}
