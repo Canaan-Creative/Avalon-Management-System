@@ -167,6 +167,8 @@
 				for (var i = 0; i < vm.product.components.length; i++) {
 					var component = vm.product.components[i];
 					if (component.component_sn === null && code.indexOf(component.header) === 0) {
+						if (component.component_sn === code)
+							break;
 						missed_id--;
 						component.component_sn = code;
 						break;
