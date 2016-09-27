@@ -211,6 +211,9 @@
 			return $http.get('/api/order').then(
 				function(response) {
 					self.data.order = response.data.result;
+					for (var i = 0; i < self.data.order.components.length; i++)
+						if (self.data.order.components[i].time !== undefined)
+							self.data.order.components[i].time = new Date(self.data.order.components[i].time);
 				}, function(errResponse) {
 					self.data.order = null;
 					console.error('Error fetching order');
