@@ -72,19 +72,23 @@
 					<h3 class="md-subhead">依赖规则</h3>
 					<md-content flex layout="column">
 						<div layout="row" layout-align="center start" class="setting-header">
-							<h3 class="md-subhead" flex="40">产品前缀</h3>
-							<h3 class="md-subhead" flex="40">组件前缀</h3>
-							<h3 class="md-subhead" flex="20"></h3>
+							<h3 class="md-subhead" flex="30">产品前缀</h3>
+							<h3 class="md-subhead" flex="30">组件前缀</h3>
+							<h3 class="md-subhead" flex="30">组件数量</h3>
+							<h3 class="md-subhead" flex="10"></h3>
 						</div>
 						<md-content flex layout="column">
 							<div ng-repeat="r in vm.data.rules.depend" layout="row" class="setting-column">
-								<md-input-container flex="40">
+								<md-input-container flex="30">
 									<input aria-label="pheader" ng-model="r.product_header" ng-disabled />
 								</md-input-container>
-								<md-input-container flex="40">
+								<md-input-container flex="30">
 									<input aria-label="cheader" ng-model="r.component_header" ng-disabled />
 								</md-input-container>
-								<div flex="20" layout="row">
+								<md-input-container flex="30">
+									<input aria-label="cheader" ng-model="r.component_count" ng-disabled />
+								</md-input-container>
+								<div flex="10" layout="row">
 									<md-button ng-click="vm.deleteRules(r, 'depend')"
 											aria-label="delete"
 											class="md-raised md-warn ams-button">
@@ -93,9 +97,10 @@
 								</div>
 							</div>
 							<div layout="row" class="setting-column">
-								<div flex="40"></div>
-								<div flex="40"></div>
-								<div flex="20" layout="row">
+								<div flex="30"></div>
+								<div flex="30"></div>
+								<div flex="30"></div>
+								<div flex="10" layout="row">
 									<md-button ng-click="vm.addRules('depend')"
 											aria-label="add"
 											class="md-raised md-primary ams-button">

@@ -71,6 +71,7 @@
 				vm.data.rules.depend.push({
 					product_header: '',
 					component_header: '',
+					component_count: 1,
 				});
 				break;
 			default:
