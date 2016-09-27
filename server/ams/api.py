@@ -123,12 +123,12 @@ def order_handler():
             'raw',
             '''\
 INSERT INTO `order`
-       (order_id, doc_id, quantity)
+       (order_id, doc_id, quantity, note)
 VALUES (%s, %s, %s)
     ON DUPLICATE KEY UPDATE
        order_id = %s''',
-            [order['order_id'], order['doc_id'],
-             order['quantity'], order['order_id']]
+            [order['order_id'], order['doc_id'], order['quantity'],
+             order['note'], order['order_id']]
         )
         g.database.commit()
         server.set('order', ams_dumps(order))
@@ -170,7 +170,7 @@ def product_handler():
         g.database.run(
             'insert', 'component',
             ['component_sn',
-             'compenent_id',
+             'component_id',
              'name',
              'model',
              'product_sn',
