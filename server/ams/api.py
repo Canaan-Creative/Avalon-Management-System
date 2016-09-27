@@ -158,7 +158,7 @@ VALUES (%s, %s, %s)
 @app.route('/product', methods=['POST'])
 def product_handler():
     product = request.json.get('product')
-    g.database.run(
+    success = g.database.run(
         'insert', 'product',
         ['product_sn', 'order_id', 'batch', 'time'],
         [product['product_sn'], product['order_id'], product['batch'],
@@ -167,7 +167,7 @@ def product_handler():
          )]
     )
     for component in product['components']:
-        g.database.run(
+        success = success and g.database.run(
             'insert', 'component',
             ['component_sn',
              'component_id',
@@ -186,8 +186,9 @@ def product_handler():
                  datetime.datetime.fromtimestamp(iso2epoch(component['time']))
              )]
         )
-    g.database.commit()
-    return ams_dumps({'success': True})
+    if success:
+        g.database.commit()
+    return ams_dumps({'success': success, 'product': product})
 
 
 @app.route('/rules', methods=['POST', 'GET'])
