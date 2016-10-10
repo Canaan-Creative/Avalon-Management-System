@@ -3,6 +3,7 @@ import socket
 import json
 import sys
 import string
+from collections import OrderedDict
 
 
 def linesplit(socket):
@@ -40,7 +41,7 @@ def cgminer_api(ip, port, command):
                 temp[i + 1] != ',' and temp[i + 1] != '}'):
             temp[i] = ''
     response = ''.join(temp)
-    return json.loads(response)
+    return json.loads(response, object_pairs_hook=OrderedDict)
 
 
 if __name__ == '__main__':
