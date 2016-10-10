@@ -4,7 +4,7 @@ if (! isset ($_COOKIE['userId'])) {
 	die;
 }
 #
-$pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\s.*LW\[([0-9]+)\]\s.*HW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sGHS5m\[([-.0-9]+)\]\sDH5m\[([-.0-9]+)%\]\s.*Temp\[([-0-9]+)\]\sTemp0\[([-0-9]+)\]\sTemp1\[([-0-9]+)\]\sFan\[([0-9]+)\]\sVol\[([.0-9]+)\]\sGHSmm\[([-.0-9]+)\]\sFreq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)\].*EC\[([0-9]+)\]/';
+$pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\s.*LW\[([0-9]+)\]\s.*HW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sTemp\[([-0-9]+)\]\sFan\[([0-9]+)\]\s.*GHSmm\[([-.0-9]+)\]\sFreq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)\]\s.*ECHU\[([0-9]+)\s([0-9]+)\s([0-9]+)\s([0-9]+)\]\sECMM\[([0-9]+)\]/';
 $ip   = $_GET['ip'];
 $ports = explode(',', $_GET['port']);
 if (array_key_exists('hl', $_GET) && $_GET['hl'] !== "" && $_GET['hl'] !== null)
@@ -271,13 +271,12 @@ for ($i = 0; $i < count($ports); $i++) {
   <th>MM</th>
   <th>DNA</th>
   <th>LocalWorks</th>
-  <th>SmartSpeed</th>
   <th>GHS</th>
   <th>T(C)</th>
   <th>Fan(RPM)</th>
-  <th>ASIC V(V)</th>
   <th>PG</th>
-  <th>EC</th>
+  <th>ECHU</th>
+  <th>ECMM</th>
 </tr>";
 
 	$i = 0;
@@ -313,20 +312,18 @@ for ($i = 0; $i < count($ports); $i++) {
 				echo $td . $matches[1] . "</td>";
 				echo $td . substr($matches[2], 12) . "</td>";
 				echo $td . number_format($matches[4], 0, ".", ",") . "</td>";
-				echo $td . $stat['Smart Speed'] . "</td>";
-				echo $td . $matches[14] . "</td>";
-				echo $td . $matches[9] . " " . $matches[10] . " " . $matches[11] . "</td>";
-				echo $td . $matches[12] . "</td>";
-				echo $td . $matches[13] . "</td>";
-				echo $td . $matches[16] . "</td>";
-				echo $td . $matches[18] . "</td>";
+				echo $td . $matches[9] . "</td>";
+				echo $td . $matches[7] . "</td>";
+				echo $td . $matches[8] . "</td>";
+				echo $td . $matches[11] . "</td>";
+				echo $td . $matches[13] . " " . $matches[14] . " " . $matches[15] . " " . $matches[16] . "</td>";
+				echo $td . $matches[17] . "</td>";
 				echo "</tr>";
 			} else {
 				echo "<tr>";
 				echo "<td></td>";
 				echo "<td></td>";
 				echo $td . substr($stat['ID'],0,3) . "-" . substr($stat['ID'], 3) . "-" . $mod . "</td>";
-				echo "<td></td>";
 				echo "<td></td>";
 				echo "<td></td>";
 				echo "<td></td>";
