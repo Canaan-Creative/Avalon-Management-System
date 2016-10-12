@@ -7,7 +7,6 @@ import json
 from cgminer_api import cgminer_api
 
 def debug(ip):
-    global pattern
     js = cgminer_api(ip, 4028, ['estats'])
     print json.dumps(js)
 
