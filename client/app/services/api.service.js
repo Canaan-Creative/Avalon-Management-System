@@ -41,6 +41,7 @@
 		self.getFarmHashrate = getFarmHashrate;
 		self.getNodeHashrate = getNodeHashrate;
 		self.getOrder = getOrder;
+		self.searchOrder = searchOrder;
 		self.setOrder = setOrder;
 		self.getRules = getRules;
 		self.setRules = setRules;
@@ -216,6 +217,19 @@
 							self.data.order.components[i].time = new Date(self.data.order.components[i].time);
 				}, function(errResponse) {
 					self.data.order = null;
+					console.error('Error fetching order');
+				});
+		}
+		function searchOrder(sn) {
+			return $http.get('/api/order_search/' + sn).then(
+				function(response) {
+					self.data.order_search = response.data.order;
+					if (self.data.order_search !== null)
+						for (var i = 0; i < self.data.order_search.components.length; i++)
+							if (self.data.order_search.components[i].time !== undefined)
+								self.data.order_search.components[i].time = new Date(self.data.order_search.components[i].time);
+				}, function(errResponse) {
+					self.data.order_search = null;
 					console.error('Error fetching order');
 				});
 		}
