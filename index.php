@@ -493,6 +493,8 @@ foreach ($farm_map as $zone_map) {
 							Critical<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu" role="menu">
+							<li><a href="#wrongmw" data-toggle="tab" role="tab">MW异常</a></li>
+							<li><a href="#wrongcrc" data-toggle="tab" role="tab">CRC异常</a></li>
 							<li><a href="#missing" data-toggle="tab" role="tab">设备缺失</a></li>
 							<li><a href="#hightemp" data-toggle="tab" role="tab">温度过高</a></li>
 							<li><a href="#wrongpg" data-toggle="tab" role="tab">电源模块错误</a></li>

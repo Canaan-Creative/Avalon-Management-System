@@ -30,6 +30,8 @@ $selected = mysql_select_db($dbname, $dbhandle)
 $result = mysql_query("SELECT * FROM Error_" . $time . " ORDER BY INET_ATON(ip), port, deviceid, moduleid");
 $errors = array();
 $errorc = array(
+	"wrongmw" => array(),
+	"wrongcrc" => array(),
 	"missing" => array(),
 	"hightemp" => array(),
 	"highdh" => array(),
@@ -64,7 +66,23 @@ $errormsg = array(
 	"Hashrate lower than 600GHs. "
 );
 while ($row = mysql_fetch_array($result)) {
-	if ($row['connectionfailed']) {
+	if ($row['wrongmw']) {
+		$e = array(
+				"href" => "cgminer.php?ip=" . $row['ip'] . "&port=" . $row['port'] . "&hl=" . $row['deviceid'],
+				"id" => $row['ip'] . ":" . $row['port'] . " dev#" . $row['deviceid'],
+				"error" => array(array("color" => "red", "msg" => "MM MW error! "))
+			  );
+		$errors[] = $e;
+		$errorc['wrongmw'][] = $e;
+	} elseif ($row['wrongcrc']) {
+		$e = array(
+				"href" => "cgminer.php?ip=" . $row['ip'] . "&port=" . $row['port'] . "&hl=" . $row['deviceid'],
+				"id" => $row['ip'] . ":" . $row['port'] . " dev#" . $row['deviceid'],
+				"error" => array(array("color" => "red", "msg" => "MM CRC error! "))
+			);
+		$errors[] = $e;
+		$errorc['wrongcrc'][] = $e;
+	} elseif ($row['connectionfailed']) {
 		$e = array(
 			"href" => "cgminer.php?ip=". $row['ip'],
 			"id" => $row['ip'],
