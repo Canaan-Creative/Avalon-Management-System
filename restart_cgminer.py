@@ -8,7 +8,7 @@ import paramiko
 
 
 def restart_cgminer_ssh(ip,ports):
-    passwd = ''
+    passwd = '1'
     retry = 3
     for i in range(0, retry):
         ssh = paramiko.SSHClient()
@@ -32,11 +32,11 @@ def restart_cgminer_ssh(ip,ports):
         try:
             if ports != None:
                 stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cgminer stop ' + ' '.join(ports))
-                time.sleep(2)
+                time.sleep(4)
                 stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cgminer start ' + ' '.join(ports))
             else:
                 stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cgminer stop')
-                time.sleep(2)
+                time.sleep(4)
                 stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cgminer start')
         except:
             ssh.close()
