@@ -114,6 +114,71 @@ def before_request():
     g.database.connect()
 
 
+@app.route('/order_search/<key>', methods=['GET'])
+def order_search(key):
+    result = g.database.run(
+        'select', 'component',
+        ['product_sn'],
+        'component_sn = %s',
+        [key]
+    )
+    try:
+        # return ams_dumps({"result": result})
+        product_sn = result[0][0]
+    except:
+        product_sn = key
+
+    result = g.database.run(
+        'raw',
+        '''\
+SELECT component_sn, component_id, name,
+       model, product_sn, note, active_time
+  FROM component
+ WHERE product_sn = %s
+ ORDER BY name, component_id''',
+        [product_sn]
+    )
+
+    if len(result) == 0:
+        return ams_dumps({'success': True, 'order': None})
+
+    components = []
+    for r in result:
+        components.append({
+            'component_sn': r[0],
+            'component_id': r[1],
+            'name': r[2],
+            'model': r[3],
+            'product_sn': r[4],
+            'note': r[5],
+            'time': "{:%Y-%m-%dT%H:%M:%S.000 Z}".format(r[6])
+        })
+
+    result = g.database.run(
+        'raw',
+        '''\
+SELECT p.product_sn, p.order_id, p.batch, p.time,
+       o.doc_id, o.quantity, o.note
+  FROM product AS p
+  LEFT JOIN `order` AS o
+    ON p.order_id = o.order_id
+ WHERE p.product_sn = %s''',
+        [product_sn]
+    )
+    order = {'components': components}
+    order = {
+        'product_sn': result[0][0],
+        'order_id': result[0][1],
+        'batch': result[0][2],
+        'time': "{:%Y-%m-%dT%H:%M:%S.000 Z}".format(result[0][3]),
+        'doc_id': result[0][4],
+        'quantity': result[0][5],
+        'note': result[0][6],
+        'components': components,
+    }
+    return ams_dumps({'success': True, 'order': order})
+
+
 @app.route('/order', methods=['POST', 'GET'])
 def order_handler():
     server = redis.StrictRedis()
