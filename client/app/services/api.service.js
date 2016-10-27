@@ -225,6 +225,7 @@
 				function(response) {
 					self.data.order_search = response.data.order;
 					if (self.data.order_search !== null)
+						self.data.order_search.time = new Date(self.data.order_search.time);
 						for (var i = 0; i < self.data.order_search.components.length; i++)
 							if (self.data.order_search.components[i].time !== undefined)
 								self.data.order_search.components[i].time = new Date(self.data.order_search.components[i].time);

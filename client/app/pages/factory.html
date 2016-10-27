@@ -29,7 +29,10 @@
 			<div class="md-title">Orders</div>
 		</md-card-header-text>
 		<span flex="auto"></span>
-		<md-button class="md-raised md-primary" ng-click="vm.searchOrder()">
+		<md-input-container class="ams-searching">
+			<input aria-label="Order Search" ng-model="vm.search" ng-cloak />
+		</md-input-container>
+		<md-button class="md-raised md-primary" ng-click="vm.searchOrder(vm.search)">
 			<ng-md-icon icon="search"></ng-md-icon>
 		</md-button>
 		<md-button class="md-raised md-primary" ng-click="vm.newOrder()">
@@ -39,7 +42,88 @@
 			<ng-md-icon icon="settings"></ng-md-icon>
 		</md-button>
 	</md-card-header>
-	<md-card-content flex>
+	<md-card-content layout="row" layout-align="center center" flex ng-if="!vm.searchDone">
+		<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+	</md-card-content>
+	<md-card-content layout="row" layout-align="center center" ng-if="vm.searchDone && !vm.data.order_search" flex>
+		<div>无记录</div>
+	</md-card-content>
+	<md-card-content layout="row" ng-if="vm.searchDone && !!vm.data.order_search" flex>
+		<div layout="column" flex="50">
+			<h3 class="md-title">订单信息</h3>
+			<div>
+				<span>订单编号: &nbsp;</span>
+				<span>{{ vm.data.order_search.order_id }}</span>
+			</div>
+			<div>
+				<span>投产数量: &nbsp;</span>
+				<span>{{ vm.data.order_search.quantity }}</span>
+			</div>
+			<div>
+				<span>工艺文件编号: &nbsp;</span>
+				<span>{{ vm.data.order_search.doc_id }}</span>
+			</div>
+			<div>
+				<span>生产批次: &nbsp;</span>
+				<span>{{ vm.data.order_search.batch }}</span>
+			</div>
+			<div>
+				<span>备注: &nbsp;</span>
+				<span>{{ vm.data.order_search.note }}</span>
+			</div>
+		</div>
+		<div layout="column" flex>
+			<h3 class="md-title">产品信息</h3>
+			<div layout="column" flex>
+				<!--
+				<div>
+					<span>产品名称:</span>
+					<span>{{ vm.data.order_search.product_sn }}</span>
+				</div>
+				<div>
+					<span>产品型号:</span>
+					<span>{{ vm.data.order_search.product_sn }}</span>
+				</div>
+				-->
+				<div>
+					<span>产品序列号: &nbsp;</span>
+					<span>{{ vm.data.order_search.product_sn }}</span>
+				</div>
+				<div>
+					<span>日期: &nbsp;</span>
+					<span>{{ vm.data.order_search.time.toLocaleDateString() }}</span>
+				</div>
+			</div>
+			<div flex="5"></div>
+			<h3 class="md-title">组件信息</h3>
+			<div layout="column" flex>
+				<div layout="row" class="ams-column" layout-align="center center">
+					<p class="md-body-2" flex="10">名称</p>
+					<p class="md-body-2" flex="10">型号</p>
+					<p class="md-body-2" flex="30">序列号</p>
+					<p class="md-body-2" flex="40">领用日期</p>
+					<p class="md-body-2" flex="10">备注</p>
+				</div>
+				<div ng-repeat="b in vm.data.order_search.components" class="ams-column" layout="row">
+					<div flex="10">
+						<span>{{ b.name }}</span>
+					</div>
+					<div flex="10">
+						<span>{{ b.model }}</span>
+					</div>
+					<div flex="30">
+						<span>{{ b.component_sn }}</span>
+					</div>
+					<div flex="40">
+						<span>{{ b.time.toLocaleDateString() }}</span>
+					</div>
+					<div flex="10">
+						<span>{{ b.note }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--
 		<md-table-container>
 			<table md-table md-progress="deferred">
 				<thead md-head>
@@ -61,5 +145,6 @@
 				</tbody>
 			</table>
 		</md-table-container>
+		-->
 	</md-card-contain>
 </md-card>

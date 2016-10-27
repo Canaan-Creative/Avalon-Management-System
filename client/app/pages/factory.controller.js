@@ -29,6 +29,8 @@
 		/* jshint validthis: true */
 		var vm = this;
 
+		vm.search = "";
+		vm.searchDone = true;
 		vm.auth = share.status.auth;
 		vm.status = share.status.factory;
 		vm.data = api.data;
@@ -69,7 +71,13 @@
 		}
 
 		function searchOrder(sn) {
-
+			if (sn === "")
+				return;
+			vm.searchDone = false;
+			api.searchOrder(sn).then(function () {
+				vm.search = "";
+				vm.searchDone = true;
+			});
 		}
 
 		function setting() {

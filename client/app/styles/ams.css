@@ -207,6 +207,13 @@ md-card-footer {
 	margin-bottom: 0px !important;
 }
 
+.ams-searching
+{
+	margin: 0 !important;
+	min-height: 48px !important;
+	max-height: 48px !important;
+}
+
 .version {
 	font-size: 12px !important;
 }

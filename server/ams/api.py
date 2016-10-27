@@ -104,7 +104,7 @@ def iso2epoch(ts):
 
 def epoch2iso(ts):
     dt = datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=ts)
-    return "%Y-%m-%dT%H:%M:%S.000 Z".format(dt)
+    return "%Y-%m-%dT%H:%M:%S.000Z".format(dt)
 
 
 @app.before_request
@@ -151,7 +151,7 @@ SELECT component_sn, component_id, name,
             'model': r[3],
             'product_sn': r[4],
             'note': r[5],
-            'time': "{:%Y-%m-%dT%H:%M:%S.000 Z}".format(r[6])
+            'time': "{:%Y-%m-%dT%H:%M:%S.000Z}".format(r[6])
         })
 
     result = g.database.run(
@@ -170,7 +170,7 @@ SELECT p.product_sn, p.order_id, p.batch, p.time,
         'product_sn': result[0][0],
         'order_id': result[0][1],
         'batch': result[0][2],
-        'time': "{:%Y-%m-%dT%H:%M:%S.000 Z}".format(result[0][3]),
+        'time': "{:%Y-%m-%dT%H:%M:%S.000Z}".format(result[0][3]),
         'doc_id': result[0][4],
         'quantity': result[0][5],
         'note': result[0][6],
