@@ -42,6 +42,21 @@ function restart_cgminer(ip,port){
 	});
 }
 
+function stop_cgminer(ip,port){
+	var _ip = ip;
+	var _port = port;
+
+	$.ajax({
+		type:"POST",
+		url:"stop_cgminer.php",
+		data:{ip:_ip,port:_port},
+		dataType:"json",
+		success:function(data){
+			alert(data.msg);
+		}
+	});
+}
+
 function switch_led(ip,port,dev,mod){
 	var _ip = ip;
 	var _port = port;
@@ -129,7 +144,8 @@ for ($i = 0; $i < count($ports); $i++) {
 <fieldset>
 <legend>" . $ip . ":" . $port . "
 <span>
-<button onClick=\"restart_cgminer('" . $ip . "'," . $port . ");\">Restart Cgminer</button>
+<button onClick=\"restart_cgminer('" . $ip . "'," . $port . ");\">Restart CGMiner</button>
+<button onClick=\"stop_cgminer('" . $ip . "'," . $port . ");\">Stop CGMiner</button>
 <button onClick=\"window.open('./debug.php?ip=" . $ip . "&port=" . $port . "');\">Debug</button>
 </span>
 </legend>
@@ -143,7 +159,6 @@ for ($i = 0; $i < count($ports); $i++) {
   <th>GHSav</th>
   <th>Accepted</th>
   <th>Rejected</th>
-  <th>Discarded</th>
   <th>NetworkBlocks</th>
   <th>BestShare</th>
 </tr>
@@ -152,7 +167,6 @@ for ($i = 0; $i < count($ports); $i++) {
   <td>" . number_format($summary['MHS av']/1000, 2) . "</td>
   <td>" . $summary['Accepted'] . "</td>
   <td>" . $summary['Rejected'] . "</td>
-  <td>" . $summary['Discarded'] . "</td>
   <td>" . $summary['Network Blocks'] . "</td>
   <td>" . $summary['Best Share'] . "</td>
 </tr>
@@ -173,7 +187,6 @@ for ($i = 0; $i < count($ports); $i++) {
   <th>GetWorks</th>
   <th>Accepted</th>
   <th>Rejected</th>
-  <th>Discarded</th>
   <th>Stale</th>
   <th>LST</th>
   <th>LSD</th>
@@ -190,7 +203,6 @@ for ($i = 0; $i < count($ports); $i++) {
 			echo "<td>" . $pool['Works'] . "</td>";
 			echo "<td>" . $pool['Accepted'] . "</td>";
 			echo "<td>" . $pool['Rejected'] . "</td>";
-			echo "<td>" . $pool['Discarded'] . "</td>";
 			echo "<td>" . $pool['Stale'] . "</td>";
 			if ($pool['Last Share Time'] !== "0") {
 				$dt = new DateTime();
