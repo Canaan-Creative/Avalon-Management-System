@@ -191,7 +191,7 @@ def order_handler():
             '''\
 INSERT INTO `order`
        (order_id, doc_id, quantity, note)
-VALUES (%s, %s, %s)
+VALUES (%s, %s, %s, %s)
     ON DUPLICATE KEY UPDATE
        order_id = %s''',
             [order['order_id'], order['doc_id'], order['quantity'],
