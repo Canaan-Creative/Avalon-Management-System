@@ -177,7 +177,7 @@
 			ng-model="vm.auto" aria-label="Mode" ng-disable="!vm.loaded" ng-cloak>
 			自动模式 {{vm.auto && '开' || '关'}}
 		</md-switch>
-		<md-button type="button" aria-label="save" ng-disabled="vm.freeze" class="md-raised md-primary" ng-disabled="!vm.loaded" ng-click="vm.updateOrder()">保存</md-button>
+		<md-button type="button" aria-label="save" ng-disabled="vm.freeze" class="md-raised md-primary" ng-disabled="!vm.loaded" ng-click="vm.save()">保存</md-button>
 		<md-button type="button" aria-label="reload" class="md-raised md-primary" ng-disabled="!vm.loaded" ng-click="vm.reload()">重新载入</md-button>
 		<md-button type="button" aria-label="close" class="md-raised md-primary" ng-disabled="!vm.loaded" ng-click="vm.close()">关闭</md-button>
 	</md-dialog-actions>

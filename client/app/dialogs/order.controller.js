@@ -37,6 +37,7 @@
 		vm.parseDate = parseDate;
 		vm.close = close;
 		vm.reload = reload;
+		vm.save = save;
 		vm.updateOrder = updateOrder;
 		vm.addComponent = addComponent;
 		vm.deleteComponent = deleteComponent;
@@ -195,6 +196,13 @@
 						return;
 				vm.updateOrder();
 			}
+		}
+
+		function save() {
+			for (var i = 0; i < vm.product.components.length; i++)
+				if (!vm.product.component[i].component_sn)
+					return;
+			vm.updateOrder();
 		}
 	}
 })();
