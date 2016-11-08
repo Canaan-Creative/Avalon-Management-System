@@ -192,7 +192,7 @@
 				}
 			if (missed_id === 0) {
 				for (i = 0; i < vm.product.components.length; i++)
-					if (!vm.product.component[i].component_sn)
+					if (!vm.product.components[i].component_sn)
 						return;
 				vm.updateOrder();
 			}
@@ -200,7 +200,7 @@
 
 		function save() {
 			for (var i = 0; i < vm.product.components.length; i++)
-				if (!vm.product.component[i].component_sn)
+				if (!vm.product.components[i].component_sn)
 					return;
 			vm.updateOrder();
 		}
