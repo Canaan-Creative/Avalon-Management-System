@@ -111,6 +111,7 @@ def epoch2iso(ts):
 @app.before_request
 def before_request():
     log()
+    g.logger = logging.getLogger('AMS.Product')
     g.database = DataBase(db)
     g.database.connect()
 
@@ -223,9 +224,8 @@ VALUES (%s, %s, %s)
 
 @app.route('/product', methods=['POST'])
 def product_handler():
-    logger = logging.getLogger('AMSC.Product')
     product = request.json.get('product')
-    logger.debug(ams_dumps(product))
+    g.logger.debug(ams_dumps(product))
     success = g.database.run(
         'insert', 'product',
         ['product_sn', 'order_id', 'batch', 'time'],
