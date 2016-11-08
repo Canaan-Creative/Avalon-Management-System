@@ -172,13 +172,14 @@
 		}
 
 		function checkBarcode(code) {
+			var i;
 			console.log(code);
 			if (code.indexOf(vm.product.header) === 0) {
 				if (vm.product.product_sn === null)
 					missed_id--;
 				vm.product.product_sn = code;
 			} else
-				for (var i = 0; i < vm.product.components.length; i++) {
+				for (i = 0; i < vm.product.components.length; i++) {
 					var component = vm.product.components[i];
 					if (component.component_sn === code)
 						return;
@@ -188,8 +189,12 @@
 						break;
 					}
 				}
-			if (missed_id === 0)
+			if (missed_id === 0) {
+				for (i = 0; i < vm.product.components.length; i++)
+					if (!vm.product.component[i].component_sn)
+						return;
 				vm.updateOrder();
+			}
 		}
 	}
 })();
