@@ -19,7 +19,21 @@
 # along with AMS. If not, see <http://www.gnu.org/licenses/>.
 
 from ams.api import app as application
+import logging
+import logging.handlers
+
+
+def log():
+    ams_logger = logging.getLogger('AMSC')
+    ams_logger.setLevel(logging.DEBUG)
+
+    handler = logging.handlers.SysLogHandler(address='/dev/log')
+    formatter = logging.Formatter("[%(name)s][%(levelname)s]%(message)s")
+    handler.setFormatter(formatter)
+
+    ams_logger.addHandler(handler)
 
 
 if __name__ == '__main__':
+    log()
     application.run()

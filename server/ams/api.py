@@ -28,6 +28,7 @@ import hashlib
 import configparser
 import multiprocessing
 import copy
+import logging
 
 from flask import Flask, g, request
 from jose import jwt
@@ -222,7 +223,9 @@ VALUES (%s, %s, %s)
 
 @app.route('/product', methods=['POST'])
 def product_handler():
+    logger = logging.getLogger('AMSC.Product')
     product = request.json.get('product')
+    logger.debug(ams_dumps(product))
     success = g.database.run(
         'insert', 'product',
         ['product_sn', 'order_id', 'batch', 'time'],
