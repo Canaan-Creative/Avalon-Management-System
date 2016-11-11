@@ -44,7 +44,12 @@ class Miner():
                 self.raw[command] = None
             return False
 
-        self.put('debug', 'D')
+        try:
+            self.put('debug', 'D')
+        except:
+            for command in ['summary', 'edevs', 'estats', 'pools']:
+                self.raw[command] = None
+            return False
 
         for command in ['summary', 'edevs', 'estats', 'pools']:
             for r in range(1, retry + 1):
@@ -66,7 +71,10 @@ class Miner():
                                        .format(self, command, r))
             self.raw[command] = response
 
-        self.put('debug', 'D')
+        try:
+            self.put('debug', 'D')
+        except:
+            pass
 
         return True
 
