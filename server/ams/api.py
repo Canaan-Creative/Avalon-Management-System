@@ -270,13 +270,12 @@ def get_summary(time):
         'raw',
         """\
 SELECT miner.ip, miner.port, miner.mhs,
-       module.number, module.temp, module.temp0, module.temp1
+       module.number, module.temp, module.tmax
   FROM miner
   LEFT JOIN (
         SELECT COUNT(dna) AS number,
                AVG(temp) AS temp,
-               AVG(temp0) AS temp0,
-               AVG(temp1) AS temp1,
+               MAX(tmax) AS tmax,
                ip, port
           FROM module
          WHERE time = '{:%Y-%m-%d %H:%M:%S}'
@@ -292,8 +291,7 @@ SELECT miner.ip, miner.port, miner.mhs,
         'mhs': r[2],
         'module': r[3],
         'temp': r[4],
-        'temp0': r[5],
-        'temp1': r[6],
+        'tmax': r[5],
     } for r in result]
 
     return ams_dumps({'result': ams_sort(summary)})
@@ -316,48 +314,43 @@ def get_farmmap(time):
             'port': r[1],
             'mhs': r[2],
             'dead': r[3],
-            'avg_tempI': None,
-            'avg_tempB': None,
-            'max_tempI': None,
-            'max_tempB': None,
+            'temp': None,
+            'tmax': None,
             'mod_num': 0,
             'modules': [],
         }
     result = g.database.run(
         'select', 'module',
         ['ip', 'port', 'device_id', 'module_id',
-         'dna', 'temp', 'temp0', 'temp1', 'ghsmm', 'ec'],
+         'dna', 'temp', 'tmax', 'ghsmm',
+         'echu_0', 'echu_1', 'echu_2', 'echu_3', 'ecmm'],
         "time = '{:%Y-%m-%d %H:%M:%S}'".format(time)
     )
     for r in result:
-        (ip, port, did, mid, dna, temp, temp0, temp1, ghsmm, ec) = r
+        (ip, port, did, mid, dna, temp, tmax, ghsmm,
+         echu_0, echu_1, echu_2, echu_3, ecmm) = r
         node = farmmap['{}:{}'.format(ip, port)]
         if len(node['modules']) == 0:
-            node['avg_tempI'] = temp
-            node['avg_tempB'] = (temp0 + temp1) / 2
-            node['max_tempI'] = temp
-            node['max_tempB'] = max(temp0, temp1)
+            node['temp'] = temp
+            node['tmax'] = tmax
         else:
-            node['avg_tempI'] += temp
-            node['avg_tempB'] += (temp0 + temp1) / 2
-            node['max_tempI'] = max(temp, node['max_tempI'])
-            node['max_tempB'] = max(temp0, temp1, node['max_tempB'])
+            node['temp'] += temp
+            node['tmax'] = max(tmax, node['tmax'])
         node['mod_num'] += 1
         node['modules'].append({
             'id': '{}:{}'.format(did, mid),
             'dna': dna,
             'temp': temp,
-            'temp0': temp0,
-            'temp1': temp1,
+            'tmax': tmax,
             'ghsmm': ghsmm,
-            'ec': ec,
+            'echu': [echu_0, echu_1, echu_2, echu_3],
+            'ecmm': ecmm,
         })
 
     nodes = []
     for node in farmmap.values():
         if node['mod_num'] != 0:
-            node['avg_tempI'] /= node['mod_num']
-            node['avg_tempB'] /= node['mod_num']
+            node['temp'] /= node['mod_num']
         nodes.append(node)
 
     return ams_dumps({'result': ams_sort(nodes)})
@@ -477,8 +470,10 @@ def get_issue(time):
 
     result = g.database.run(
         'select', 'module',
-        ['ip', 'port', 'device_id', 'module_id', 'dna', 'ec'],
-        "time = '{:%Y-%m-%d %H:%M:%S}' AND (ec & 65054) != 0 "
+        ['ip', 'port', 'device_id', 'module_id', 'dna',
+         'echu_0', 'echu_1', 'echu_2', 'echu_3', 'ecmm'],
+        "time = '{:%Y-%m-%d %H:%M:%S}' AND (ecmm != 0 OR "
+        "echu_0 != 0 OR echu_1 != 0 OR echu_2 != 0 OR echu_3 != 0) "
         "ORDER BY ip, port, device_id, module_id".format(
             datetime.datetime.fromtimestamp(int(time)),
         )
@@ -489,7 +484,11 @@ def get_issue(time):
         'device_id': r[2],
         'module_id': r[3],
         'dna': r[4],
-        'ec': r[5]
+        'echu_0': r[5],
+        'echu_1': r[6],
+        'echu_2': r[7],
+        'echu_3': r[8],
+        'ec_mm': r[9]
     } for r in result]
 
     result = g.database.run(
@@ -502,6 +501,7 @@ def get_issue(time):
     )
     node_issue = [{'ip': r[0], 'port': r[1]} for r in result]
 
+    '''
     result = g.database.run(
         'raw',
         """\
@@ -530,12 +530,13 @@ SELECT a.ip, a.port, a.device_id, a.module_id, a.dna
         'module_id': r[3],
         'dna': r[4],
     } for r in result]
+    '''
 
     return ams_dumps({
         'result': {
             'ec': ams_sort(ec_issue),
             'node': ams_sort(node_issue),
-            'hot': ams_sort(hot_issue)
+            # 'hot': ams_sort(hot_issue)
         }})
 
 
