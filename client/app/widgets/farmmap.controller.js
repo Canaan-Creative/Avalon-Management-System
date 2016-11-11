@@ -29,10 +29,12 @@
 		/* jshint validthis: true */
 		var vm = this;
 
+		var LOW_TEMP = 60;
+		var HIGH_TEMP = 100;
+
 		vm.status = share.status.farmMap;
 		// vm.status.loaded: *Bool*
 		// vm.status.switch: 0, 1, 2, 3
-		// vm.status.tempSwitch: 'Intake' / 'Board'
 		// vm.status.mathSwitch: 'Max' / 'Avg'
 		// vm.status.viewSwitch: 'Node' / 'Mod'
 		// vm.status.data: formatted farm map data
@@ -135,8 +137,8 @@
 					splitted.push([]);
 				var node = farmMap[i];
 				var style = [
-					rainbow(node.max_tempI, 25, 45), rainbow(node.max_tempB, 65, 75),
-					rainbow(node.avg_tempI, 25, 45), rainbow(node.avg_tempB, 65, 75),
+					rainbow(node.tmax, LOW_TEMP, HIGH_TEMP),
+					rainbow(node.temp, LOW_TEMP, HIGH_TEMP),
 				];
 				var modules = [];
 				var deviceNum = 0;
@@ -144,10 +146,8 @@
 					var did;
 					var mod = node.modules[k];
 					mod.style = [
-						rainbow(mod.temp, 25, 45),
-						rainbow(Math.max(mod.temp0, mod.temp1), 65, 75),
-						rainbow(mod.temp, 25, 45),
-						rainbow((mod.temp0 + mod.temp1) / 2, 65, 75),
+						rainbow(mod.tmax, LOW_TEMP, HIGH_TEMP),
+						rainbow(mod.temp, LOW_TEMP, HIGH_TEMP),
 					];
 					did = mod.id.split(':')[0];
 					if (modules[did] === undefined) {
@@ -174,8 +174,8 @@
 			return splitted;
 		}
 
-		function switchMap(bit) {
-			vm.status.switch ^= (1 << bit);
+		function switchMap() {
+			vm.status.switch ^= 1;
 		}
 	}
 })();

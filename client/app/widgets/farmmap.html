@@ -26,14 +26,9 @@
 				ng-true-value="'Node'" ng-false-value="'Mod'" ng-cloak>
 			{{ vm.status.viewSwitch }}
 		</md-switch>
-		<md-switch ng-model="vm.status.tempSwitch" flex="20"
-				ng-true-value="'Intake'" ng-false-value="'Board'"
-				ng-change="vm.switchMap(0)" ng-cloak>
-			{{ vm.status.tempSwitch }}
-		</md-switch>
 		<md-switch ng-model="vm.status.mathSwitch" flex="20"
 				ng-true-value="'Max'" ng-false-value="'Avg'"
-				ng-change="vm.switchMap(1)" ng-cloak>
+				ng-change="vm.switchMap()" ng-cloak>
 			{{ vm.status.mathSwitch }}
 		</md-switch>
 	</md-card-header>
