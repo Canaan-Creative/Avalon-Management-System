@@ -44,6 +44,8 @@ class Miner():
                 self.raw[command] = None
             return False
 
+        self.put('debug', 'D')
+
         for command in ['summary', 'edevs', 'estats', 'pools']:
             for r in range(1, retry + 1):
                 try:
@@ -63,6 +65,9 @@ class Miner():
                         self.log.debug('{} Failed fetching {}. Retry {}'
                                        .format(self, command, r))
             self.raw[command] = response
+
+        self.put('debug', 'D')
+
         return True
 
     def _ping(self, retry):
