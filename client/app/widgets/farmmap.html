@@ -50,13 +50,9 @@
 						<p ng-if="cell.node.dead">N/A</p>
 						<p ng-if="!cell.node.dead" ng-cloak>{{ cell.node.mod_num }} Mods</p>
 						<p ng-if="!cell.node.dead" ng-cloak>{{ vm.utils.numberShorten(cell.node.mhs) }}</p>
-						<p ng-if="!cell.node.dead && vm.status.mathSwitch === 'Max'" ng-cloak>
-							{{ cell.node.max_tempI | number: 1 }}
-							/ {{ cell.node.max_tempB | number: 1 }}
-						</p>
-						<p ng-if="!cell.node.dead && vm.status.mathSwitch === 'Avg'" ng-cloak>
-							{{ cell.node.avg_tempI | number: 1 }}
-							/ {{ cell.node.avg_tempB | number: 1 }}
+						<p ng-if="!cell.node.dead" ng-cloak>
+							{{ cell.node.temp | number: 1 }}
+							/ {{ cell.node.tmax | number: 1 }}
 						</p>
 					</div>
 					<div class="ams-mapcell" ng-repeat="cell in row track by $index"
