@@ -45,8 +45,7 @@
 			};
 			if (params.dna)
 				vm.status.highlightDNA = params.dna;
+			api.getStatus('debug', vm.status.time, params.ip, params.port);
 		}
-
-		api.getStatus('debug', time, node.ip, node.port);
 	}
 })();
