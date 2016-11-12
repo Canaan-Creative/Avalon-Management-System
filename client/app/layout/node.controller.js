@@ -32,6 +32,9 @@
 		vm.status = share.status.detail;
 		vm.data = api.data;
 
+		vm.debugLoaded = false;
+		vm.breakLine = breakLine;
+
 		if (share.status.main.latest)
 			vm.status.time = 'latest';
 		else
@@ -45,7 +48,13 @@
 			};
 			if (params.dna)
 				vm.status.highlightDNA = params.dna;
-			api.getStatus('debug', vm.status.time, params.ip, params.port);
+			api.getStatus('debug', vm.status.time, params.ip, params.port).then(function () {
+				vm.debugLoaded = true;
+			});
+		}
+		
+		function breakLine(info) {
+			return info.replace(/\]\s/g, "]@").split('@');
 		}
 	}
 })();

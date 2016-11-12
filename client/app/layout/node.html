@@ -39,6 +39,21 @@
 	</div>
 	<div style="width: 100%">
 		<h4>Debug</h4>
-		<div>{{ vm.data.debug }}</div>
+		<div ng-if="!vm.debugLoaded">
+			<md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+		</div>
+		<div ng-if="vm.debugLoaded" style="width: 100%">
+			<md-divider ng-repeat-start="device in vm.data.debug"></md-divider>
+			<div ng-repeat-end style="width: 100%">
+				<h5>Device {{ $index }}</h5>
+				<div ng-repeat="mm in device">
+					<p>MM {{ $index + 1}}</p>
+					<span ng-repeat-start="line in vm.breakLine(mm)">
+						{{ line }}
+					</span>
+					<br ng-repeat-end />
+				</div>
+			</div>
+		</div>
 	</div>
 </md-content>
