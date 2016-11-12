@@ -544,8 +544,14 @@ SELECT a.ip, a.port, a.device_id, a.module_id, a.dna
 def get_status(table, time, ip, port):
 
     if time == 'latest':
-        node = miner_type.Miner(ip, port, 0, log=False)
-        status = node.get(table)
+        if table == 'debug':
+            node = miner_type.Miner(ip, port, 0, log=False)
+            node.put('debug', 'D')
+            status = node.get(table)
+            node.put('debug', 'D')
+        else:
+            node = miner_type.Miner(ip, port, 0, log=False)
+            status = node.get(table)
     else:
         status = []
         result = g.database.run(

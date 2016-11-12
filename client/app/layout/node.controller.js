@@ -23,13 +23,14 @@
 		.module('ams')
 		.controller('NodeController', NodeController);
 
-	NodeController.$inject = ['$stateParams', 'ShareService'];
+	NodeController.$inject = ['$stateParams', 'ShareService', 'APIService'];
 
-	function NodeController($stateParams, share) {
+	function NodeController($stateParams, share, api) {
 		/* jshint validthis: true */
 		var vm = this;
 
 		vm.status = share.status.detail;
+		vm.data = api.data;
 
 		if (share.status.main.latest)
 			vm.status.time = 'latest';
@@ -46,5 +47,6 @@
 				vm.status.highlightDNA = params.dna;
 		}
 
+		api.getStatus('debug', time, node.ip, node.port);
 	}
 })();
