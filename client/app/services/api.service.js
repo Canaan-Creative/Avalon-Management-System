@@ -52,6 +52,7 @@
 			pool: {number: 0, id: 0},
 			device: {number: 0, id: 0},
 			module: {number: 0, id: 0},
+			debug: {number: 0, id: 0},
 		};
 		var getConfigLock = {
 			number: 0,
