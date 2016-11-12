@@ -53,29 +53,41 @@
 			index: 3,
 			value: function(data) {return data.lw;}
 		}, {
-			name: 'GHs',
+			name: 'DH',
 			index: 4,
+			value: function(data) {return data.dh + '%';}
+		}, {
+			name: 'WU',
+			index: 5,
+			value: function(data) {return data.wu;}
+		}, {
+			name: 'GHs',
+			index: 6,
 			value: function(data) {return parseInt(data.ghsmm);}
 		}, {
 			name: 'T',
-			index: 5,
-			value: function(data) {return data.temp + '/' + data.temp0 + '/' + data.temp1;}
+			index: 7,
+			value: function(data) {return data.temp + '/' + data.tmax;}
 		}, {
 			name: 'Fan',
-			index: 6,
-			value: function(data) {return data.fan;}
-		}, {
-			name: 'Volt',
-			index: 7,
-			value: function(data) {return data.vol;}
+			index: 8,
+			value: function(data) {return data.fan + '/' + data.fanr + '%';}
 		}, {
 			name: 'PG',
-			index: 8,
+			index: 9,
 			value: function(data) {return data.pg;}
 		}, {
-			name: 'EC',
-			index: 9,
-			value: function(data) {return data.ec;}
+			name: 'ECHU',
+			index: 10,
+			value: function(data) {return data.echu.join(' ');}
+		}, {
+			name: 'ECMM',
+			index: 11,
+			value: function(data) {return data.ecmm;}
+		}, {
+			name: 'CRC',
+			index: 12,
+			value: function(data) {return data.crc.join(' ');}
 		}];
 
 		vm.getTable = getTable;
