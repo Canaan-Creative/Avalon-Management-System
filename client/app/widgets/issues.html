@@ -28,7 +28,7 @@
 								ng-repeat="module in vm.data.issue.ec"
 								ng-click="vm.utils.gotoDetail(module.ip, module.port, module.dna)">
 							<td md-cell ng-cloak>{{ module.ip }}:{{ module.port }} {{ module.device_id }}:{{ module.module_id }} {{ module.dna }}</td>
-							<td md-cell ng-cloak>{{ vm.utils.ecDecode(module.ec) }}</td>
+							<td md-cell ng-cloak>{{ vm.utils.ecDecode(module.echu, module.ecmm) }}</td>
 						</tr>
 						<tr md-row
 								ng-repeat="module in vm.data.issue.hot"
