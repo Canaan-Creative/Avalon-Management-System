@@ -547,7 +547,7 @@ def get_status(table, time, ip, port):
         if table == 'debug':
             node = miner_type.Miner(ip, port, 0, log=False)
             node.put('debug', 'D')
-            status = node.get(table)
+            status = node.get('module')
             node.put('debug', 'D')
         else:
             node = miner_type.Miner(ip, port, 0, log=False)
