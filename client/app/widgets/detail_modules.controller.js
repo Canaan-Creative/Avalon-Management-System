@@ -79,7 +79,7 @@
 		}, {
 			name: 'ECHU',
 			index: 10,
-			value: function(data) {return data.echu.join(' ');}
+			value: function(data) {return [data.echu_0, data.echu_1, data.echu_2, data.echu_3].join(' ');}
 		}, {
 			name: 'ECMM',
 			index: 11,
@@ -87,7 +87,7 @@
 		}, {
 			name: 'CRC',
 			index: 12,
-			value: function(data) {return data.crc.join(' ');}
+			value: function(data) {return [data.crc_0, data.crc_1, data.crc_2, data.crc_3].join(' ');}
 		}];
 
 		vm.getTable = getTable;
