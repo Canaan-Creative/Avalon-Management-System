@@ -547,8 +547,15 @@ def get_status(table, time, ip, port):
         if table == 'debug':
             node = miner_type.Miner(ip, port, 0, log=False)
             node.put('debug', 'D')
-            status = node.get('module')
+            raw = node.put('estats')
             node.put('debug', 'D')
+            status = []
+            for i, device in enumerate(raw['STATS']):
+                status.append([])
+                j = 1
+                while 'MM ID{}'.format(j) in device:
+                    status[i].append(device['MM ID{}'.format(j)])
+                    j += 1
         else:
             node = miner_type.Miner(ip, port, 0, log=False)
             status = node.get(table)
