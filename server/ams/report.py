@@ -48,7 +48,7 @@ def sendReport(cfg):
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
     # Get Shortlog:
-    res = urllib.request.urlopen('http://127.0.0.1/api/shortlog', context=ctx)
+    res = urllib.request.urlopen('https://127.0.0.1/api/shortlog', context=ctx)
     shortlog = json.loads(res.read().decode())['result']
 
     time = datetime.datetime.fromtimestamp(shortlog['time'])
@@ -56,7 +56,7 @@ def sendReport(cfg):
 
     # Get Pool Summary
     res = urllib.request.urlopen(
-        'http://127.0.0.1/api/pool_summary/latest',
+        'https://127.0.0.1/api/pool_summary/latest',
         context=ctx
     )
     pool_summary = json.loads(res.read().decode())['result']
