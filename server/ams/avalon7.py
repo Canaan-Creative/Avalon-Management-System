@@ -37,6 +37,7 @@ class Miner(miner.Miner):
         'TMax\[(?P<TMax>[0-9]+)\]\s'
         'Fan\[(?P<Fan>[0-9]+)\]\s'
         'FanR\[(?P<FanR>[0-9]+)%\]\s'
+        'Vi\[(?P<Vi>[-\s0-9]+)\]\s'
         'Vo\[(?P<Vo>[-\s0-9]+)\]\s'
         '('
         'PLL0\[(?P<PLL0>[-\s0-9]+)\]\s'
@@ -272,7 +273,8 @@ class Miner(miner.Miner):
                   k == 'GHSmm'):
                 new_column.append(k.lower())
                 new_value.append(float(module_info[k]))
-            elif (k in ['PVT_T', 'MW', 'MH', 'Vo', 'ECHU', 'CRC', 'PMUV'] or
+            elif (k in ['PVT_T', 'MW', 'MH', 'Vi',
+                        'Vo', 'ECHU', 'CRC', 'PMUV'] or
                   k[:-1] in ['PLL', 'SF', 'GHSmm0', 'MW', 'ERATIO'] or
                   k[:2] == 'C_') and module_info[k] is not None:
                 for i, m in enumerate(module_info[k].split()):
@@ -500,7 +502,7 @@ for i in range(4):
         'type': 'VARCHAR(18)',
     })
 
-    for name in ['mw', 'mh', 'vo', 'echu', 'crc']:
+    for name in ['mw', 'mh', 'vi', 'vo', 'echu', 'crc']:
         COLUMN_ESTATS.append({
             'name': '{}_{}'.format(name, i),
             'type': 'INT',
