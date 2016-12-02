@@ -9,7 +9,7 @@ Installation
 As root
 ```
 apt-get install apache2 mysql-server mysql-client \
-libapache3-mod-wsgi-py3 python3 python3-pip redis-server
+libapache2-mod-wsgi-py3 python3 python3-pip redis-server
 pip3 install Flask setuptools python-jose redis
 pip3 install --egg mysql-connector-python-rf
 ```
