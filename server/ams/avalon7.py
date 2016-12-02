@@ -513,7 +513,7 @@ for i in range(4):
                 'name': '{}{}_{}'.format(name, i, j),
                 'type': 'INT',
             })
-    for j in range(18):
+    for j in range(22):
         COLUMN_ESTATS.append({
             'name': 'mw{}_{}'.format(i, j),
             'type': 'INT',
