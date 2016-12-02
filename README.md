@@ -114,3 +114,12 @@ Known Issues
     service apache2 restart
     ```
     **_NOTE: the version number in_** `python3.4` **_and_** `mod_wsgi-py34.cpython-34m.so` **_may vary._**
+
+####MySQL5.7: Create table failed with invalid date
+* Reason:
+
+    http://dev.mysql.com/doc/refman/5.7/en/sql-mode.html#sql-mode-setting
+
+* Sloution:
+
+    mysql -u root -ppassword -e "SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ALLOW_INVALID_DATES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';"
