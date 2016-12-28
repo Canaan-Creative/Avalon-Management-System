@@ -422,7 +422,8 @@ def init(argv):
         {'name': 'active_time', 'type': 'TIMESTAMP'},
         {'name': 'revoke', 'type': 'BOOLEAN DEFAULT 0'},
         {'name': 'revoke_time', 'type': 'TIMESTAMP DEFAULT 0'},
-    ], 'PRIMARY KEY(`component_sn`, `product_sn`, `active_time`)')
+    ], 'PRIMARY KEY(`component_sn`, `name`, '
+        '`model`, `product_sn`, `active_time`)')
 
     database.run('create', 'code_rule', [
         {'name': 'header', 'type': 'VARCHAR(128) NOT NULL'},
