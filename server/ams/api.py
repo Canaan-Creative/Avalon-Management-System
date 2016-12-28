@@ -245,10 +245,10 @@ def product_handler():
              'note',
              'active_time'],
             [component['component_sn'],
-             component['component_id'],
+             component.get('component_id'),
              component['name'],
              component['model'],
-             component['product_sn'],
+             product['product_sn'],
              component['note'],
              '{:%Y-%m-%d %H:%M:%S}'.format(
                  datetime.datetime.fromtimestamp(iso2epoch(component['time']))
