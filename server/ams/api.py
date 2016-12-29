@@ -28,7 +28,6 @@ import hashlib
 import configparser
 import multiprocessing
 import copy
-import logging
 
 from flask import Flask, g, request
 from jose import jwt
@@ -36,12 +35,18 @@ import redis
 
 import ams.luci
 import ams.rtac
-from ams.log import log
 from ams.sql import DataBase
 from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
 
 
 app = Flask(__name__)
+if not app.debug:
+    import logging
+    file_handler = logging.FileHandler('/var/log/amsapi.log')
+    file_handler.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+    file_handler.setFormatter(formatter)
+    app.logger.addHandler(file_handler)
 cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV') or '/', 'etc/ams.conf')
 
 
@@ -110,8 +115,6 @@ def epoch2iso(ts):
 
 @app.before_request
 def before_request():
-    log()
-    g.logger = logging.getLogger('AMS.Product')
     g.database = DataBase(db)
     g.database.connect()
 
@@ -225,7 +228,7 @@ VALUES (%s, %s, %s, %s)
 @app.route('/product', methods=['POST'])
 def product_handler():
     product = request.json.get('product')
-    g.logger.debug(ams_dumps(product))
+    app.logger.info(ams_dumps(product))
     success = g.database.run(
         'insert', 'product',
         ['product_sn', 'order_id', 'batch', 'time'],
@@ -914,6 +917,12 @@ def teardown_request(exception):
     database = getattr(g, 'database', None)
     if database is not None:
         database.disconnect()
+
+
+@app.errorhandler(500)
+def internal_error(exception):
+    app.logger.error(exception)
+    return "error", 500
 
 
 if __name__ == '__main__':
