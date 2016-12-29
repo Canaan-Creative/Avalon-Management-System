@@ -42,11 +42,13 @@ from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
 app = Flask(__name__)
 if not app.debug:
     import logging
-    file_handler = logging.FileHandler('/var/log/amsapi.log')
+    file_handler = logging.FileHandler('/log/amsapi.log')
     file_handler.setLevel(logging.INFO)
-    formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+    formatter = logging.Formatter(
+        "%(asctime)s [%(levelname)s] %(id)s %(message)s")
     file_handler.setFormatter(formatter)
     app.logger.addHandler(file_handler)
+    app.logger.setLevel(logging.INFO)
 cfgfile = os.path.join(os.environ.get('VIRTUAL_ENV') or '/', 'etc/ams.conf')
 
 
@@ -228,7 +230,7 @@ VALUES (%s, %s, %s, %s)
 @app.route('/product', methods=['POST'])
 def product_handler():
     product = request.json.get('product')
-    app.logger.info(ams_dumps(product))
+    app.logger.info(ams_dumps(product), extra={'id': 'product'})
     success = g.database.run(
         'insert', 'product',
         ['product_sn', 'order_id', 'batch', 'time'],
