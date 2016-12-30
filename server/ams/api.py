@@ -230,6 +230,7 @@ def get_config(ip, port):
         old_password = (nodes[0][0] if nodes[0][0] is not None else password)
     except:
         password = ''
+        old_password = ''
 
     luci = ams.luci.LuCI(ip, 80, password)
     if not luci.auth():
