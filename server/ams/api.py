@@ -42,7 +42,7 @@ from ams.miner import COLUMN_SUMMARY, COLUMN_POOLS
 app = Flask(__name__)
 if not app.debug:
     import logging
-    file_handler = logging.FileHandler('/log/amsapi.log')
+    file_handler = logging.FileHandler('/var/www/log/amsapi.log')
     file_handler.setLevel(logging.INFO)
     formatter = logging.Formatter(
         "%(asctime)s [%(levelname)s] %(id)s %(message)s")
@@ -923,7 +923,7 @@ def teardown_request(exception):
 
 @app.errorhandler(500)
 def internal_error(exception):
-    app.logger.error(exception)
+    app.logger.error(exception, extra={'id': 'exception'})
     return "error", 500
 
 
