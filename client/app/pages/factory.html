@@ -71,8 +71,7 @@
 				<span>备注: &nbsp;</span>
 				<span>{{ vm.data.order_search.note }}</span>
 			</div>
-		</div>
-		<div layout="column" flex>
+			<div flex="5"></div>
 			<h3 class="md-title">产品信息</h3>
 			<div layout="column" flex>
 				<!--
@@ -94,7 +93,8 @@
 					<span>{{ vm.data.order_search.time.toLocaleDateString() }}</span>
 				</div>
 			</div>
-			<div flex="5"></div>
+		</div>
+		<md-content layout="column" flex>
 			<h3 class="md-title">组件信息</h3>
 			<div layout="column" flex>
 				<div layout="row" class="ams-column" layout-align="center center">
@@ -122,7 +122,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</md-content>
 		<!--
 		<md-table-container>
 			<table md-table md-progress="deferred">
