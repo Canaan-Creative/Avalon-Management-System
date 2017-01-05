@@ -201,8 +201,8 @@ VALUES (%s, %s, %s, %s)
           doc_id = VALUES(doc_id),
         quantity = VALUES(quantity),
             note = VALUES(note)''',
-            [order['order_id'], order['doc_id'], order['quantity'],
-             order['note'], order['order_id']]
+            [order['order_id'], order['doc_id'],
+             order['quantity'], order['note']]
         )
         g.database.commit()
         server.set('order', ams_dumps(order))
