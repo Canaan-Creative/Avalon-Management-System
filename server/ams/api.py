@@ -198,7 +198,9 @@ INSERT INTO `order`
        (order_id, doc_id, quantity, note)
 VALUES (%s, %s, %s, %s)
     ON DUPLICATE KEY UPDATE
-       order_id = %s''',
+          doc_id = VALUES(doc_id),
+        quantity = VALUES(quantity),
+            note = VALUES(note)''',
             [order['order_id'], order['doc_id'], order['quantity'],
              order['note'], order['order_id']]
         )
