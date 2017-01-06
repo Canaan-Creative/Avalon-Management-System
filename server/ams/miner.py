@@ -231,13 +231,13 @@ class Miner():
 
 COLUMN_SUMMARY = [
     {'name': 'time',
-     'type': 'TIMESTAMP DEFAULT 0'},
+     'type': 'TIMESTAMP DEFAULT "0000-00-00 00:00:00"'},
     {'name': 'ip',
      'type': 'VARCHAR(40)'},
     {'name': 'port',
      'type': 'SMALLINT UNSIGNED'},
     {'name': 'precise_time',
-     'type': 'TIMESTAMP DEFAULT 0'},
+     'type': 'TIMESTAMP DEFAULT "0000-00-00 00:00:00"'},
     {'name': 'elapsed',
      'type': 'BIGINT'},
     {'name': 'mhs_av',
@@ -297,20 +297,20 @@ COLUMN_SUMMARY = [
     {'name': 'pool_stale',
      'type': 'DOUBLE'},
     {'name': 'last_getwork',
-     'type': 'TIMESTAMP DEFAULT 0'},
+     'type': 'TIMESTAMP DEFAULT "0000-00-00 00:00:00"'},
     {'name': 'dead',
      'type': 'BOOL DEFAULT 0'},
 ]
 
 COLUMN_POOLS = [
     {'name': 'time',
-     'type': 'TIMESTAMP DEFAULT 0'},
+     'type': 'TIMESTAMP DEFAULT "0000-00-00 00:00:00"'},
     {'name': 'ip',
      'type': 'VARCHAR(40)'},
     {'name': 'port',
      'type': 'SMALLINT UNSIGNED'},
     {'name': 'precise_time',
-     'type': 'TIMESTAMP DEFAULT 0'},
+     'type': 'TIMESTAMP DEFAULT "0000-00-00 00:00:00"'},
     {'name': 'pool_id',
      'type': 'TINYINT UNSIGNED'},
     {'name': 'pool',
@@ -346,7 +346,7 @@ COLUMN_POOLS = [
     {'name': 'user',
      'type': 'VARCHAR(32)'},
     {'name': 'last_share_time',
-     'type': 'TIMESTAMP DEFAULT 0'},
+     'type': 'TIMESTAMP DEFAULT "0000-00-00 00:00:00"'},
     {'name': 'diff1_shares',
      'type': 'BIGINT'},
     {'name': 'proxy_type',
@@ -401,7 +401,7 @@ def db_init(sql_queue):
         'command': 'create',
         'name': 'hashrate',
         'column_def': [
-            {'name': 'time', 'type': 'TIMESTAMP DEFAULT 0'},
+            {'name': 'time', 'type': 'TIMESTAMP DEFAULT "0000-00-00 00:00:00"'},
             {'name': 'local', 'type': 'DOUBLE'}
         ],
         'additional': 'PRIMARY KEY (`time`)',
