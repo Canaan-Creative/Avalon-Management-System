@@ -1,0 +1,224 @@
+@app.route('/nodes', methods=['GET'])
+{"result: [
+	{"ip": *str*, "port": *int*, "mods": *int*},
+	...
+]}
+
+
+
+@app.route('/update_nodes', methods=['POST'])
+input:
+{"token": *str*,  // JWT token
+ "nodes": [
+	{"ip": *str*, "port": *int*, "mods": *int*},
+	...
+]}
+output:
+{"auth": false} | {"success": true}
+
+
+
+@app.route('/shortlog', methods=['GET'])
+{"result": {
+	"time": *int*,
+	"hashrate_cgminer": *int*,
+	"node_num": *int*,
+	"module_num": *int*,
+	"hashrate": *float*
+}}
+
+
+
+@app.route('/pool_summary/<time>', methods=['GET'])
+time: "latest"(database) or timestamp.
+{"result": [
+	{
+		"url": *str*,
+		"username": *str*,
+		"ghs": *float*,
+		"node_num": *int*,
+		"module_num": *int*
+	},
+	...
+]}
+
+
+
+@app.route('/lasttime', methods=['GET'])
+{"result": *int*}
+
+
+
+@app.route('/config/<ip>/<port>', methods=['GET'])
+call "uci get cgminer.default"
+
+
+
+@app.route('/info/<ip>/<port>', methods=['GET'])
+call "ubus call network.device status"
+{"mac": *str*}
+
+
+
+@app.route('/summary/<time>', methods=['GET'])
+time: "latest"(database) or timestamp
+{"result": [
+	{
+		"ip': *str*,
+		"port': *int*,
+		"mhs': *int*,
+		"module': *int*,
+		"temp': *float*,
+		"tmax': *float*,
+	},
+	...
+]}
+
+
+
+@app.route('/farmmap/<time>', methods=['GET'])
+time: "latest"(database) or timestamp
+{"result": [
+	{
+		"ip": *str*,
+		"port": *int*,
+		"mhs": *int*,
+		"dead": *bool*,
+		"temp": *float*,
+		"tmax": *float*,
+		"mod_num": *int*,
+		"modules": [
+			{
+				"id": device_id + ":" + module_id,
+				"dna": dna,
+				"temp": temp,
+				"tmax": tmax,
+				"ghsmm": ghsmm,
+				"echu": [echu_0, echu_1, echu_2, echu_3],
+				"ecmm": ecmm,
+			},
+			...
+		]
+	},
+	...
+]}
+
+
+
+@app.route('/aliverate', methods=['POST'])
+input:
+{
+	"start": *int*  // timestamp,
+	"end": *int*  // timestamp
+}
+output:
+{"result":
+	[{'values': [
+			{"x": x, "y": y, "serie": "node"},
+			...
+		], 'key': 'nodes'},
+	 {'values': [
+			{"x": x, "y": y, "serie": "module"},
+			...
+		], 'key': 'modules'}]
+}
+
+
+
+@app.route('/hashrate', methods=['POST'])
+input:
+{
+	"scope": *str* "farm" | "node"
+	"ip":    *str*  // node scope only
+	"port":  *int*  // node scope only
+	"start": *int*  // timestamp
+	"end":   *int*  // timestamp
+}
+output:
+// farm
+{"result": [
+	{'values': [
+			{"x": x, "y": y},
+			...
+		], 'key': *str*},
+	...
+]}
+// node
+{"result": [
+	{'values': [
+			{"x": x, "y": y},
+			...
+		], 'key': 'node'}
+]}
+
+
+@app.route('/issue/<time>', methods=['GET'])
+time: "latest"(database) or timestamp.
+{"result": {
+	"ec": [{
+		"ip":
+		"port":
+		"device_id":
+		"module_id":
+		"dna":
+		"echu_0":
+		"echu_1":
+		"echu_2":
+		"echu_3":
+		"ec_mm":
+	}, ... ],
+	"node" = [{'ip': , 'port':}, ... ]
+}}
+
+
+
+@app.route('/status/<table>/<time>/<ip>/<port>', methods=['GET'])
+table: "summary" | "pool" | "device" | "module"
+time: "latest"(cgminer) or timestamp.
+dump the database.
+
+
+
+@app.route('/led', methods=['POST'])
+input:
+{"modules": [
+	{
+		"ip": *str*,
+		"port": *int*,
+		"device_id": *int*,
+		"module_id": *int*,
+		"led": *int*
+	},
+	...
+]}
+output:
+{"result": "success"}
+
+
+
+@app.route('/login', methods=['POST'])
+input:
+{"username": *str*, "password": *str*}
+output:
+{"auth": false} | {"auth": true, "token": *str*}
+
+
+
+@app.route('/rtac', methods=['POST'])
+input:
+{
+	"nodes": [{"ip": *str*}, ...],
+	"commands": [{"method": , "params": , "lib": }],  // see LuCI API
+	"session_id": session_id,
+	"token": *str*
+}
+output:
+{"auth": false} | {"session": session_id}
+
+
+
+@app.route('/rtaclog', methods=['POST'])
+input:
+{"session_id": session_id, "token": *str*}
+output:
+{"auth": false} | {"result": "timeout"} | {"result": , "node": , "error": }
