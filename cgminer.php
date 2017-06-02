@@ -4,7 +4,7 @@ if (! isset ($_COOKIE['userId'])) {
 	die;
 }
 #
-$pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\s.*LW\[([0-9]+)\]\s.*HW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sTemp\[([-0-9]+)\]\s.*TMax\[([-0-9]+)\]\s.*Fan\[([0-9]+)\]\s.*FanR\[([0-9]+)%\]\s.*GHSmm\[([-.0-9]+)\].*WU\[([-.0-9]+)\].*Freq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)\]\s.*ECHU\[([0-9]+)\s([0-9]+)\s([0-9]+)\s([0-9]+)\]\sECMM\[([0-9]+)\].*CRC\[([0-9]+)\s([0-9]+)\s([0-9]+)\s([0-9]+)\]/';
+$pattern = '/Ver\[([-+0-9A-Fa-f]+)\]\sDNA\[([0-9A-Fa-f]+)\]\sElapsed\[([-0-9]+)\]\s.*LW\[([0-9]+)\]\s.*HW\[([0-9]+)\]\sDH\[([.0-9]+)%\]\sTemp\[([-0-9]+)\]\s.*TMax\[([-0-9]+)\]\s.*Fan\[([0-9]+)\]\s.*FanR\[([0-9]+)%\]\s.*GHSmm\[([-.0-9]+)\].*WU\[([-.0-9]+)\].*Freq\[([.0-9]+)\]\sPG\[([0-9]+)\]\sLed\[(0|1)\]\s.*ECHU\[([0-9]+)\s([0-9]+)\s([0-9]+)\s([0-9]+)\]\sECMM\[([0-9]+)\].*CRC\[([-0-9]+)\s([-0-9]+)\s([-0-9]+)\s([-0-9]+)\]/';
 $ip   = $_GET['ip'];
 $ports = explode(',', $_GET['port']);
 if (array_key_exists('hl', $_GET) && $_GET['hl'] !== "" && $_GET['hl'] !== null)
@@ -66,6 +66,23 @@ function switch_led(ip,port,dev,mod){
 	$.ajax({
 		type:"POST",
 		url:"switch_led.php",
+		data:{ip:_ip,port:_port,dev:_dev,mod:_mod},
+		dataType:"json",
+		success:function(data){
+			alert(data.msg);
+		}
+	});
+}
+
+function reboot_mm(ip,port,dev,mod){
+	var _ip = ip;
+	var _port = port;
+	var _dev = dev;
+	var _mod = mod;
+
+	$.ajax({
+		type:"POST",
+		url:"reboot_mm.php",
 		data:{ip:_ip,port:_port,dev:_dev,mod:_mod},
 		dataType:"json",
 		success:function(data){
@@ -278,6 +295,7 @@ for ($i = 0; $i < count($ports); $i++) {
 <table>
 <tr>
   <th>Indicator</th>
+  <th>Reboot</th>
   <th>Elapsed</th>
   <th>Device</th>
   <th>MM</th>
@@ -291,7 +309,6 @@ for ($i = 0; $i < count($ports); $i++) {
   <th>PG</th>
   <th>ECHU</th>
   <th>ECMM</th>
-  <th>CRC</th>
 </tr>";
 
 	$i = 0;
@@ -319,9 +336,10 @@ for ($i = 0; $i < count($ports); $i++) {
 				echo "<tr>";
 				echo $td . "<button onClick=\"switch_led('" . $ip . "'," . $port . "," . substr($stat['ID'], 3) . "," . $mod . ");\">";
 				if ($matches[15])
-					echo "Turn OFF</button></td>";
+					echo "LED ON</button></td>";
 				else
-					echo "Turn ON</button></td>";
+					echo "LED OFF</button></td>";
+				echo $td . "<button onClick=\"reboot_mm('" . $ip . "'," . $port . "," . substr($stat['ID'], 3) . "," . $mod . ");\">" . "Reboot</button></td>";
 				echo $td . second2human($matches[3]) . "</td>";
 				echo $td . substr($stat['ID'],0,3) . "-" . substr($stat['ID'], 3) . "-" . $mod . "</td>";
 				echo $td . $matches[1] . "</td>";
@@ -335,14 +353,13 @@ for ($i = 0; $i < count($ports); $i++) {
 				echo $td . $matches[14] . "</td>";
 				echo $td . $matches[16] . " " . $matches[17] . " " . $matches[18] . " " . $matches[19] . "</td>";
 				echo $td . $matches[20] . "</td>";
-				echo $td . $matches[21] . " " . $matches[22] . " " . $matches[23] . " " . $matches[24] . "</td>";
 				echo "</tr>";
 			} else {
 				echo "<tr>";
 				echo "<td></td>";
 				echo "<td></td>";
-				echo $td . substr($stat['ID'],0,3) . "-" . substr($stat['ID'], 3) . "-" . $mod . "</td>";
 				echo "<td></td>";
+				echo $td . substr($stat['ID'],0,3) . "-" . substr($stat['ID'], 3) . "-" . $mod . "</td>";
 				echo "<td></td>";
 				echo "<td></td>";
 				echo "<td></td>";

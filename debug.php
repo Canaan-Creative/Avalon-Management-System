@@ -11,7 +11,7 @@ if (!$ip)
 	exit;
 if (preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $ip) && is_numeric($port)) {
     $output = array();
-    exec("python debug.py " . $ip . " " . $port . "| jq '.'", $output);
+    exec("python debug.py " . $ip . " " . $port . "| jq '.' | sed 's/\]/\]\\n/g'", $output);
     foreach ($output as $o)
 		echo $o . "<br />";
 }

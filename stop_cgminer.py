@@ -7,7 +7,7 @@ import time
 import paramiko
 
 
-def restart_cgminer_ssh(ip,ports):
+def stop_cgminer_ssh(ip,ports):
     passwd = '1'
     retry = 3
     for i in range(0, retry):
@@ -31,15 +31,13 @@ def restart_cgminer_ssh(ip,ports):
             break
         try:
             if ports != None:
+                stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cron stop ' + ' '.join(ports))
                 stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cgminer stop ' + ' '.join(ports))
                 time.sleep(4)
-                stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cgminer start ' + ' '.join(ports))
-                stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cron start ' + ' '.join(ports))
             else:
+                stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cron stop')
                 stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cgminer stop')
                 time.sleep(4)
-                stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cgminer start')
-                stdin, stdout, stderr = ssh.exec_command('/etc/init.d/cron start')
         except:
             ssh.close()
             print("\033[31mConnection to " + ip +
@@ -52,7 +50,7 @@ def restart_cgminer_ssh(ip,ports):
         break
 
 
-def restart_cgminer(ip,ports):
+def stop_cgminer(ip,ports):
     retry = 3
     flag = "root@OpenWrt:/# "
     for i in range(0,retry):
@@ -76,12 +74,10 @@ def restart_cgminer(ip,ports):
             tn.read_until(flag)
             if ports != None:
                 tn.write('/etc/init.d/cgminer stop ' + ' '.join(ports) + '\n')
-                time.sleep(2)
-                tn.write('/etc/init.d/cgminer start ' + ' '.join(ports) + '\n')
+                time.sleep(4)
             else:
                 tn.write('/etc/init.d/cgminer stop\n')
-                time.sleep(2)
-                tn.write('/etc/init.d/cgminer start\n')
+                time.sleep(4)
             tn.read_until(flag)
             tn.write('exit\n')
             tn.read_all()
@@ -106,5 +102,5 @@ if __name__ == '__main__':
                 break
             else:
                 ports.append( str( port - 6000 ) )
-    restart_cgminer_ssh(ip,ports)
-    restart_cgminer(ip,ports)
+    stop_cgminer_ssh(ip,ports)
+    stop_cgminer(ip,ports)

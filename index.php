@@ -409,7 +409,7 @@ title:{text:'Time (UTC+8)'},
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
 			<li><a href="javascript:;">RPi:		<?php echo $aliveIP . "/" . $allIP; ?></a></li>
-			<li><a href="javascript:;">Avalon4-1T:     <?php echo $aliveMod . "/" . $allMod; ?></a></li>
+			<li><a href="javascript:;">Avalon7-6T:     <?php echo $aliveMod . "/" . $allMod; ?></a></li>
 			<li><a href="javascript:;"><?php echo $showTime ?></a></li>
 		  </ul>
 		</div><!-- /.navbar-collapse -->
