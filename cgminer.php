@@ -108,6 +108,26 @@ function adjust_volt(ip, port, dev, mod, volt) {
 		}
 	});
 }
+
+function write_factory_configuration(ip,port,val) {
+	var _ip = ip;
+	var _port = port;
+	var _val = val;
+
+	$.ajax({
+		type:"POST",
+		url:"factory_configuration.php",
+		data:{ip:_ip,port:_port,value:_val},
+		dataType:"json",
+		success:function(data){
+			if (data.status == 0)
+				alert("Write " + val + " to " + ip + " " + port + " Success!");
+			else
+				alert("Write " + val + " to " + ip + " " + port + " Failed!");
+		}
+	});
+}
+
 </script>
 <style>
 .div-table{border:1px solid #c3c3c3;}
@@ -164,6 +184,17 @@ for ($i = 0; $i < count($ports); $i++) {
 <button onClick=\"restart_cgminer('" . $ip . "'," . $port . ");\">Restart CGMiner</button>
 <button onClick=\"stop_cgminer('" . $ip . "'," . $port . ");\">Stop CGMiner</button>
 <button onClick=\"window.open('./debug.php?ip=" . $ip . "&port=" . $port . "');\">Debug</button>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<button onClick=\"write_factory_configuration('" . $ip . "'," . $port . ", ". 1 .");\">Write +1</button>
+&nbsp;
+&nbsp;
+<button onClick=\"write_factory_configuration('" . $ip . "'," . $port . ", ". 0 .");\">Write 0 </button>
 </span>
 </legend>
 
