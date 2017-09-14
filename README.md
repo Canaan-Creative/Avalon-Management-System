@@ -96,6 +96,13 @@ Build (for Developer)
     grunt build
     ```
 
+Structure
+---------
+Database: /usr/local/lib/python3.5/dist-packages/ams/
+Config file: /etc/ams.conf
+Tools: /usr/local/bin/amscli
+Frontend: /var/www/html/ams
+
 Known Issues
 ------------
 ####Apache Error: 'assert tlock is not None'
