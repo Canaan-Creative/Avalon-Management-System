@@ -423,7 +423,15 @@ def adduser(argv):
 
 if __name__ == '__main__':
     doc = '''\
-THIS IS THE DOC.'''
+init
+adduser USERNAME PASSWORD
+controller
+pool
+fetch
+update
+config
+alert
+report'''
 
     if (len(sys.argv) < 2):
         print(doc)
