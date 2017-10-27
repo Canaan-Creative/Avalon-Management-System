@@ -254,6 +254,8 @@ COLUMN_SUMMARY = [
      'type': 'DOUBLE'},
     {'name': 'found_blocks',
      'type': 'INT UNSIGNED'},
+    {'name': 'new_blocks',
+     'type': 'INT UNSIGNED'},
     {'name': 'getworks',
      'type': 'BIGINT'},
     {'name': 'accepted',
@@ -405,4 +407,16 @@ def db_init(sql_queue):
             {'name': 'local', 'type': 'DOUBLE'}
         ],
         'additional': 'PRIMARY KEY (`time`)',
+    })
+
+    sql_queue.put({
+        'command': 'create',
+        'name': 'blocks',
+        'column_def': [
+            {'name': 'time', 'type': 'TIMESTAMP DEFAULT "0000-00-00 00:00:00"'},
+            {'name': 'ip', 'type': 'VARCHAR(40)'},
+            {'name': 'port', 'type': 'SMALLINT UNSIGNED'},
+            {'name': 'blocks', 'type': 'INT UNSIGNED'}
+        ],
+        'additional': 'PRIMARY KEY (`time`, `ip`, `port`)',
     })

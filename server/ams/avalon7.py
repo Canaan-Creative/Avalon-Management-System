@@ -572,6 +572,40 @@ UPDATE miner_temp AS a
        )
         ''',
     })
+    sql_queue.put({
+        'command': 'raw',
+        'query': '''
+UPDATE miner_temp AS a
+  LEFT OUTER JOIN (
+           SELECT time, ip, port, precise_time, elapsed, found_blocks
+             FROM miner
+            WHERE time = (SELECT MAX(time) FROM miner)
+       ) b
+    ON a.ip = b.ip and a.port = b.port
+   SET new_blocks = IF(
+         a.precise_time > b.precise_time
+             AND TIMESTAMPDIFF(SECOND, b.precise_time, a.precise_time)
+                     >= a.elapsed - b.elapsed - 1
+             AND TIMESTAMPDIFF(SECOND, b.precise_time, a.precise_time)
+                     <= a.elapsed - b.elapsed + 1,
+        a.found_blocks, a.found_blocks - b.found_blocks)''',
+    })
+
+    sql_queue.put({
+        'command': 'raw',
+        'query': '''\
+            REPLACE INTO hashrate (time, local)
+            SELECT time, sum(mhs) FROM miner_temp''',
+    })
+
+    sql_queue.put({
+        'command': 'raw',
+        'query': '''\
+            REPLACE INTO blocks (time, ip, port, blocks)
+            SELECT time, ip, port, new_blocks FROM miner_temp
+            WHERE new_blocks > 0''',
+    })
+
     for name in ['miner', 'device', 'module', 'pool']:
         sql_queue.put({
             'command': 'raw',
@@ -580,13 +614,4 @@ UPDATE miner_temp AS a
     sql_queue.put({
         'command': 'raw',
         'query': 'DROP TABLES miner_temp, device_temp, module_temp, pool_temp',
-    })
-
-    sql_queue.put({
-        'command': 'raw',
-        'query': '''\
-INSERT INTO hashrate (time, local)
-VALUES ("{0}", (SELECT sum(mhs) FROM miner WHERE time="{0}"))
-    ON DUPLICATE KEY UPDATE
-       local=(SELECT sum(mhs) FROM miner WHERE time="{0}")'''.format(run_time)
     })
