@@ -21,6 +21,9 @@
 import sys
 import json
 import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from ams.log import log
 
@@ -146,6 +149,46 @@ def update(argv):
     pool_process.join()
     farm_process.join()
     db_process.join()
+
+    database.connect()
+    records = database.run('raw', '''\
+        SELECT b.blocks, b.ip, m.best_share FROM blocks as b
+        RIGHT JOIN miner as m
+        ON m.time = b.time and m.ip = b.ip
+        WHERE b.time = '{}'
+        '''.format(now))
+    database.disconnect()
+    if len(records) > 0:
+        b = sum([r[0] for r in records])
+        mail = cfg['Email']
+        farm = cfg['Farm']
+        user = mail['from_address'].split('@')[0]
+        me = "{}<{}>".format(user, mail['from_address'])
+        to_list = mail['to_list'].split(';')
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "[AMS Block Alert][{}][{} Block{}]".format(
+            farm['code'], b, 's' if b > 1 else '')
+        msg['From'] = me
+        msg['To'] = mail['to_list']
+        if 'cc' in mail:
+            msg['CC'] = mail['cc']
+            to_list.extend(mail['cc'].split(';'))
+        if 'bcc' in mail:
+            to_list.extend(mail['bcc'].split(';'))
+        mail['content'] = '''\
+            <html>
+                <head></head>
+                <body>{}<br />{}</body>
+            </html>'''.format(now, "<br />".join(
+            ["{} by {} at best share of {}".format(
+                r[0], r[1], r[2]) for r in records]))
+        msg_html = MIMEText(mail['content'], 'HTML')
+        msg.attach(msg_html)
+        s = smtplib.SMTP()
+        s.connect(mail['smtp_server'])
+        s.login(user, mail['password'])
+        s.sendmail(me, to_list, msg.as_string())
+        s.close()
 
 
 def fetch(argv):
