@@ -588,7 +588,7 @@ UPDATE miner_temp AS a
                      >= a.elapsed - b.elapsed - 1
              AND TIMESTAMPDIFF(SECOND, b.precise_time, a.precise_time)
                      <= a.elapsed - b.elapsed + 1,
-        a.found_blocks, a.found_blocks - b.found_blocks)''',
+        a.found_blocks - b.found_blocks, a.found_blocks)''',
     })
 
     sql_queue.put({
