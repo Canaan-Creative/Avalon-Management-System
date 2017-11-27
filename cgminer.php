@@ -315,11 +315,10 @@ for ($i = 0; $i < count($ports); $i++) {
 			echo $td . "Never</td>";
 		echo "</tr>";
 	}
-	echo "
+	$miner_infromation="
 </table>
 </div>
 </fieldset>
-
 <fieldset>
 <legend>Status</legend>
 <div class=\"div-table\">
@@ -341,6 +340,11 @@ for ($i = 0; $i < count($ports); $i++) {
   <th>ECHU</th>
   <th>ECMM</th>
 </tr>";
+	if ($stats[0]['ID'][2] == '8') {
+		echo str_replace('<th>DH</th>', '', $miner_infromation);
+	}
+	else
+		echo $miner_infromation;
 
 	$i = 0;
 	foreach ($stats as $stat) {
@@ -363,7 +367,7 @@ for ($i = 0; $i < count($ports); $i++) {
 				$td = "<td class=\"nolight" . ($i & 1) . "\">";
 			$key = "MM ID" . $mod;
 			$matches = array();
-			if (preg_match($pattern, $stat[$key], $matches)) {
+			if (preg_match($pattern, $stat[$key], $matches) || preg_match(str_replace('DH\[([.0-9]+)%\]\s', '', $pattern), $stat[$key], $matches)){
 				echo "<tr>";
 				echo $td . "<button onClick=\"switch_led('" . $ip . "'," . $port . "," . substr($stat['ID'], 3) . "," . $mod . ");\">";
 				if ($matches[15])
@@ -376,16 +380,29 @@ for ($i = 0; $i < count($ports); $i++) {
 				echo $td . $matches[1] . "</td>";
 				echo $td . substr($matches[2], 12) . "</td>";
 				echo $td . number_format($matches[4], 0, ".", ",") . "</td>";
-				echo $td . $matches[6] . "%" . "</td>";
-				echo $td . $matches[11] . "</td>";
-				echo $td . $matches[12] . "</td>";
-				echo $td . $matches[7] . " " . $matches[8] . "</td>";
-				echo $td . $matches[9] . " " . $matches[10] . "%" . "</td>";
-				echo $td . $matches[14] . "</td>";
-				echo $td . $matches[16] . " " . $matches[17] . " " . $matches[18] . " " . $matches[19] . "</td>";
-				echo $td . $matches[20] . "</td>";
-				echo "</tr>";
-			} else {
+				if (preg_match($pattern, $stat[$key], $matches)){
+					echo $td . $matches[6] . "%" . "</td>";
+					echo $td . $matches[11] . "</td>";
+					echo $td . $matches[12] . "</td>";
+					echo $td . $matches[7] . " " . $matches[8] . "</td>";
+					echo $td . $matches[9] . " " . $matches[10] . "%" . "</td>";
+					echo $td . $matches[14] . "</td>";
+					echo $td . $matches[16] . " " . $matches[17] . " " . $matches[18] . " " . $matches[19] . "</td>";
+					echo $td . $matches[20] . "</td>";
+					echo "</tr>";
+				}
+				elseif(preg_match(str_replace('DH\[([.0-9]+)%\]\s', '', $pattern), $stat[$key], $matches)){
+					echo $td . $matches[10] . "</td>";
+					echo $td . $matches[11] . "</td>";
+					echo $td . $matches[6] . " " . $matches[7] . "</td>";
+					echo $td . $matches[8] . " " . $matches[9] . "%" . "</td>";
+					echo $td . $matches[13] . "</td>";
+					echo $td . $matches[16] . " " . $matches[17] . " " . $matches[18] . " " . $matches[19] . "</td>";
+					echo $td . $matches[20] . "</td>";
+					echo "</tr>";
+				}
+			}
+			else {
 				echo "<tr>";
 				echo "<td></td>";
 				echo "<td></td>";
@@ -403,7 +420,6 @@ for ($i = 0; $i < count($ports); $i++) {
 				echo "<td></td>";
 				echo "<td></td>";
 				echo "</tr>";
-
 			}
 		}
 		$i ++;
