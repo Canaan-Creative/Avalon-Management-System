@@ -1,5 +1,12 @@
 Changelog
 =========
+
+Version 3.0.0-dev7 (2017.12.25)
+-------------------------------
+- Support A721, A741
+- Add raw debug data
+- Add block alerts
+
 Version 3.0.0-dev6 (2016.06.30)
 -------------------------------
 - Use simple-cdd to build autoinstall Debian CD.

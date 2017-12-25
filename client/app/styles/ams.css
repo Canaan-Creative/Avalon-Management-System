@@ -95,7 +95,7 @@ md-list-item {
 md-switch {
 	margin-top: 0px;
 	margin-bottom: 0px;
-};
+}
 
 table[md-data-table]:not([md-row-select]) > thead:not([md-table-progress]) > tr > th:first-child,
 table[md-data-table]:not([md-row-select]) > tbody > tr > td:first-child,
