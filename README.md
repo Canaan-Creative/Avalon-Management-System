@@ -26,7 +26,7 @@ pip3 install --egg mysql-connector-python-rf
     CREATE database ams;
     GRANT ALL PRIVILEGES ON ams.* TO ams@'%' IDENTIFIED BY "PASSWD";
     GRANT FILE ON *.* TO ams@localhost;
-	FLUSH PRIVILEGES;
+    FLUSH PRIVILEGES;
     ```
 
   **_Note: replace PASSWD with the real password._**
@@ -56,7 +56,8 @@ pip3 install --egg mysql-connector-python-rf
 * Copy Apache2 config file:
 
     ```
-    sudo cp ams-git/config/000-default.conf /etc/apache2/sites-available/000-default.conf
+    sudo cp ams-git/simple-cdd/extras/root/etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
+    sudo a2enmod wsgi headers
     sudo service apache2 restart
     ```
 * Load crontab file:
@@ -64,7 +65,11 @@ pip3 install --egg mysql-connector-python-rf
     ```
     crontab ams-git/config/cron.tab
     ```
-
+* Initialize database and add ui user:
+    ```
+    amscli init
+    amscli adduser USERNAME PASSWORD
+    ```
 
 
 Build (for Developer)
