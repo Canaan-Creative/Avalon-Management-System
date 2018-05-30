@@ -216,7 +216,7 @@ class Miner():
             else:
                 response += recv
         response = ''.join(
-            [x if ord(x) >= 32 else '' for x in response.decode()]
+            [x if ord(x) >= 32 else '' for x in response.decode('utf8', 'ignore')]
         )
         try:
             obj = json.loads(response)
