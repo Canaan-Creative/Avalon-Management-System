@@ -85,6 +85,8 @@ $ sudo -H pip3 install --egg mysql-connector-python-rf
     * login to http://127.0.0.1/ams with above USERNME & PASSWORD
     * go to "setting" page
     * add miners with ip address, port (4028 usually), modules (number of Avalon miners under this ip)
+    * click "Save" button
+
 
 
 Build (for Developer)
